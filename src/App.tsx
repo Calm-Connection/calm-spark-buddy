@@ -61,55 +61,45 @@ function AppRoutes() {
     return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
   }
 
-  // Redirect authenticated users to their home
-  if (user && userRole) {
-    const homePath = userRole === 'child' ? '/child/home' : '/carer/home';
-    return (
-      <Routes>
-        <Route path="/" element={<Navigate to={homePath} replace />} />
-        <Route path="/welcome" element={<Navigate to={homePath} replace />} />
-        <Route path="/login" element={<Navigate to={homePath} replace />} />
-        <Route path="/role-selection" element={<Navigate to={homePath} replace />} />
-        <Route path="/child/signup" element={<Navigate to={homePath} replace />} />
-        <Route path="/carer/signup" element={<Navigate to={homePath} replace />} />
-        
-        {/* Child routes */}
-        <Route path="/child/home" element={<ProtectedRoute role="child"><ChildHome /></ProtectedRoute>} />
-        <Route path="/child/enter-invite-code" element={<ProtectedRoute role="child"><EnterInviteCode /></ProtectedRoute>} />
-        <Route path="/child/pick-theme" element={<ProtectedRoute role="child"><PickTheme /></ProtectedRoute>} />
-        <Route path="/child/create-avatar" element={<ProtectedRoute role="child"><CreateAvatar /></ProtectedRoute>} />
-        <Route path="/child/safety-note" element={<ProtectedRoute role="child"><SafetyNote /></ProtectedRoute>} />
-        <Route path="/child/first-mood-checkin" element={<ProtectedRoute role="child"><FirstMoodCheckin /></ProtectedRoute>} />
-        <Route path="/child/journal-entry" element={<ProtectedRoute role="child"><JournalEntry /></ProtectedRoute>} />
-        <Route path="/child/wendy-chat" element={<ProtectedRoute role="child"><WendyChat /></ProtectedRoute>} />
-        <Route path="/child/entries" element={<ProtectedRoute role="child"><ViewEntries /></ProtectedRoute>} />
-        <Route path="/child/tools" element={<ProtectedRoute role="child"><Tools /></ProtectedRoute>} />
-        
-        {/* Carer routes */}
-        <Route path="/carer/home" element={<ProtectedRoute role="carer"><CarerHome /></ProtectedRoute>} />
-        <Route path="/carer/pick-avatar" element={<ProtectedRoute role="carer"><PickAvatar /></ProtectedRoute>} />
-        <Route path="/carer/invite-code" element={<ProtectedRoute role="carer"><InviteCode /></ProtectedRoute>} />
-        <Route path="/carer/insights" element={<ProtectedRoute role="carer"><Insights /></ProtectedRoute>} />
-        <Route path="/carer/shared-entries" element={<ProtectedRoute role="carer"><SharedEntries /></ProtectedRoute>} />
-        <Route path="/carer/joint-tools" element={<ProtectedRoute role="carer"><JointTools /></ProtectedRoute>} />
-        
-        {/* Shared routes */}
-        <Route path="/quick-tour" element={<ProtectedRoute><QuickTour /></ProtectedRoute>} />
-        <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
-        
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    );
-  }
+  const homePath = userRole === 'child' ? '/child/home' : '/carer/home';
 
   return (
     <Routes>
-      <Route path="/" element={<Index />} />
-      <Route path="/welcome" element={<Welcome />} />
-      <Route path="/role-selection" element={<RoleSelection />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/child/signup" element={<ChildSignup />} />
-      <Route path="/carer/signup" element={<CarerSignup />} />
+      {/* Root route - smart redirect based on auth state */}
+      <Route path="/" element={user && userRole ? <Navigate to={homePath} replace /> : <Index />} />
+      
+      {/* Public routes - redirect to home if already authenticated */}
+      <Route path="/welcome" element={user && userRole ? <Navigate to={homePath} replace /> : <Welcome />} />
+      <Route path="/role-selection" element={user && userRole ? <Navigate to={homePath} replace /> : <RoleSelection />} />
+      <Route path="/login" element={user && userRole ? <Navigate to={homePath} replace /> : <Login />} />
+      <Route path="/child/signup" element={user && userRole ? <Navigate to={homePath} replace /> : <ChildSignup />} />
+      <Route path="/carer/signup" element={user && userRole ? <Navigate to={homePath} replace /> : <CarerSignup />} />
+      
+      {/* Child routes - protected */}
+      <Route path="/child/home" element={<ProtectedRoute role="child"><ChildHome /></ProtectedRoute>} />
+      <Route path="/child/enter-invite-code" element={<ProtectedRoute role="child"><EnterInviteCode /></ProtectedRoute>} />
+      <Route path="/child/pick-theme" element={<ProtectedRoute role="child"><PickTheme /></ProtectedRoute>} />
+      <Route path="/child/create-avatar" element={<ProtectedRoute role="child"><CreateAvatar /></ProtectedRoute>} />
+      <Route path="/child/safety-note" element={<ProtectedRoute role="child"><SafetyNote /></ProtectedRoute>} />
+      <Route path="/child/first-mood-checkin" element={<ProtectedRoute role="child"><FirstMoodCheckin /></ProtectedRoute>} />
+      <Route path="/child/journal-entry" element={<ProtectedRoute role="child"><JournalEntry /></ProtectedRoute>} />
+      <Route path="/child/wendy-chat" element={<ProtectedRoute role="child"><WendyChat /></ProtectedRoute>} />
+      <Route path="/child/entries" element={<ProtectedRoute role="child"><ViewEntries /></ProtectedRoute>} />
+      <Route path="/child/tools" element={<ProtectedRoute role="child"><Tools /></ProtectedRoute>} />
+      
+      {/* Carer routes - protected */}
+      <Route path="/carer/home" element={<ProtectedRoute role="carer"><CarerHome /></ProtectedRoute>} />
+      <Route path="/carer/pick-avatar" element={<ProtectedRoute role="carer"><PickAvatar /></ProtectedRoute>} />
+      <Route path="/carer/invite-code" element={<ProtectedRoute role="carer"><InviteCode /></ProtectedRoute>} />
+      <Route path="/carer/insights" element={<ProtectedRoute role="carer"><Insights /></ProtectedRoute>} />
+      <Route path="/carer/shared-entries" element={<ProtectedRoute role="carer"><SharedEntries /></ProtectedRoute>} />
+      <Route path="/carer/joint-tools" element={<ProtectedRoute role="carer"><JointTools /></ProtectedRoute>} />
+      
+      {/* Shared routes - protected */}
+      <Route path="/quick-tour" element={<ProtectedRoute><QuickTour /></ProtectedRoute>} />
+      <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+      
+      {/* 404 catch-all */}
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
