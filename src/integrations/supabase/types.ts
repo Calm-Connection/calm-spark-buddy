@@ -14,16 +14,280 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      carer_profiles: {
+        Row: {
+          avatar_json: Json | null
+          created_at: string
+          id: string
+          nickname: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_json?: Json | null
+          created_at?: string
+          id?: string
+          nickname?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_json?: Json | null
+          created_at?: string
+          id?: string
+          nickname?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      children_profiles: {
+        Row: {
+          avatar_json: Json | null
+          created_at: string
+          id: string
+          linked_carer_id: string | null
+          nickname: string
+          theme: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_json?: Json | null
+          created_at?: string
+          id?: string
+          linked_carer_id?: string | null
+          nickname: string
+          theme?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_json?: Json | null
+          created_at?: string
+          id?: string
+          linked_carer_id?: string | null
+          nickname?: string
+          theme?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      invite_codes: {
+        Row: {
+          carer_user_id: string
+          child_user_id: string | null
+          code: string
+          created_at: string
+          expires_at: string
+          id: string
+          used: boolean | null
+        }
+        Insert: {
+          carer_user_id: string
+          child_user_id?: string | null
+          code: string
+          created_at?: string
+          expires_at: string
+          id?: string
+          used?: boolean | null
+        }
+        Update: {
+          carer_user_id?: string
+          child_user_id?: string | null
+          code?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          used?: boolean | null
+        }
+        Relationships: []
+      }
+      journal_entries: {
+        Row: {
+          child_id: string
+          created_at: string
+          entry_text: string
+          flag_reasons: Json | null
+          flagged: boolean | null
+          id: string
+          mood_tag: Database["public"]["Enums"]["mood_tag"] | null
+          share_with_carer: boolean | null
+          updated_at: string
+        }
+        Insert: {
+          child_id: string
+          created_at?: string
+          entry_text: string
+          flag_reasons?: Json | null
+          flagged?: boolean | null
+          id?: string
+          mood_tag?: Database["public"]["Enums"]["mood_tag"] | null
+          share_with_carer?: boolean | null
+          updated_at?: string
+        }
+        Update: {
+          child_id?: string
+          created_at?: string
+          entry_text?: string
+          flag_reasons?: Json | null
+          flagged?: boolean | null
+          id?: string
+          mood_tag?: Database["public"]["Enums"]["mood_tag"] | null
+          share_with_carer?: boolean | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "journal_entries_child_id_fkey"
+            columns: ["child_id"]
+            isOneToOne: false
+            referencedRelation: "children_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      safeguarding_logs: {
+        Row: {
+          action_taken: string | null
+          child_id: string
+          created_at: string
+          detected_keywords: Json | null
+          id: string
+          journal_entry_id: string | null
+          severity_score: number | null
+        }
+        Insert: {
+          action_taken?: string | null
+          child_id: string
+          created_at?: string
+          detected_keywords?: Json | null
+          id?: string
+          journal_entry_id?: string | null
+          severity_score?: number | null
+        }
+        Update: {
+          action_taken?: string | null
+          child_id?: string
+          created_at?: string
+          detected_keywords?: Json | null
+          id?: string
+          journal_entry_id?: string | null
+          severity_score?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "safeguarding_logs_child_id_fkey"
+            columns: ["child_id"]
+            isOneToOne: false
+            referencedRelation: "children_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "safeguarding_logs_journal_entry_id_fkey"
+            columns: ["journal_entry_id"]
+            isOneToOne: false
+            referencedRelation: "journal_entries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      wendy_insights: {
+        Row: {
+          child_id: string
+          created_at: string
+          escalate: boolean | null
+          id: string
+          journal_entry_id: string
+          mood_score: number | null
+          recommended_tools: Json | null
+          summary: string | null
+          themes: Json | null
+        }
+        Insert: {
+          child_id: string
+          created_at?: string
+          escalate?: boolean | null
+          id?: string
+          journal_entry_id: string
+          mood_score?: number | null
+          recommended_tools?: Json | null
+          summary?: string | null
+          themes?: Json | null
+        }
+        Update: {
+          child_id?: string
+          created_at?: string
+          escalate?: boolean | null
+          id?: string
+          journal_entry_id?: string
+          mood_score?: number | null
+          recommended_tools?: Json | null
+          summary?: string | null
+          themes?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wendy_insights_child_id_fkey"
+            columns: ["child_id"]
+            isOneToOne: false
+            referencedRelation: "children_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wendy_insights_journal_entry_id_fkey"
+            columns: ["journal_entry_id"]
+            isOneToOne: true
+            referencedRelation: "journal_entries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "child" | "carer"
+      mood_tag:
+        | "happy"
+        | "sad"
+        | "angry"
+        | "worried"
+        | "calm"
+        | "excited"
+        | "scared"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +414,17 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["child", "carer"],
+      mood_tag: [
+        "happy",
+        "sad",
+        "angry",
+        "worried",
+        "calm",
+        "excited",
+        "scared",
+      ],
+    },
   },
 } as const
