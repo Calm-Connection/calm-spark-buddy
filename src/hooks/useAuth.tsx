@@ -7,6 +7,7 @@ interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
+  roleLoading: boolean;
   userRole: 'child' | 'carer' | null;
   signUp: (email: string, password: string, role: 'child' | 'carer') => Promise<{ error: any }>;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
@@ -20,14 +21,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [roleLoading, setRoleLoading] = useState(false);
   const [userRole, setUserRole] = useState<'child' | 'carer' | null>(null);
 
   const checkUserRole = async () => {
     if (!user) {
       setUserRole(null);
+      setRoleLoading(false);
       return;
     }
 
+    setRoleLoading(true);
     const { data } = await supabase
       .from('user_roles')
       .select('role')
@@ -37,6 +41,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (data) {
       setUserRole(data.role as 'child' | 'carer');
     }
+    setRoleLoading(false);
   };
 
   useEffect(() => {
@@ -90,6 +95,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         user_id: data.user.id,
         role
       });
+      
+      // Immediately set the role locally to avoid race condition
+      setUserRole(role);
     }
 
     return { error };
@@ -109,7 +117,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, userRole, signUp, signIn, signOut, checkUserRole }}>
+    <AuthContext.Provider value={{ user, session, loading, roleLoading, userRole, signUp, signIn, signOut, checkUserRole }}>
       {children}
     </AuthContext.Provider>
   );

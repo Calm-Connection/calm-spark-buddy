@@ -36,9 +36,9 @@ import JointTools from "./pages/carer/JointTools";
 const queryClient = new QueryClient();
 
 function ProtectedRoute({ children, role }: { children: React.ReactNode; role?: 'child' | 'carer' }) {
-  const { user, userRole, loading } = useAuth();
+  const { user, userRole, loading, roleLoading } = useAuth();
   
-  if (loading) {
+  if (loading || roleLoading) {
     return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
   }
   
@@ -54,9 +54,9 @@ function ProtectedRoute({ children, role }: { children: React.ReactNode; role?: 
 }
 
 function AppRoutes() {
-  const { user, userRole, loading } = useAuth();
+  const { user, userRole, loading, roleLoading } = useAuth();
 
-  if (loading) {
+  if (loading || roleLoading) {
     return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
   }
 
