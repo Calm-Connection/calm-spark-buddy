@@ -34,6 +34,7 @@ export default function Login() {
         title: 'Welcome back!',
         description: 'Redirecting you...',
       });
+      setLoading(false);
       // Navigation will happen automatically via auth state change
     }
   };

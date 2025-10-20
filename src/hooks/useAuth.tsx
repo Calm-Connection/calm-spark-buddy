@@ -24,8 +24,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [roleLoading, setRoleLoading] = useState(false);
   const [userRole, setUserRole] = useState<'child' | 'carer' | null>(null);
 
-  const checkUserRole = async () => {
-    if (!user) {
+  const checkUserRole = async (userId?: string) => {
+    const targetUserId = userId || user?.id;
+    
+    if (!targetUserId) {
       setUserRole(null);
       setRoleLoading(false);
       return;
@@ -35,7 +37,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const { data } = await supabase
       .from('user_roles')
       .select('role')
-      .eq('user_id', user.id)
+      .eq('user_id', targetUserId)
       .single();
 
     if (data) {
@@ -51,13 +53,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setSession(session);
         setUser(session?.user ?? null);
         
-        // Check role when user changes
+        // Check role when user changes - pass userId directly to avoid closure issues
         if (session?.user) {
-          setTimeout(() => {
-            checkUserRole();
-          }, 0);
+          checkUserRole(session.user.id);
         } else {
           setUserRole(null);
+          setRoleLoading(false);
         }
       }
     );
@@ -69,9 +70,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(false);
       
       if (session?.user) {
-        setTimeout(() => {
-          checkUserRole();
-        }, 0);
+        checkUserRole(session.user.id);
       }
     });
 
