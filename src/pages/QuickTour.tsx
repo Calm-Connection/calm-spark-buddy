@@ -1,0 +1,114 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { BookOpen, Sparkles, Shield, Heart } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
+
+const slides = [
+  {
+    icon: BookOpen,
+    title: 'Your Journal',
+    description: 'Write about your feelings, what happened today, or anything on your mind. It\'s your safe space.',
+    color: 'bg-primary/20',
+    iconColor: 'text-primary',
+  },
+  {
+    icon: Heart,
+    title: 'Calming Tools',
+    description: 'Find breathing exercises, gentle meditations, and calming activities whenever you need them.',
+    color: 'bg-secondary/20',
+    iconColor: 'text-secondary',
+  },
+  {
+    icon: Sparkles,
+    title: 'Meet Wendy',
+    description: 'Wendy is your AI friend who listens without judgment and offers gentle support and insights.',
+    color: 'bg-accent/30',
+    iconColor: 'text-accent-foreground',
+  },
+  {
+    icon: Shield,
+    title: 'Always Here for You',
+    description: 'Remember, you can use the "I Need Help" button anytime to find support from people who care.',
+    color: 'bg-warm/30',
+    iconColor: 'text-foreground',
+  },
+];
+
+export default function QuickTour() {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const navigate = useNavigate();
+  const { userRole } = useAuth();
+
+  const handleNext = () => {
+    if (currentSlide < slides.length - 1) {
+      setCurrentSlide(currentSlide + 1);
+    } else {
+      // Tour complete - navigate based on role
+      if (userRole === 'child') {
+        navigate('/child/first-mood-checkin');
+      } else {
+        navigate('/carer/home');
+      }
+    }
+  };
+
+  const handleSkip = () => {
+    if (userRole === 'child') {
+      navigate('/child/first-mood-checkin');
+    } else {
+      navigate('/carer/home');
+    }
+  };
+
+  const slide = slides[currentSlide];
+  const Icon = slide.icon;
+
+  return (
+    <div className="min-h-screen flex items-center justify-center p-6 bg-background">
+      <Card className="max-w-md w-full p-8 space-y-6">
+        <div className="space-y-4">
+          <div className={`h-24 w-24 mx-auto rounded-full ${slide.color} flex items-center justify-center`}>
+            <Icon className={`h-12 w-12 ${slide.iconColor}`} />
+          </div>
+
+          <div className="text-center space-y-2">
+            <h1 className="text-3xl font-bold">{slide.title}</h1>
+            <p className="text-muted-foreground text-lg">
+              {slide.description}
+            </p>
+          </div>
+        </div>
+
+        {/* Progress indicators */}
+        <div className="flex gap-2 justify-center">
+          {slides.map((_, idx) => (
+            <div
+              key={idx}
+              className={`h-2 rounded-full transition-all ${
+                idx === currentSlide ? 'w-8 bg-primary' : 'w-2 bg-muted'
+              }`}
+            />
+          ))}
+        </div>
+
+        <div className="flex gap-3">
+          <Button 
+            onClick={handleSkip}
+            variant="outline"
+            className="flex-1"
+          >
+            Skip
+          </Button>
+          <Button 
+            onClick={handleNext}
+            className="flex-1 bg-primary hover:bg-primary/90"
+          >
+            {currentSlide < slides.length - 1 ? 'Next' : 'Get Started'}
+          </Button>
+        </div>
+      </Card>
+    </div>
+  );
+}
