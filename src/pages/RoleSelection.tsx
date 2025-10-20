@@ -1,65 +1,61 @@
 import { useNavigate } from 'react-router-dom';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Baby, Heart } from 'lucide-react';
+import { PageLayout } from '@/components/PageLayout';
 
 export default function RoleSelection() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-background">
-      <div className="max-w-md w-full space-y-6">
-        <div className="text-center space-y-2">
-          <h1 className="text-3xl font-bold">Who's logging in?</h1>
-          <p className="text-muted-foreground">Choose your role to continue</p>
+    <PageLayout>
+      <div className="space-y-12">
+        <div className="text-center space-y-4">
+          <h1 className="text-foreground">WHO'S LOGGING IN?</h1>
+          <p className="text-xl text-foreground/80">Choose your role to get started</p>
         </div>
 
-        <div className="space-y-4">
+        <div className="grid md:grid-cols-2 gap-6">
           <Card 
-            className="p-6 cursor-pointer hover:border-primary transition-all hover:shadow-lg"
+            className="cursor-pointer hover:shadow-2xl transition-all hover:scale-105 border-0"
             onClick={() => navigate('/child/signup')}
           >
-            <div className="flex items-center gap-4">
-              <div className="h-16 w-16 rounded-full bg-secondary/20 flex items-center justify-center">
-                <Baby className="h-8 w-8 text-secondary" />
+            <CardContent className="text-center space-y-6">
+              <div className="h-32 w-32 mx-auto rounded-full bg-primary flex items-center justify-center">
+                <span className="text-6xl">👧</span>
               </div>
-              <div className="flex-1">
-                <h3 className="font-bold text-lg">I'm a Child</h3>
-                <p className="text-sm text-muted-foreground">
-                  Share your feelings in a safe space
-                </p>
-              </div>
-            </div>
+              <h2 className="text-foreground">CHILD</h2>
+              <p className="text-foreground/70 text-base">
+                Express your feelings, journal, and chat with Wendy
+              </p>
+            </CardContent>
           </Card>
 
           <Card 
-            className="p-6 cursor-pointer hover:border-primary transition-all hover:shadow-lg"
+            className="cursor-pointer hover:shadow-2xl transition-all hover:scale-105 border-0"
             onClick={() => navigate('/carer/signup')}
           >
-            <div className="flex items-center gap-4">
-              <div className="h-16 w-16 rounded-full bg-accent/30 flex items-center justify-center">
-                <Heart className="h-8 w-8 text-accent-foreground" />
+            <CardContent className="text-center space-y-6">
+              <div className="h-32 w-32 mx-auto rounded-full bg-secondary flex items-center justify-center">
+                <span className="text-6xl">👨‍👩‍👧</span>
               </div>
-              <div className="flex-1">
-                <h3 className="font-bold text-lg">I'm a Carer</h3>
-                <p className="text-sm text-muted-foreground">
-                  Support and connect with your child
-                </p>
-              </div>
-            </div>
+              <h2 className="text-foreground">CARER</h2>
+              <p className="text-foreground/70 text-base">
+                Support, understand, and connect with your child
+              </p>
+            </CardContent>
           </Card>
         </div>
 
-        <div className="text-center pt-4">
-          <Button 
-            variant="ghost" 
-            onClick={() => navigate('/login')}
-            className="text-primary"
-          >
+        <div className="text-center space-y-4">
+          <Button variant="outline" onClick={() => navigate('/login')} size="lg">
             Already have an account? Log in
           </Button>
         </div>
+
+        <p className="text-center text-sm text-foreground/60">
+          A safe space to grow emotionally together 💜
+        </p>
       </div>
-    </div>
+    </PageLayout>
   );
 }

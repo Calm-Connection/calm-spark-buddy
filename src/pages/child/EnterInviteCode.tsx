@@ -2,11 +2,12 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Loader2, CheckCircle } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
+import { PageLayout } from '@/components/PageLayout';
 
 export default function EnterInviteCode() {
   const [code, setCode] = useState('');
@@ -65,58 +66,63 @@ export default function EnterInviteCode() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-background">
-      <Card className="max-w-md w-full p-8 space-y-6">
-        <div className="text-center space-y-2">
-          <div className="h-16 w-16 mx-auto rounded-full bg-secondary/20 flex items-center justify-center mb-4">
-            <CheckCircle className="h-8 w-8 text-secondary" />
-          </div>
-          <h1 className="text-3xl font-bold">Enter Invite Code</h1>
-          <p className="text-muted-foreground">
-            Your parent or carer should have shared a 6-character code with you
-          </p>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Input
-              type="text"
-              value={code}
-              onChange={(e) => setCode(e.target.value.toUpperCase())}
-              placeholder="ABC123"
-              maxLength={6}
-              className="text-center text-2xl font-bold tracking-wider"
-              required
-            />
-            <p className="text-xs text-center text-muted-foreground">
-              Enter the 6-character code
+    <PageLayout>
+      <Card className="border-0">
+        <CardContent className="space-y-8">
+          <div className="text-center space-y-4">
+            <div className="h-24 w-24 mx-auto rounded-full bg-secondary flex items-center justify-center">
+              <span className="text-5xl">🔐</span>
+            </div>
+            <h1 className="text-foreground">ENTER INVITE CODE</h1>
+            <p className="text-lg text-foreground/70">
+              Your parent or carer should have shared a 6-character code with you
             </p>
           </div>
 
-          <Button 
-            type="submit" 
-            className="w-full bg-secondary hover:bg-secondary/90" 
-            disabled={loading || code.length !== 6}
-          >
-            {loading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Checking code...
-              </>
-            ) : (
-              'Connect'
-            )}
-          </Button>
-        </form>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-3">
+              <Input
+                type="text"
+                value={code}
+                onChange={(e) => setCode(e.target.value.toUpperCase())}
+                placeholder="ABC123"
+                maxLength={6}
+                className="text-center text-3xl font-black tracking-widest"
+                required
+              />
+              <p className="text-sm text-center text-foreground/60">
+                Enter the 6-character code
+              </p>
+            </div>
 
-        <Button 
-          variant="ghost" 
-          onClick={() => navigate('/child/pick-theme')}
-          className="w-full"
-        >
-          Skip for now
-        </Button>
+            <Button 
+              type="submit" 
+              variant="gradient"
+              size="lg"
+              className="w-full" 
+              disabled={loading || code.length !== 6}
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                  Checking code...
+                </>
+              ) : (
+                'CONNECT'
+              )}
+            </Button>
+          </form>
+
+          <Button 
+            variant="peachy" 
+            onClick={() => navigate('/child/pick-theme')}
+            size="lg"
+            className="w-full"
+          >
+            Skip for now
+          </Button>
+        </CardContent>
       </Card>
-    </div>
+    </PageLayout>
   );
 }

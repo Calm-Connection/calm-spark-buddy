@@ -1,43 +1,46 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Heart } from 'lucide-react';
+import { Logo } from '@/components/Logo';
+import { PageLayout } from '@/components/PageLayout';
+import { Card, CardContent } from '@/components/ui/card';
 
 export default function Welcome() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-gradient-to-b from-primary/20 to-background">
-      <div className="max-w-md w-full space-y-8 text-center">
-        <div className="space-y-4">
-          <div className="flex justify-center">
-            <div className="h-24 w-24 rounded-full bg-primary/20 flex items-center justify-center">
-              <Heart className="h-12 w-12 text-primary" />
+    <PageLayout showLogo={false}>
+      <div className="text-center space-y-12">
+        <div className="flex justify-center">
+          <Logo size="lg" />
+        </div>
+        
+        <Card>
+          <CardContent className="space-y-8">
+            <div className="space-y-4">
+              <h1 className="text-foreground">
+                WELCOME!
+              </h1>
+              
+              <p className="text-xl text-foreground/80">
+                A gentle, nurturing space where children and carers grow emotionally together
+              </p>
             </div>
-          </div>
-          
-          <h1 className="text-4xl font-bold text-foreground">
-            Calm Connection
-          </h1>
-          
-          <p className="text-lg text-muted-foreground">
-            A gentle, nurturing space where children and carers grow emotionally together
-          </p>
-        </div>
 
-        <div className="pt-8">
-          <Button 
-            onClick={() => navigate('/role-selection')}
-            size="lg"
-            className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-6 text-lg rounded-xl"
-          >
-            Get Started
-          </Button>
-        </div>
+            <Button 
+              onClick={() => navigate('/role-selection')}
+              variant="gradient"
+              size="lg"
+              className="w-full"
+            >
+              GET STARTED
+            </Button>
 
-        <p className="text-sm text-muted-foreground pt-4">
-          A safe space to share feelings, explore emotions, and connect
-        </p>
+            <p className="text-base text-foreground/60">
+              A safe space to share feelings, explore emotions, and connect 💜
+            </p>
+          </CardContent>
+        </Card>
       </div>
-    </div>
+    </PageLayout>
   );
 }

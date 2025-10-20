@@ -8,27 +8,27 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Calm Connection Brand Colors - All HSL */
-    --background: 249 246 252; /* Soft lilac white background */
-    --foreground: 0 0% 29%; /* Charcoal gray for text */
+    /* Calm Connection Brand Colors - Playful & Whimsical */
+    --background: 249 50% 96%; /* Soft lilac white background */
+    --foreground: 0 0% 0%; /* Pure black for text */
 
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 29%;
+    --card: 0 0% 100%; /* Pure white cards */
+    --card-foreground: 0 0% 0%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 29%;
+    --popover-foreground: 0 0% 0%;
 
     --primary: 248 63% 86%; /* Lilac #C6C9F2 */
-    --primary-foreground: 0 0% 100%;
+    --primary-foreground: 0 0% 0%;
 
     --secondary: 163 40% 70%; /* Soft Mint #90D1BC */
-    --secondary-foreground: 0 0% 29%;
+    --secondary-foreground: 0 0% 0%;
 
     --muted: 249 27% 74%; /* Lavender Gray #BEB8D1 */
-    --muted-foreground: 0 0% 45%;
+    --muted-foreground: 0 0% 40%;
 
     --accent: 31 100% 88%; /* Peachy Cream #FEE0C2 */
-    --accent-foreground: 0 0% 29%;
+    --accent-foreground: 0 0% 0%;
 
     --warm: 45 100% 90%; /* Warm Yellow #FCF0CC */
     --dusty-rose: 342 79% 89%; /* #F7CDDE */
@@ -36,11 +36,18 @@ All colors MUST be HSL.
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 249 27% 85%;
-    --input: 249 27% 85%;
+    --border: 0 0% 0%; /* Black borders */
+    --input: 0 0% 0%;
     --ring: 248 63% 86%;
 
-    --radius: 0.75rem; /* Rounded corners */
+    --radius: 2rem; /* Much more rounded corners */
+    
+    /* Gradient for buttons */
+    --gradient-button: linear-gradient(135deg, hsl(342 79% 89%), hsl(31 100% 88%), hsl(45 100% 90%));
+    
+    /* Organic blob colors */
+    --blob-peachy: 31 100% 88%;
+    --blob-cream: 45 100% 95%;
 
     --sidebar-background: 249 246 252%;
     --sidebar-foreground: 0 0% 29%;
@@ -53,37 +60,37 @@ All colors MUST be HSL.
   }
 
   .dark {
-    /* Calm night theme - softer dark mode */
-    --background: 249 25% 12%;
-    --foreground: 0 0% 95%;
+    /* Keep light mode design for consistency */
+    --background: 249 50% 96%;
+    --foreground: 0 0% 0%;
 
-    --card: 249 20% 15%;
-    --card-foreground: 0 0% 95%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 0%;
 
-    --popover: 249 20% 15%;
-    --popover-foreground: 0 0% 95%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 0%;
 
-    --primary: 248 63% 76%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 248 63% 86%;
+    --primary-foreground: 0 0% 0%;
 
-    --secondary: 163 30% 50%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 163 40% 70%;
+    --secondary-foreground: 0 0% 0%;
 
-    --muted: 249 15% 25%;
-    --muted-foreground: 0 0% 70%;
+    --muted: 249 27% 74%;
+    --muted-foreground: 0 0% 40%;
 
-    --accent: 31 80% 70%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 31 100% 88%;
+    --accent-foreground: 0 0% 0%;
 
-    --warm: 45 90% 75%;
-    --dusty-rose: 342 60% 75%;
+    --warm: 45 100% 90%;
+    --dusty-rose: 342 79% 89%;
 
-    --destructive: 0 62.8% 50.6%;
+    --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 249 15% 25%;
-    --input: 249 15% 25%;
-    --ring: 248 63% 76%;
+    --border: 0 0% 0%;
+    --input: 0 0% 0%;
+    --ring: 248 63% 86%;
 
     --sidebar-background: 249 20% 15%;
     --sidebar-foreground: 0 0% 95%;
@@ -108,6 +115,14 @@ All colors MUST be HSL.
 
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Balsamiq Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    @apply font-bold;
+    @apply font-black;
+  }
+  
+  h1 {
+    @apply text-5xl md:text-6xl;
+  }
+  
+  h2 {
+    @apply text-4xl md:text-5xl;
   }
 }
