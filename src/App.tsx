@@ -4,7 +4,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
-import Index from "./pages/Index";
 import Welcome from "./pages/Welcome";
 import RoleSelection from "./pages/RoleSelection";
 import Login from "./pages/Login";
@@ -66,10 +65,9 @@ function AppRoutes() {
   return (
     <Routes>
       {/* Root route - smart redirect based on auth state */}
-      <Route path="/" element={user && userRole ? <Navigate to={homePath} replace /> : <Index />} />
+      <Route path="/" element={user && userRole ? <Navigate to={homePath} replace /> : <Welcome />} />
       
       {/* Public routes - redirect to home if already authenticated */}
-      <Route path="/welcome" element={user && userRole ? <Navigate to={homePath} replace /> : <Welcome />} />
       <Route path="/role-selection" element={user && userRole ? <Navigate to={homePath} replace /> : <RoleSelection />} />
       <Route path="/login" element={user && userRole ? <Navigate to={homePath} replace /> : <Login />} />
       <Route path="/child/signup" element={user && userRole ? <Navigate to={homePath} replace /> : <ChildSignup />} />
