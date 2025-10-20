@@ -13,11 +13,12 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Sparkles } from 'lucide-react';
 
-const moods = ['happy', 'sad', 'angry', 'worried', 'calm', 'excited', 'scared'];
+const moods = ['happy', 'sad', 'angry', 'worried', 'calm', 'excited', 'scared'] as const;
+type MoodType = typeof moods[number];
 
 export default function JournalEntry() {
   const [entryText, setEntryText] = useState('');
-  const [mood, setMood] = useState<string>('');
+  const [mood, setMood] = useState<MoodType | ''>('');
   const [shareWithCarer, setShareWithCarer] = useState(false);
   const [loading, setLoading] = useState(false);
   const [childProfile, setChildProfile] = useState<any>(null);
@@ -80,12 +81,12 @@ export default function JournalEntry() {
       // Save journal entry
       const { data: entry, error: entryError } = await supabase
         .from('journal_entries')
-        .insert({
+        .insert([{
           child_id: childProfile.id,
           entry_text: entryText,
-          mood_tag: mood || null,
+          mood_tag: mood || undefined,
           share_with_carer: shareWithCarer,
-        })
+        }])
         .select()
         .single();
 
@@ -147,7 +148,7 @@ export default function JournalEntry() {
         <Card className="p-6 space-y-6">
           <div className="space-y-2">
             <Label>How are you feeling today?</Label>
-            <Select value={mood} onValueChange={setMood}>
+            <Select value={mood} onValueChange={(value) => setMood(value as MoodType)}>
               <SelectTrigger>
                 <SelectValue placeholder="Pick a mood (optional)" />
               </SelectTrigger>
