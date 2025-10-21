@@ -14,8 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        body: ['Balsamiq Sans', 'sans-serif'],
-        heading: ['Balsamiq Sans', 'sans-serif'],
+        body: ['Bobby Jones Soft', 'Balsamiq Sans', 'sans-serif'],
+        heading: ['Bobby Jones Soft', 'Balsamiq Sans', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
