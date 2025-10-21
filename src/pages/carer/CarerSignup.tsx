@@ -10,6 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 
 export default function CarerSignup() {
+  const [nickname, setNickname] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [acceptedPrivacy, setAcceptedPrivacy] = useState(false);
@@ -20,6 +21,15 @@ export default function CarerSignup() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (nickname.length < 3 || nickname.length > 20) {
+      toast({
+        title: 'Invalid nickname',
+        description: 'Your nickname should be between 3 and 20 characters',
+        variant: 'destructive',
+      });
+      return;
+    }
     
     if (!acceptedPrivacy) {
       toast({
@@ -55,6 +65,21 @@ export default function CarerSignup() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="nickname">Nickname</Label>
+            <Input
+              id="nickname"
+              type="text"
+              value={nickname}
+              onChange={(e) => setNickname(e.target.value)}
+              placeholder="How you'd like to be called"
+              required
+              minLength={3}
+              maxLength={20}
+            />
+            <p className="text-xs text-muted-foreground">Between 3 and 20 characters</p>
+          </div>
+
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input
