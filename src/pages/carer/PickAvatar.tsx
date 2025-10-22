@@ -19,7 +19,10 @@ export default function PickAvatar() {
 
   const handleContinue = () => {
     if (selectedAvatar) {
-      localStorage.setItem('carerAvatar', selectedAvatar);
+      const avatar = avatars.find(a => a.id === selectedAvatar);
+      if (avatar) {
+        localStorage.setItem('carerAvatar', JSON.stringify({ emoji: avatar.emoji }));
+      }
       navigate('/quick-tour');
     }
   };

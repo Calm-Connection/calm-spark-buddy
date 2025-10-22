@@ -1,39 +1,80 @@
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { useAuth } from '@/hooks/useAuth';
-import { Settings as SettingsIcon, User, Bell, Lock, HelpCircle } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+import { Settings as SettingsIcon, User, Save } from 'lucide-react';
+import { AvatarDisplay } from '@/components/AvatarDisplay';
 
 export default function Settings() {
   const navigate = useNavigate();
-  const { signOut, userRole } = useAuth();
+  const { user, signOut, userRole } = useAuth();
+  const { toast } = useToast();
+  const [loading, setLoading] = useState(false);
+  const [nickname, setNickname] = useState('');
+  const [avatarData, setAvatarData] = useState<any>(null);
+  const [editingNickname, setEditingNickname] = useState(false);
+  const [newNickname, setNewNickname] = useState('');
 
-  const sections = [
-    {
-      icon: User,
-      title: 'Profile',
-      description: 'Edit your profile and avatar',
-      onClick: () => {},
-    },
-    {
-      icon: Bell,
-      title: 'Notifications',
-      description: 'Manage notification preferences',
-      onClick: () => {},
-    },
-    {
-      icon: Lock,
-      title: 'Privacy',
-      description: 'Control your privacy settings',
-      onClick: () => {},
-    },
-    {
-      icon: HelpCircle,
-      title: 'Help & Support',
-      description: 'Get help and view resources',
-      onClick: () => {},
-    },
-  ];
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (!user) return;
+      
+      const table = userRole === 'child' ? 'children_profiles' : 'carer_profiles';
+      const { data } = await supabase
+        .from(table)
+        .select('nickname, avatar_json')
+        .eq('user_id', user.id)
+        .single();
+      
+      if (data) {
+        setNickname(data.nickname || '');
+        setNewNickname(data.nickname || '');
+        setAvatarData(data.avatar_json);
+      }
+    };
+
+    fetchProfile();
+  }, [user, userRole]);
+
+  const handleSaveNickname = async () => {
+    if (!user || newNickname.length < 3) {
+      toast({
+        title: 'Invalid nickname',
+        description: 'Nickname must be at least 3 characters',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setLoading(true);
+    const table = userRole === 'child' ? 'children_profiles' : 'carer_profiles';
+    
+    const { error } = await supabase
+      .from(table)
+      .update({ nickname: newNickname })
+      .eq('user_id', user.id);
+
+    if (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to update nickname',
+        variant: 'destructive',
+      });
+    } else {
+      setNickname(newNickname);
+      setEditingNickname(false);
+      toast({
+        title: 'Success',
+        description: 'Nickname updated',
+      });
+    }
+    setLoading(false);
+  };
 
   return (
     <div className="min-h-screen bg-background p-6">
@@ -48,33 +89,63 @@ export default function Settings() {
           </h1>
         </div>
 
+        {/* Profile Section */}
         <Card className="p-6">
-          <div className="space-y-1">
-            <p className="text-sm text-muted-foreground">Account Type</p>
-            <p className="font-bold capitalize">{userRole}</p>
+          <div className="space-y-4">
+            <div className="flex flex-col sm:flex-row items-center gap-4">
+              <AvatarDisplay avatarData={avatarData} size="lg" />
+              <div className="flex-1 text-center sm:text-left">
+                <p className="text-sm text-muted-foreground">Account Type</p>
+                <p className="font-bold capitalize">{userRole}</p>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="nickname">Nickname</Label>
+              {editingNickname ? (
+                <div className="flex gap-2">
+                  <Input
+                    id="nickname"
+                    value={newNickname}
+                    onChange={(e) => setNewNickname(e.target.value)}
+                    placeholder="Enter nickname"
+                    minLength={3}
+                    maxLength={20}
+                  />
+                  <Button 
+                    onClick={handleSaveNickname}
+                    disabled={loading}
+                    size="sm"
+                  >
+                    <Save className="h-4 w-4" />
+                  </Button>
+                  <Button 
+                    onClick={() => {
+                      setEditingNickname(false);
+                      setNewNickname(nickname);
+                    }}
+                    variant="outline"
+                    size="sm"
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              ) : (
+                <div className="flex items-center justify-between">
+                  <p className="font-medium">{nickname}</p>
+                  <Button 
+                    onClick={() => setEditingNickname(true)}
+                    variant="outline"
+                    size="sm"
+                  >
+                    <User className="h-4 w-4 mr-2" />
+                    Edit
+                  </Button>
+                </div>
+              )}
+            </div>
           </div>
         </Card>
-
-        <div className="space-y-3">
-          {sections.map((section) => {
-            const Icon = section.icon;
-            return (
-              <Card
-                key={section.title}
-                className="p-6 cursor-pointer hover:bg-accent/5 transition-colors"
-                onClick={section.onClick}
-              >
-                <div className="flex items-center gap-4">
-                  <Icon className="h-6 w-6 text-primary" />
-                  <div className="flex-1">
-                    <h3 className="font-bold">{section.title}</h3>
-                    <p className="text-sm text-muted-foreground">{section.description}</p>
-                  </div>
-                </div>
-              </Card>
-            );
-          })}
-        </div>
 
         <Card className="p-6">
           <div className="space-y-4">

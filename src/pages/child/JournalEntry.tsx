@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
@@ -17,8 +17,11 @@ const moods = ['happy', 'sad', 'angry', 'worried', 'calm', 'excited', 'scared'] 
 type MoodType = typeof moods[number];
 
 export default function JournalEntry() {
+  const location = useLocation();
+  const initialMood = (location.state as any)?.initialMood || '';
+  
   const [entryText, setEntryText] = useState('');
-  const [mood, setMood] = useState<MoodType | ''>('');
+  const [mood, setMood] = useState<MoodType | ''>(initialMood);
   const [shareWithCarer, setShareWithCarer] = useState(false);
   const [loading, setLoading] = useState(false);
   const [childProfile, setChildProfile] = useState<any>(null);

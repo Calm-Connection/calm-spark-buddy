@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { BookOpen, Sparkles, Shield, Heart } from 'lucide-react';
+import { BookOpen, Sparkles, Shield, Heart, BarChart2, FileText, Users } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 
-const slides = [
+const childSlides = [
   {
     icon: BookOpen,
     title: 'Your Journal',
@@ -36,10 +36,43 @@ const slides = [
   },
 ];
 
+const carerSlides = [
+  {
+    icon: BarChart2,
+    title: 'Insights & Trends',
+    description: 'Track emotional patterns and understand what your child is experiencing through AI-powered insights.',
+    color: 'bg-primary/20',
+    iconColor: 'text-primary',
+  },
+  {
+    icon: FileText,
+    title: 'Shared Journal Entries',
+    description: 'Read entries your child chooses to share with you. Respect their privacy and open communication.',
+    color: 'bg-secondary/20',
+    iconColor: 'text-secondary',
+  },
+  {
+    icon: Users,
+    title: 'Joint Activities',
+    description: 'Access tools and activities designed to strengthen your bond and support emotional growth together.',
+    color: 'bg-accent/30',
+    iconColor: 'text-accent-foreground',
+  },
+  {
+    icon: Shield,
+    title: 'Safe & Supportive',
+    description: 'Built with safeguarding at its core. Your child\'s wellbeing is monitored with care and respect.',
+    color: 'bg-warm/30',
+    iconColor: 'text-foreground',
+  },
+];
+
 export default function QuickTour() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const navigate = useNavigate();
   const { userRole } = useAuth();
+
+  const slides = userRole === 'child' ? childSlides : carerSlides;
 
   const handleNext = () => {
     if (currentSlide < slides.length - 1) {

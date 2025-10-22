@@ -19,8 +19,7 @@ export default function FirstMoodCheckin() {
 
   const handleContinue = () => {
     if (selectedMood) {
-      localStorage.setItem('firstMood', selectedMood);
-      navigate('/child/journal-entry');
+      navigate('/child/journal-entry', { state: { initialMood: selectedMood } });
     }
   };
 

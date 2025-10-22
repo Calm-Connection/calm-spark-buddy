@@ -6,6 +6,7 @@ import { BookOpen, Sparkles, Wrench, Settings } from 'lucide-react';
 import { INeedHelpButton } from '@/components/INeedHelpButton';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
+import { AvatarDisplay } from '@/components/AvatarDisplay';
 
 const affirmations = [
   "You are brave and strong 💪",
@@ -19,6 +20,7 @@ export default function ChildHome() {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const [nickname, setNickname] = useState('');
+  const [avatarData, setAvatarData] = useState<any>(null);
   const [affirmation] = useState(() => affirmations[Math.floor(Math.random() * affirmations.length)]);
 
   useEffect(() => {
@@ -27,12 +29,13 @@ export default function ChildHome() {
 
       const { data } = await supabase
         .from('children_profiles')
-        .select('nickname')
+        .select('nickname, avatar_json')
         .eq('user_id', user.id)
         .single();
 
       if (data) {
         setNickname(data.nickname);
+        setAvatarData(data.avatar_json);
       }
     };
 
@@ -50,18 +53,25 @@ export default function ChildHome() {
     <div className="min-h-screen bg-gradient-to-b from-primary/10 to-background p-6">
       <div className="max-w-2xl mx-auto space-y-6 pb-24">
         {/* Header */}
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold">Hello, {nickname || 'Friend'}! 👋</h1>
-            <p className="text-muted-foreground mt-1">{affirmation}</p>
+        <div className="flex flex-col gap-4">
+          <div className="flex justify-end">
+            <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
+              <Settings className="h-5 w-5" />
+            </Button>
           </div>
-          <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
-            <Settings className="h-5 w-5" />
-          </Button>
+          <div className="text-center space-y-4">
+            <AvatarDisplay avatarData={avatarData} size="lg" className="mx-auto" />
+            <div>
+              <h1 className="text-3xl font-bold">Hello, {nickname || 'Friend'}! 👋</h1>
+              <Card className="p-4 bg-gradient-to-br from-accent/30 to-warm/30 border-0 mt-3">
+                <p className="text-lg font-medium">{affirmation}</p>
+              </Card>
+            </div>
+          </div>
         </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4">
           {menuItems.map((item) => {
             const Icon = item.icon;
             return (

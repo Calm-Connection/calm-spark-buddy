@@ -7,6 +7,7 @@ import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import Welcome from "./pages/Welcome";
 import RoleSelection from "./pages/RoleSelection";
 import Login from "./pages/Login";
+import ForgotPassword from "./pages/ForgotPassword";
 import ChildSignup from "./pages/child/ChildSignup";
 import CarerSignup from "./pages/carer/CarerSignup";
 import QuickTour from "./pages/QuickTour";
@@ -17,7 +18,7 @@ import NotFound from "./pages/NotFound";
 import ChildHome from "./pages/child/ChildHome";
 import EnterInviteCode from "./pages/child/EnterInviteCode";
 import PickTheme from "./pages/child/PickTheme";
-import CreateAvatar from "./pages/child/CreateAvatar";
+import CreateAvatarEnhanced from "./pages/child/CreateAvatarEnhanced";
 import SafetyNote from "./pages/child/SafetyNote";
 import FirstMoodCheckin from "./pages/child/FirstMoodCheckin";
 import JournalEntry from "./pages/child/JournalEntry";
@@ -70,6 +71,7 @@ function AppRoutes() {
       {/* Public routes - redirect to home if already authenticated */}
       <Route path="/role-selection" element={user && userRole ? <Navigate to={homePath} replace /> : <RoleSelection />} />
       <Route path="/login" element={user && userRole ? <Navigate to={homePath} replace /> : <Login />} />
+      <Route path="/forgot-password" element={user && userRole ? <Navigate to={homePath} replace /> : <ForgotPassword />} />
       <Route path="/child/signup" element={user && userRole ? <Navigate to={homePath} replace /> : <ChildSignup />} />
       <Route path="/carer/signup" element={user && userRole ? <Navigate to={homePath} replace /> : <CarerSignup />} />
       
@@ -77,7 +79,7 @@ function AppRoutes() {
       <Route path="/child/home" element={<ProtectedRoute role="child"><ChildHome /></ProtectedRoute>} />
       <Route path="/child/enter-invite-code" element={<ProtectedRoute role="child"><EnterInviteCode /></ProtectedRoute>} />
       <Route path="/child/pick-theme" element={<ProtectedRoute role="child"><PickTheme /></ProtectedRoute>} />
-      <Route path="/child/create-avatar" element={<ProtectedRoute role="child"><CreateAvatar /></ProtectedRoute>} />
+      <Route path="/child/create-avatar" element={<ProtectedRoute role="child"><CreateAvatarEnhanced /></ProtectedRoute>} />
       <Route path="/child/safety-note" element={<ProtectedRoute role="child"><SafetyNote /></ProtectedRoute>} />
       <Route path="/child/first-mood-checkin" element={<ProtectedRoute role="child"><FirstMoodCheckin /></ProtectedRoute>} />
       <Route path="/child/journal-entry" element={<ProtectedRoute role="child"><JournalEntry /></ProtectedRoute>} />
