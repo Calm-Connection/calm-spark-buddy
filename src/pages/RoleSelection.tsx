@@ -2,9 +2,16 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { PageLayout } from '@/components/PageLayout';
+import { useEffect } from 'react';
+import { applyTheme } from '@/hooks/useTheme';
 
 export default function RoleSelection() {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Always apply Classic theme for onboarding screens
+    applyTheme('classic');
+  }, []);
 
   return (
     <PageLayout>

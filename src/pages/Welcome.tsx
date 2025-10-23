@@ -3,9 +3,16 @@ import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/Logo';
 import { PageLayout } from '@/components/PageLayout';
 import { Card, CardContent } from '@/components/ui/card';
+import { useEffect } from 'react';
+import { applyTheme } from '@/hooks/useTheme';
 
 export default function Welcome() {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Always apply Classic theme for welcome screen
+    applyTheme('classic');
+  }, []);
 
   return (
     <PageLayout showLogo={false}>

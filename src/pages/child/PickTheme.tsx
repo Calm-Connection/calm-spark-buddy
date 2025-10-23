@@ -9,12 +9,56 @@ import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 
 const themes = [
-  { id: 'calm-ocean', name: 'Calm Ocean', colors: ['bg-blue-200', 'bg-blue-300', 'bg-blue-400'] },
-  { id: 'forest-green', name: 'Forest Green', colors: ['bg-green-200', 'bg-green-300', 'bg-green-400'] },
-  { id: 'sunset-pink', name: 'Sunset Pink', colors: ['bg-pink-200', 'bg-pink-300', 'bg-pink-400'] },
-  { id: 'lavender-dream', name: 'Lavender Dream', colors: ['bg-purple-200', 'bg-purple-300', 'bg-purple-400'] },
-  { id: 'sunshine-yellow', name: 'Sunshine Yellow', colors: ['bg-yellow-200', 'bg-yellow-300', 'bg-yellow-400'] },
-  { id: 'peachy-warm', name: 'Peachy Warm', colors: ['bg-orange-200', 'bg-orange-300', 'bg-orange-400'] },
+  { 
+    id: 'classic', 
+    name: 'Classic', 
+    emoji: '🎨',
+    colors: [
+      { hsl: '248 63% 86%', label: 'Lilac' },
+      { hsl: '163 40% 70%', label: 'Mint' },
+      { hsl: '31 100% 88%', label: 'Peach' }
+    ]
+  },
+  { 
+    id: 'forest', 
+    name: 'Forest', 
+    emoji: '🌲',
+    colors: [
+      { hsl: '140 40% 92%', label: 'Sage' },
+      { hsl: '142 50% 45%', label: 'Green' },
+      { hsl: '88 50% 55%', label: 'Fresh' }
+    ]
+  },
+  { 
+    id: 'sky', 
+    name: 'Sky', 
+    emoji: '✨',
+    colors: [
+      { hsl: '210 50% 95%', label: 'Light' },
+      { hsl: '210 70% 70%', label: 'Blue' },
+      { hsl: '280 50% 75%', label: 'Purple' }
+    ]
+  },
+  { 
+    id: 'ocean', 
+    name: 'Ocean', 
+    emoji: '🌊',
+    colors: [
+      { hsl: '195 50% 94%', label: 'Aqua' },
+      { hsl: '195 70% 60%', label: 'Ocean' },
+      { hsl: '180 50% 65%', label: 'Teal' }
+    ]
+  },
+  { 
+    id: 'cozy', 
+    name: 'Cozy', 
+    emoji: '🏡',
+    colors: [
+      { hsl: '25 50% 92%', label: 'Cream' },
+      { hsl: '25 60% 70%', label: 'Peach' },
+      { hsl: '15 70% 65%', label: 'Terra' }
+    ]
+  },
 ];
 
 export default function PickTheme() {
@@ -77,26 +121,35 @@ export default function PickTheme() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {themes.map((theme) => (
               <Card
                 key={theme.id}
-                className={`cursor-pointer transition-all hover:scale-105 hover:shadow-xl border-0 ${
-                  selectedTheme === theme.id ? 'ring-4 ring-primary' : ''
+                className={`cursor-pointer transition-all hover:scale-105 hover:shadow-xl border-2 ${
+                  selectedTheme === theme.id ? 'ring-4 ring-foreground border-foreground' : 'border-foreground/20'
                 }`}
                 onClick={() => setSelectedTheme(theme.id)}
               >
-                <CardContent className="space-y-3 p-4">
-                  <div className="flex gap-1 h-20 rounded-2xl overflow-hidden">
-                    {theme.colors.map((color, idx) => (
-                      <div key={idx} className={`flex-1 ${color}`} />
-                    ))}
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="font-bold text-base">{theme.name}</span>
+                <CardContent className="space-y-4 p-6">
+                  <div className="flex items-center gap-3 mb-2">
+                    <span className="text-4xl">{theme.emoji}</span>
+                    <span className="font-bold text-xl">{theme.name}</span>
                     {selectedTheme === theme.id && (
-                      <Check className="h-6 w-6 text-primary" />
+                      <Check className="h-6 w-6 text-foreground ml-auto" />
                     )}
+                  </div>
+                  <div className="flex gap-2 h-24 rounded-2xl overflow-hidden border-2 border-foreground/10">
+                    {theme.colors.map((color, idx) => (
+                      <div 
+                        key={idx} 
+                        className="flex-1 flex flex-col items-center justify-center gap-1"
+                        style={{ backgroundColor: `hsl(${color.hsl})` }}
+                      >
+                        <span className="text-xs font-medium text-foreground/70">
+                          {color.label}
+                        </span>
+                      </div>
+                    ))}
                   </div>
                 </CardContent>
               </Card>

@@ -7,6 +7,7 @@ import { INeedHelpButton } from '@/components/INeedHelpButton';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { AvatarDisplay } from '@/components/AvatarDisplay';
+import { applyTheme, type ThemeName } from '@/hooks/useTheme';
 
 const affirmations = [
   "You are brave and strong 💪",
@@ -29,13 +30,18 @@ export default function ChildHome() {
 
       const { data } = await supabase
         .from('children_profiles')
-        .select('nickname, avatar_json')
+        .select('nickname, avatar_json, theme')
         .eq('user_id', user.id)
         .single();
 
       if (data) {
         setNickname(data.nickname);
         setAvatarData(data.avatar_json);
+        
+        // Apply saved theme
+        if (data.theme) {
+          applyTheme(data.theme as ThemeName);
+        }
       }
     };
 

@@ -8,8 +8,8 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Calm Connection Brand Colors - Playful & Whimsical */
-    --background: 249 50% 96%; /* Soft lilac white background */
+    /* Calm Connection Brand Colors - Classic Theme Default (#C6C9F2) */
+    --background: 248 63% 86%; /* #C6C9F2 - Brand color / Classic theme */
     --foreground: 0 0% 0%; /* Pure black for text */
 
     --card: 0 0% 100%; /* Pure white cards */
@@ -18,7 +18,7 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 0%;
 
-    --primary: 248 63% 86%; /* Lilac #C6C9F2 */
+    --primary: 248 63% 76%; /* Deeper lilac for contrast */
     --primary-foreground: 0 0% 0%;
 
     --secondary: 163 40% 70%; /* Soft Mint #90D1BC */
@@ -61,7 +61,7 @@ All colors MUST be HSL.
 
   .dark {
     /* Keep light mode design for consistency */
-    --background: 249 50% 96%;
+    --background: 248 63% 86%; /* #C6C9F2 - Brand color */
     --foreground: 0 0% 0%;
 
     --card: 0 0% 100%;
@@ -70,7 +70,7 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 0%;
 
-    --primary: 248 63% 86%;
+    --primary: 248 63% 76%;
     --primary-foreground: 0 0% 0%;
 
     --secondary: 163 40% 70%;

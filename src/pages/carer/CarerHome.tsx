@@ -6,6 +6,7 @@ import { Brain, BookOpen, Heart, QrCode, Settings } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { AvatarDisplay } from '@/components/AvatarDisplay';
+import { applyTheme } from '@/hooks/useTheme';
 
 export default function CarerHome() {
   const navigate = useNavigate();
@@ -27,6 +28,9 @@ export default function CarerHome() {
         if (data.nickname) setNickname(data.nickname);
         if (data.avatar_json) setAvatarData(data.avatar_json);
       }
+      
+      // Carers always use Classic theme
+      applyTheme('classic');
     };
 
     fetchProfile();
