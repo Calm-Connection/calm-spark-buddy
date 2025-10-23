@@ -8,8 +8,8 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Calm Connection Brand Colors - Classic Theme Default (#C6C9F2) */
-    --background: 248 63% 86%; /* #C6C9F2 - Brand color / Classic theme */
+    /* Calm Connection Brand Colors - Classic Theme Default (Light Purple) */
+    --background: 248 60% 94%; /* Lighter purple - Brand color / Classic theme */
     --foreground: 0 0% 0%; /* Pure black for text */
 
     --card: 0 0% 100%; /* Pure white cards */
@@ -61,7 +61,7 @@ All colors MUST be HSL.
 
   .dark {
     /* Keep light mode design for consistency */
-    --background: 248 63% 86%; /* #C6C9F2 - Brand color */
+    --background: 248 60% 94%; /* Lighter purple - Brand color */
     --foreground: 0 0% 0%;
 
     --card: 0 0% 100%;

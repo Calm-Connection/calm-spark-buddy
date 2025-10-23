@@ -35,7 +35,7 @@ const themeColors: Record<ThemeName, ThemeColors> = {
     accent: '15 70% 65%', // Terracotta
   },
   classic: {
-    background: '248 63% 86%', // #C6C9F2 - Calm Connection brand
+    background: '248 60% 94%', // Lighter purple - Calm Connection brand
     primary: '248 63% 76%', // Deeper lilac
     secondary: '163 40% 70%', // Soft mint
     accent: '31 100% 88%', // Peachy cream
