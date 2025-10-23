@@ -4,6 +4,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { PageLayout } from '@/components/PageLayout';
 import { Check } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
+import { useToast } from '@/hooks/use-toast';
 
 const skinTones = ['#FFE5D9', '#F7D5BE', '#E3B392', '#C68E65', '#8D5524', '#4A2F1E'];
 
@@ -37,17 +40,41 @@ export default function CreateAvatarEnhanced() {
   const [hairStyle, setHairStyle] = useState('short');
   const [accessory, setAccessory] = useState('none');
   const [expression, setExpression] = useState('happy');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { toast } = useToast();
 
-  const handleSave = () => {
-    const avatar = { 
-      skinTone, 
-      hairStyle, 
-      accessory, 
-      expression 
-    };
-    localStorage.setItem('avatarData', JSON.stringify(avatar));
-    navigate('/child/safety-note');
+  const handleSave = async () => {
+    if (!user) return;
+    
+    setLoading(true);
+    try {
+      const avatar = { 
+        skinTone, 
+        hairStyle, 
+        accessory, 
+        expression 
+      };
+      
+      localStorage.setItem('avatarData', JSON.stringify(avatar));
+      
+      await supabase
+        .from('children_profiles')
+        .update({ avatar_json: avatar })
+        .eq('user_id', user.id);
+      
+      navigate('/child/safety-note');
+    } catch (error) {
+      console.error('Error saving avatar:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to save avatar. Please try again.',
+        variant: 'destructive'
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const selectedHair = hairStyles.find(h => h.id === hairStyle);
@@ -195,8 +222,9 @@ export default function CreateAvatarEnhanced() {
             variant="gradient"
             size="lg"
             className="w-full"
+            disabled={loading}
           >
-            SAVE AVATAR
+            {loading ? 'SAVING...' : 'SAVE AVATAR'}
           </Button>
         </CardContent>
       </Card>

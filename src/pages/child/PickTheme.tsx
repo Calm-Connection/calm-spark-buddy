@@ -4,6 +4,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Check } from 'lucide-react';
 import { PageLayout } from '@/components/PageLayout';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
+import { useToast } from '@/hooks/use-toast';
 
 const themes = [
   { id: 'calm-ocean', name: 'Calm Ocean', colors: ['bg-blue-200', 'bg-blue-300', 'bg-blue-400'] },
@@ -16,12 +19,50 @@ const themes = [
 
 export default function PickTheme() {
   const [selectedTheme, setSelectedTheme] = useState<string>('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { toast } = useToast();
 
-  const handleContinue = () => {
-    if (selectedTheme) {
+  const handleContinue = async () => {
+    if (!selectedTheme || !user) return;
+    
+    setLoading(true);
+    try {
       localStorage.setItem('selectedTheme', selectedTheme);
+      
+      const { data: existingProfile } = await supabase
+        .from('children_profiles')
+        .select('id')
+        .eq('user_id', user.id)
+        .maybeSingle();
+      
+      if (existingProfile) {
+        await supabase
+          .from('children_profiles')
+          .update({ theme: selectedTheme })
+          .eq('user_id', user.id);
+      } else {
+        const nickname = localStorage.getItem('pendingNickname') || 'Friend';
+        await supabase
+          .from('children_profiles')
+          .insert({
+            user_id: user.id,
+            nickname,
+            theme: selectedTheme
+          });
+      }
+      
       navigate('/child/create-avatar');
+    } catch (error) {
+      console.error('Error saving theme:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to save theme. Please try again.',
+        variant: 'destructive'
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -67,9 +108,9 @@ export default function PickTheme() {
             variant="gradient"
             size="lg"
             className="w-full" 
-            disabled={!selectedTheme}
+            disabled={!selectedTheme || loading}
           >
-            NEXT
+            {loading ? 'SAVING...' : 'NEXT'}
           </Button>
         </CardContent>
       </Card>

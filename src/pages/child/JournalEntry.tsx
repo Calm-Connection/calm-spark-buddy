@@ -34,46 +34,27 @@ export default function JournalEntry() {
     const loadProfile = async () => {
       if (!user) return;
 
-      // Get or create child profile
-      let { data: profile } = await supabase
+      const { data: profile, error } = await supabase
         .from('children_profiles')
         .select('*')
         .eq('user_id', user.id)
         .single();
 
-      if (!profile) {
-        // Create profile from localStorage data
-        const nickname = localStorage.getItem('pendingNickname') || 'Friend';
-        const theme = localStorage.getItem('selectedTheme');
-        const avatarData = localStorage.getItem('avatarData');
-        const linkedCarerId = localStorage.getItem('linkedCarerId');
-
-        const { data: newProfile } = await supabase
-          .from('children_profiles')
-          .insert({
-            user_id: user.id,
-            nickname,
-            theme,
-            avatar_json: avatarData ? JSON.parse(avatarData) : null,
-            linked_carer_id: linkedCarerId || null,
-          })
-          .select()
-          .single();
-
-        profile = newProfile;
-
-        // Clean up localStorage
-        localStorage.removeItem('pendingNickname');
-        localStorage.removeItem('selectedTheme');
-        localStorage.removeItem('avatarData');
-        localStorage.removeItem('linkedCarerId');
+      if (error) {
+        console.error('Error loading profile:', error);
+        toast({
+          title: 'Error',
+          description: 'Failed to load profile. Please try again.',
+          variant: 'destructive'
+        });
+        return;
       }
 
       setChildProfile(profile);
     };
 
     loadProfile();
-  }, [user]);
+  }, [user, toast]);
 
   const handleSave = async () => {
     if (!entryText.trim() || !childProfile) return;
