@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 export type ThemeName = 'forest' | 'sky' | 'ocean' | 'cozy' | 'classic';
 
@@ -43,6 +43,8 @@ const themeColors: Record<ThemeName, ThemeColors> = {
 };
 
 export function useTheme(themeName?: ThemeName) {
+  const [currentTheme, setCurrentTheme] = useState<ThemeName | null>(null);
+
   useEffect(() => {
     if (!themeName) return;
 
@@ -59,7 +61,10 @@ export function useTheme(themeName?: ThemeName) {
     
     // Store in localStorage for persistence
     localStorage.setItem('appliedTheme', themeName);
+    setCurrentTheme(themeName);
   }, [themeName]);
+
+  return currentTheme;
 }
 
 export function loadSavedTheme(): ThemeName | null {

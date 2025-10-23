@@ -125,4 +125,256 @@ All colors MUST be HSL.
   h2 {
     @apply text-4xl md:text-5xl;
   }
+
+  /* Floating Animation Keyframes */
+  @keyframes float-slow {
+    0%, 100% {
+      transform: translateY(0) translateX(0) rotate(0deg);
+    }
+    25% {
+      transform: translateY(-20px) translateX(10px) rotate(90deg);
+    }
+    50% {
+      transform: translateY(-40px) translateX(-10px) rotate(180deg);
+    }
+    75% {
+      transform: translateY(-20px) translateX(-15px) rotate(270deg);
+    }
+  }
+
+  @keyframes spin-slow {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes firefly {
+    0%, 100% {
+      transform: translate(0, 0);
+      opacity: 0.3;
+    }
+    25% {
+      transform: translate(20px, -30px);
+      opacity: 0.8;
+    }
+    50% {
+      transform: translate(-15px, -60px);
+      opacity: 0.4;
+    }
+    75% {
+      transform: translate(30px, -40px);
+      opacity: 0.7;
+    }
+  }
+
+  @keyframes particle-drift {
+    0% {
+      transform: translate(0, 0);
+      opacity: 0;
+    }
+    10% {
+      opacity: 0.3;
+    }
+    90% {
+      opacity: 0.3;
+    }
+    100% {
+      transform: translate(50px, -100px);
+      opacity: 0;
+    }
+  }
+
+  @keyframes twinkle {
+    0%, 100% {
+      opacity: 0.2;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.8;
+      transform: scale(1.2);
+    }
+  }
+
+  @keyframes cloud-drift {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100vw);
+    }
+  }
+
+  @keyframes sparkle-float {
+    0%, 100% {
+      transform: translateY(0) translateX(0);
+      opacity: 0.2;
+    }
+    50% {
+      transform: translateY(-30px) translateX(15px);
+      opacity: 0.6;
+    }
+  }
+
+  @keyframes bubble-rise {
+    0% {
+      transform: translateY(0) translateX(0);
+      opacity: 0.4;
+    }
+    50% {
+      transform: translateY(-50vh) translateX(20px);
+      opacity: 0.3;
+    }
+    100% {
+      transform: translateY(-100vh) translateX(-10px);
+      opacity: 0;
+    }
+  }
+
+  @keyframes fish-swim {
+    0% {
+      transform: translateX(-100px) scaleX(1);
+    }
+    48% {
+      transform: translateX(calc(100vw + 100px)) scaleX(1);
+    }
+    52% {
+      transform: translateX(calc(100vw + 100px)) scaleX(-1);
+    }
+    100% {
+      transform: translateX(-100px) scaleX(-1);
+    }
+  }
+
+  @keyframes seaweed-sway {
+    0%, 100% {
+      transform: rotate(0deg);
+      transform-origin: bottom center;
+    }
+    50% {
+      transform: rotate(8deg);
+      transform-origin: bottom center;
+    }
+  }
+
+  @keyframes heart-float {
+    0% {
+      transform: translateY(0) rotate(0deg);
+      opacity: 0;
+    }
+    10% {
+      opacity: 0.4;
+    }
+    90% {
+      opacity: 0.4;
+    }
+    100% {
+      transform: translateY(-100vh) rotate(360deg);
+      opacity: 0;
+    }
+  }
+
+  @keyframes candle-flicker {
+    0%, 100% {
+      opacity: 0.15;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.25;
+      transform: scale(1.1);
+    }
+  }
+
+  @keyframes gentle-pulse {
+    0%, 100% {
+      opacity: 0.2;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.6;
+      transform: scale(1.3);
+    }
+  }
+
+  @keyframes parallax-drift {
+    0%, 100% {
+      transform: translate(0, 0);
+    }
+    50% {
+      transform: translate(30px, -50px);
+    }
+  }
+
+  @keyframes brush-drift {
+    0%, 100% {
+      transform: translate(0, 0) rotate(0deg);
+      opacity: 0.1;
+    }
+    50% {
+      transform: translate(-40px, 30px) rotate(180deg);
+      opacity: 0.15;
+    }
+  }
+
+  .animate-float-slow {
+    animation: float-slow 20s ease-in-out infinite;
+  }
+
+  .animate-spin-slow {
+    animation: spin-slow 20s linear infinite;
+  }
+
+  .animate-firefly {
+    animation: firefly 8s ease-in-out infinite;
+  }
+
+  .animate-particle-drift {
+    animation: particle-drift 12s ease-out infinite;
+  }
+
+  .animate-twinkle {
+    animation: twinkle 3s ease-in-out infinite;
+  }
+
+  .animate-cloud-drift {
+    animation: cloud-drift 40s linear infinite;
+  }
+
+  .animate-sparkle-float {
+    animation: sparkle-float 4s ease-in-out infinite;
+  }
+
+  .animate-bubble-rise {
+    animation: bubble-rise 12s ease-out infinite;
+  }
+
+  .animate-fish-swim {
+    animation: fish-swim 20s linear infinite;
+  }
+
+  .animate-seaweed-sway {
+    animation: seaweed-sway 5s ease-in-out infinite;
+  }
+
+  .animate-heart-float {
+    animation: heart-float 12s ease-out infinite;
+  }
+
+  .animate-candle-flicker {
+    animation: candle-flicker 3s ease-in-out infinite;
+  }
+
+  .animate-gentle-pulse {
+    animation: gentle-pulse 4s ease-in-out infinite;
+  }
+
+  .animate-parallax-drift {
+    animation: parallax-drift 25s ease-in-out infinite;
+  }
+
+  .animate-brush-drift {
+    animation: brush-drift 18s ease-in-out infinite;
+  }
 }

@@ -8,6 +8,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { AvatarDisplay } from '@/components/AvatarDisplay';
 import { applyTheme, type ThemeName } from '@/hooks/useTheme';
+import { FloatingElements } from '@/components/FloatingElements';
 
 const affirmations = [
   "You are brave and strong 💪",
@@ -22,6 +23,7 @@ export default function ChildHome() {
   const { user, signOut } = useAuth();
   const [nickname, setNickname] = useState('');
   const [avatarData, setAvatarData] = useState<any>(null);
+  const [currentTheme, setCurrentTheme] = useState<ThemeName>('classic');
   const [affirmation] = useState(() => affirmations[Math.floor(Math.random() * affirmations.length)]);
 
   useEffect(() => {
@@ -41,6 +43,7 @@ export default function ChildHome() {
         // Apply saved theme
         if (data.theme) {
           applyTheme(data.theme as ThemeName);
+          setCurrentTheme(data.theme as ThemeName);
         }
       }
     };
@@ -56,8 +59,9 @@ export default function ChildHome() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-primary/10 to-background p-6">
-      <div className="max-w-2xl mx-auto space-y-6 pb-24">
+    <div className="min-h-screen bg-gradient-to-b from-primary/10 to-background p-6 relative">
+      <FloatingElements theme={currentTheme} />
+      <div className="max-w-2xl mx-auto space-y-6 pb-24 relative z-10">
         {/* Header */}
         <div className="flex flex-col gap-4">
           <div className="flex justify-end">
