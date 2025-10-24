@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Settings } from 'lucide-react';
+import { Settings, BookOpen, TrendingUp, Heart } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { AvatarDisplay } from '@/components/AvatarDisplay';
@@ -18,7 +18,9 @@ export default function CarerHome() {
     mood: string;
     text: string;
     date: string;
+    nickname: string;
   } | null>(null);
+  const [journalCount, setJournalCount] = useState(0);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -70,8 +72,18 @@ export default function CarerHome() {
         mood: latestEntry.mood_tag || 'okay',
         text: latestEntry.entry_text,
         date: latestEntry.created_at,
+        nickname: linkedChild.nickname,
       });
     }
+
+    // Count total shared entries
+    const { count } = await supabase
+      .from('journal_entries')
+      .select('*', { count: 'exact', head: true })
+      .eq('child_id', linkedChild.id)
+      .eq('share_with_carer', true);
+
+    if (count) setJournalCount(count);
   };
 
   const moodEmojis: Record<string, string> = {
@@ -103,7 +115,7 @@ export default function CarerHome() {
         {/* Child's Mood Note */}
         {childMood && (
           <Card className="p-6 bg-gradient-to-br from-accent/20 to-primary/10 border-primary/20">
-            <h2 className="text-xl font-bold mb-3">Child's Latest Mood</h2>
+            <h2 className="text-xl font-bold mb-3">{childMood.nickname}'s Latest Mood</h2>
             <div className="flex items-start gap-4">
               <span className="text-4xl">{moodEmojis[childMood.mood]}</span>
               <div className="flex-1">
@@ -119,6 +131,68 @@ export default function CarerHome() {
             </div>
           </Card>
         )}
+
+        {/* Quick Stats */}
+        <div className="grid grid-cols-2 gap-3">
+          <Card className="p-5 bg-gradient-to-br from-primary/10 to-accent/10">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                <BookOpen className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold">{journalCount}</p>
+                <p className="text-xs text-muted-foreground">Shared Entries</p>
+              </div>
+            </div>
+          </Card>
+
+          <Card className="p-5 bg-gradient-to-br from-secondary/10 to-accent/10">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-full bg-secondary/10 flex items-center justify-center">
+                <Heart className="h-5 w-5 text-secondary" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold">Active</p>
+                <p className="text-xs text-muted-foreground">Connection</p>
+              </div>
+            </div>
+          </Card>
+        </div>
+
+        {/* Support Resources */}
+        <Card className="p-6 bg-gradient-to-br from-warm/20 to-accent/20">
+          <div className="flex items-start gap-3">
+            <TrendingUp className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
+            <div>
+              <h3 className="font-bold text-lg mb-2">Supporting Your Child</h3>
+              <p className="text-sm text-muted-foreground mb-3">
+                Regular check-ins and open communication help build trust. Review shared journal entries to understand their emotional journey.
+              </p>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => navigate('/carer/shared-entries')}
+              >
+                View All Shared Entries
+              </Button>
+            </div>
+          </div>
+        </Card>
+
+        {/* Your Journal Reminder */}
+        <Card className="p-5 bg-gradient-to-br from-accent/10 to-primary/10 border-primary/20">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="font-bold mb-1">Your Private Journal</h3>
+              <p className="text-sm text-muted-foreground">
+                Document your own experiences and reflections
+              </p>
+            </div>
+            <Button onClick={() => navigate('/carer/journal')}>
+              Write Entry
+            </Button>
+          </div>
+        </Card>
       </div>
 
       <BottomNav role="carer" />

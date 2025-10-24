@@ -2,15 +2,13 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Settings } from 'lucide-react';
-import { INeedHelpButton } from '@/components/INeedHelpButton';
+import { Settings, BookOpen, Wrench, GraduationCap, Sparkles } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { AvatarDisplay } from '@/components/AvatarDisplay';
 import { applyTheme, type ThemeName } from '@/hooks/useTheme';
 import { FloatingElements } from '@/components/FloatingElements';
 import { BottomNav } from '@/components/BottomNav';
-import { Wind, Heart, Music, Palette, Sparkles, GraduationCap } from 'lucide-react';
 
 const affirmations = [
   "You are brave and strong 💪",
@@ -20,42 +18,9 @@ const affirmations = [
   "You make the world brighter ☀️",
 ];
 
-const tools = [
-  {
-    icon: Wind,
-    title: 'Breathing Exercise',
-    description: 'Calm your mind with gentle breathing',
-    path: null,
-  },
-  {
-    icon: Heart,
-    title: 'Guided Meditation',
-    description: 'Short, peaceful meditation for you',
-    path: null,
-  },
-  {
-    icon: Music,
-    title: 'Calming Sounds',
-    description: 'Soothing music and nature sounds',
-    path: null,
-  },
-  {
-    icon: Palette,
-    title: 'Drawing Space',
-    description: 'Express yourself through art',
-    path: null,
-  },
-  {
-    icon: Sparkles,
-    title: 'Talk to Wendy',
-    description: 'Chat with your AI friend',
-    path: '/child/wendy-chat',
-  },
-];
-
 export default function ChildHome() {
   const navigate = useNavigate();
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
   const [nickname, setNickname] = useState('');
   const [avatarData, setAvatarData] = useState<any>(null);
   const [currentTheme, setCurrentTheme] = useState<ThemeName>('classic');
@@ -63,6 +28,7 @@ export default function ChildHome() {
   const [hasCheckedInToday, setHasCheckedInToday] = useState(false);
   const [achievements, setAchievements] = useState<any[]>([]);
   const [userAchievements, setUserAchievements] = useState<any[]>([]);
+  const [wendyTip, setWendyTip] = useState<string | null>(null);
 
   const moods = [
     { id: 'happy', label: 'Happy', emoji: '😊' },
@@ -97,6 +63,9 @@ export default function ChildHome() {
         
         // Load achievements preview
         await loadAchievementsPreview();
+        
+        // Load Wendy's tip
+        await loadWendyTip(data.id);
       }
     };
 
@@ -135,6 +104,25 @@ export default function ChildHome() {
       .maybeSingle();
 
     setHasCheckedInToday(!!data);
+  };
+
+  const loadWendyTip = async (childId: string) => {
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+    const { data } = await supabase
+      .from('wendy_insights')
+      .select('summary')
+      .eq('child_id', childId)
+      .gte('created_at', `${yesterdayStr}T00:00:00`)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (data?.summary) {
+      setWendyTip(data.summary);
+    }
   };
 
   const handleMoodSelect = async (moodId: string) => {
@@ -183,6 +171,19 @@ export default function ChildHome() {
           </div>
         )}
 
+        {/* Wendy's Tip */}
+        {wendyTip && (
+          <Card className="p-5 bg-gradient-to-br from-primary/10 to-accent/10 border-primary/20">
+            <div className="flex items-start gap-3">
+              <Sparkles className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
+              <div>
+                <h3 className="font-bold text-lg mb-2">Wendy's Tip for You 💜</h3>
+                <p className="text-sm">{wendyTip}</p>
+              </div>
+            </div>
+          </Card>
+        )}
+
         {/* Daily Check-in */}
         {!hasCheckedInToday && (
           <Card className="p-6 bg-gradient-to-br from-primary/20 to-accent/20 border-primary/30">
@@ -202,52 +203,56 @@ export default function ChildHome() {
           </Card>
         )}
 
-        {/* Calming Tools */}
-        <div className="space-y-3">
-          <h2 className="text-xl font-bold px-2">Calming Tools 🧘</h2>
-          {tools.map((tool) => {
-            const Icon = tool.icon;
-            return (
-              <Card
-                key={tool.title}
-                className="p-5 cursor-pointer transition-all hover:scale-[1.02] bg-gradient-to-br from-accent/20 to-warm/20"
-                onClick={() => tool.path && navigate(tool.path)}
-              >
-                <div className="flex items-center gap-4">
-                  <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
-                    <Icon className="h-6 w-6 text-primary" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-bold text-lg">{tool.title}</h3>
-                    <p className="text-sm text-muted-foreground">{tool.description}</p>
-                  </div>
-                </div>
-                {!tool.path && (
-                  <p className="text-xs text-muted-foreground mt-3 text-center">Coming soon</p>
-                )}
-              </Card>
-            );
-          })}
+        {/* Quick Access Cards */}
+        <div className="grid grid-cols-2 gap-3">
+          <Card
+            className="p-5 cursor-pointer transition-all hover:scale-[1.02] bg-gradient-to-br from-accent/20 to-warm/20"
+            onClick={() => navigate('/child/tools')}
+          >
+            <div className="flex flex-col items-center gap-3 text-center">
+              <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+                <Wrench className="h-6 w-6 text-primary" />
+              </div>
+              <div>
+                <h3 className="font-bold">Tools</h3>
+                <p className="text-xs text-muted-foreground">Calming activities</p>
+              </div>
+            </div>
+          </Card>
+
+          <Card
+            className="p-5 cursor-pointer transition-all hover:scale-[1.02] bg-gradient-to-br from-secondary/20 to-accent/20"
+            onClick={() => navigate('/child/modules')}
+          >
+            <div className="flex flex-col items-center gap-3 text-center">
+              <div className="h-12 w-12 rounded-full bg-secondary/20 flex items-center justify-center">
+                <GraduationCap className="h-6 w-6 text-secondary" />
+              </div>
+              <div>
+                <h3 className="font-bold">Learn</h3>
+                <p className="text-xs text-muted-foreground">Helpful modules</p>
+              </div>
+            </div>
+          </Card>
         </div>
 
-        {/* Learning Modules */}
+        {/* All Entries Link */}
         <Card
-          className="p-5 cursor-pointer transition-all hover:scale-[1.02] bg-gradient-to-br from-secondary/20 to-accent/20"
-          onClick={() => navigate('/child/modules')}
+          className="p-5 cursor-pointer transition-all hover:scale-[1.02] bg-gradient-to-br from-primary/10 to-secondary/10"
+          onClick={() => navigate('/child/entries')}
         >
           <div className="flex items-center gap-4">
-            <div className="h-12 w-12 rounded-full bg-secondary/20 flex items-center justify-center">
-              <GraduationCap className="h-6 w-6 text-secondary" />
+            <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+              <BookOpen className="h-6 w-6 text-primary" />
             </div>
             <div className="flex-1">
-              <h3 className="font-bold text-lg">Learning Modules</h3>
-              <p className="text-sm text-muted-foreground">Learn about anxiety and coping</p>
+              <h3 className="font-bold text-lg">All My Entries</h3>
+              <p className="text-sm text-muted-foreground">View all journal entries, drawings & recordings</p>
             </div>
           </div>
         </Card>
       </div>
 
-      <INeedHelpButton />
       <BottomNav role="child" />
     </div>
   );

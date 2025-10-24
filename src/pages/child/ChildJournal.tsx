@@ -2,10 +2,21 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Trash2 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { BottomNav } from '@/components/BottomNav';
+import { toast } from 'sonner';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 interface JournalEntry {
   id: string;
@@ -19,6 +30,8 @@ export default function ChildJournal() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [entries, setEntries] = useState<JournalEntry[]>([]);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [entryToDelete, setEntryToDelete] = useState<string | null>(null);
 
   useEffect(() => {
     loadEntries();
@@ -44,6 +57,30 @@ export default function ChildJournal() {
     if (data) {
       setEntries(data);
     }
+  };
+
+  const handleDeleteClick = (entryId: string) => {
+    setEntryToDelete(entryId);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!entryToDelete) return;
+
+    const { error } = await supabase
+      .from('journal_entries')
+      .delete()
+      .eq('id', entryToDelete);
+
+    if (error) {
+      toast.error('Failed to delete entry');
+      return;
+    }
+
+    toast.success('Entry deleted');
+    setEntries(entries.filter(e => e.id !== entryToDelete));
+    setDeleteDialogOpen(false);
+    setEntryToDelete(null);
   };
 
   const moodEmojis: Record<string, string> = {
@@ -83,9 +120,19 @@ export default function ChildJournal() {
                       {new Date(entry.created_at).toLocaleDateString()}
                     </span>
                   </div>
-                  {entry.share_with_carer && (
-                    <span className="text-xs bg-accent/30 px-2 py-1 rounded">Shared</span>
-                  )}
+                  <div className="flex items-center gap-2">
+                    {entry.share_with_carer && (
+                      <span className="text-xs bg-accent/30 px-2 py-1 rounded">Shared</span>
+                    )}
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
+                      onClick={() => handleDeleteClick(entry.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
                 <p className="line-clamp-3">{entry.entry_text}</p>
               </Card>
@@ -93,6 +140,23 @@ export default function ChildJournal() {
           )}
         </div>
       </div>
+
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Entry?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete this journal entry. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteConfirm} className="bg-destructive hover:bg-destructive/90">
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       <BottomNav role="child" />
     </div>

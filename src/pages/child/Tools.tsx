@@ -1,44 +1,38 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { INeedHelpButton } from '@/components/INeedHelpButton';
-import { Wind, Heart, Music, Palette, Sparkles } from 'lucide-react';
+import { ArrowLeft, Wind, Heart, Music, Palette, Sparkles } from 'lucide-react';
+import { BottomNav } from '@/components/BottomNav';
 
 const tools = [
   {
     icon: Wind,
     title: 'Breathing Exercise',
     description: 'Calm your mind with gentle breathing',
-    color: 'bg-blue-200/50',
-    iconColor: 'text-blue-600',
+    path: null,
   },
   {
     icon: Heart,
     title: 'Guided Meditation',
     description: 'Short, peaceful meditation for you',
-    color: 'bg-purple-200/50',
-    iconColor: 'text-purple-600',
+    path: null,
   },
   {
     icon: Music,
     title: 'Calming Sounds',
     description: 'Soothing music and nature sounds',
-    color: 'bg-green-200/50',
-    iconColor: 'text-green-600',
+    path: null,
   },
   {
     icon: Palette,
     title: 'Drawing Space',
     description: 'Express yourself through art',
-    color: 'bg-yellow-200/50',
-    iconColor: 'text-yellow-600',
+    path: null,
   },
   {
     icon: Sparkles,
     title: 'Talk to Wendy',
     description: 'Chat with your AI friend',
-    color: 'bg-pink-200/50',
-    iconColor: 'text-pink-600',
     path: '/child/wendy-chat',
   },
 ];
@@ -47,32 +41,33 @@ export default function Tools() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-background p-6 pb-24">
-      <div className="max-w-2xl mx-auto space-y-6">
-        <div>
-          <Button variant="ghost" onClick={() => navigate(-1)}>
-            ← Back
+    <div className="min-h-screen bg-gradient-to-b from-primary/10 to-background pb-20">
+      <div className="max-w-2xl mx-auto p-6 space-y-6">
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" size="icon" onClick={() => navigate('/child/home')}>
+            <ArrowLeft className="h-5 w-5" />
           </Button>
-          <h1 className="text-3xl font-bold mt-2">Calming Tools 🧘</h1>
-          <p className="text-muted-foreground">
-            Find peace and calm whenever you need it
-          </p>
+          <h1 className="text-2xl font-bold">Calming Tools 🧘</h1>
         </div>
 
-        <div className="grid gap-4">
+        <p className="text-muted-foreground">
+          Choose a tool to help you feel calm and centered
+        </p>
+
+        <div className="space-y-3">
           {tools.map((tool) => {
             const Icon = tool.icon;
             return (
               <Card
                 key={tool.title}
-                className={`p-6 cursor-pointer transition-all hover:scale-[1.02] ${tool.color}`}
+                className="p-5 cursor-pointer transition-all hover:scale-[1.02] bg-gradient-to-br from-accent/20 to-warm/20"
                 onClick={() => tool.path && navigate(tool.path)}
               >
                 <div className="flex items-center gap-4">
-                  <div className="h-12 w-12 rounded-full bg-white/50 flex items-center justify-center">
-                    <Icon className={`h-6 w-6 ${tool.iconColor}`} />
+                  <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Icon className="h-6 w-6 text-primary" />
                   </div>
-                  <div>
+                  <div className="flex-1">
                     <h3 className="font-bold text-lg">{tool.title}</h3>
                     <p className="text-sm text-muted-foreground">{tool.description}</p>
                   </div>
@@ -86,7 +81,7 @@ export default function Tools() {
         </div>
       </div>
 
-      <INeedHelpButton />
+      <BottomNav role="child" />
     </div>
   );
 }
