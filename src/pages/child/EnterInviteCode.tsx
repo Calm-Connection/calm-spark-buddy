@@ -18,6 +18,18 @@ export default function EnterInviteCode() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    const trimmedCode = code.trim().toUpperCase();
+    
+    if (trimmedCode.length !== 6) {
+      toast({
+        title: 'Invalid code',
+        description: 'Please enter a valid 6-character code',
+        variant: 'destructive',
+      });
+      return;
+    }
+    
     setLoading(true);
 
     try {
@@ -25,15 +37,15 @@ export default function EnterInviteCode() {
       const { data: inviteData, error: inviteError } = await supabase
         .from('invite_codes')
         .select('*')
-        .eq('code', code.toUpperCase())
+        .eq('code', trimmedCode)
         .eq('used', false)
         .gt('expires_at', new Date().toISOString())
         .single();
 
       if (inviteError || !inviteData) {
         toast({
-          title: 'Invalid code',
-          description: 'This invite code is not valid or has expired',
+          title: 'Code not found',
+          description: 'That code isn\'t valid or has expired. Please check and try again.',
           variant: 'destructive',
         });
         setLoading(false);
@@ -41,14 +53,24 @@ export default function EnterInviteCode() {
       }
 
       // Mark code as used
-      await supabase
+      const { error: updateError } = await supabase
         .from('invite_codes')
         .update({ used: true, child_user_id: user?.id })
         .eq('id', inviteData.id);
 
+      if (updateError) {
+        toast({
+          title: 'Error',
+          description: 'Could not link accounts. Please try again.',
+          variant: 'destructive',
+        });
+        setLoading(false);
+        return;
+      }
+
       toast({
         title: 'Success! 🎉',
-        description: 'You\'re now connected to your carer',
+        description: 'You\'re now linked with your carer!',
       });
 
       // Store carer ID for later profile creation
@@ -56,11 +78,13 @@ export default function EnterInviteCode() {
       navigate('/child/pick-theme');
 
     } catch (error) {
+      console.error('Error linking accounts:', error);
       toast({
         title: 'Error',
         description: 'Something went wrong. Please try again.',
         variant: 'destructive',
       });
+    } finally {
       setLoading(false);
     }
   };

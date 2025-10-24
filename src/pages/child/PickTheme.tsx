@@ -88,13 +88,21 @@ export default function PickTheme() {
           .eq('user_id', user.id);
       } else {
         const nickname = localStorage.getItem('pendingNickname') || 'Friend';
+        const linkedCarerId = localStorage.getItem('linkedCarerId');
+        
         await supabase
           .from('children_profiles')
           .insert({
             user_id: user.id,
             nickname,
-            theme: selectedTheme
+            theme: selectedTheme,
+            linked_carer_id: linkedCarerId || null
           });
+        
+        // Clean up localStorage
+        if (linkedCarerId) {
+          localStorage.removeItem('linkedCarerId');
+        }
       }
       
       navigate('/child/create-avatar');
