@@ -16,12 +16,24 @@ import { Loader2, Sparkles } from 'lucide-react';
 const moods = ['happy', 'sad', 'angry', 'worried', 'calm', 'excited', 'scared'] as const;
 type MoodType = typeof moods[number];
 
+const moodEmojis: Record<string, string> = {
+  happy: '😊',
+  okay: '😐',
+  sad: '😢',
+  angry: '😠',
+  worried: '😰',
+  calm: '😌',
+  excited: '🤩',
+  scared: '😨',
+};
+
 export default function JournalEntry() {
   const location = useLocation();
-  const initialMood = (location.state as any)?.initialMood || '';
+  const selectedMood = (location.state as any)?.selectedMood || '';
+  const quickCheckIn = (location.state as any)?.quickCheckIn || false;
   
   const [entryText, setEntryText] = useState('');
-  const [mood, setMood] = useState<MoodType | ''>(initialMood);
+  const [mood, setMood] = useState<MoodType | ''>(selectedMood);
   const [shareWithCarer, setShareWithCarer] = useState(false);
   const [loading, setLoading] = useState(false);
   const [childProfile, setChildProfile] = useState<any>(null);
@@ -130,6 +142,16 @@ export default function JournalEntry() {
         </div>
 
         <Card className="p-6 space-y-6">
+          {/* Display selected mood emoji prominently */}
+          {mood && (
+            <div className="text-center">
+              <div className="text-6xl mb-2">{moodEmojis[mood]}</div>
+              <p className="text-sm text-muted-foreground">
+                Feeling {mood.charAt(0).toUpperCase() + mood.slice(1)}
+              </p>
+            </div>
+          )}
+
           <div className="space-y-2">
             <Label>How are you feeling today?</Label>
             <Select value={mood} onValueChange={(value) => setMood(value as MoodType)}>

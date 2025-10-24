@@ -10,7 +10,7 @@ import { AvatarDisplay } from '@/components/AvatarDisplay';
 import { applyTheme, type ThemeName } from '@/hooks/useTheme';
 import { FloatingElements } from '@/components/FloatingElements';
 import { BottomNav } from '@/components/BottomNav';
-import { ChildAchievements } from './ChildAchievements';
+import { Wind, Heart, Music, Palette, Sparkles, GraduationCap } from 'lucide-react';
 
 const affirmations = [
   "You are brave and strong 💪",
@@ -18,6 +18,39 @@ const affirmations = [
   "You are doing great today ⭐",
   "It's okay to ask for help 🤗",
   "You make the world brighter ☀️",
+];
+
+const tools = [
+  {
+    icon: Wind,
+    title: 'Breathing Exercise',
+    description: 'Calm your mind with gentle breathing',
+    path: null,
+  },
+  {
+    icon: Heart,
+    title: 'Guided Meditation',
+    description: 'Short, peaceful meditation for you',
+    path: null,
+  },
+  {
+    icon: Music,
+    title: 'Calming Sounds',
+    description: 'Soothing music and nature sounds',
+    path: null,
+  },
+  {
+    icon: Palette,
+    title: 'Drawing Space',
+    description: 'Express yourself through art',
+    path: null,
+  },
+  {
+    icon: Sparkles,
+    title: 'Talk to Wendy',
+    description: 'Chat with your AI friend',
+    path: '/child/wendy-chat',
+  },
 ];
 
 export default function ChildHome() {
@@ -28,6 +61,8 @@ export default function ChildHome() {
   const [currentTheme, setCurrentTheme] = useState<ThemeName>('classic');
   const [affirmation] = useState(() => affirmations[Math.floor(Math.random() * affirmations.length)]);
   const [hasCheckedInToday, setHasCheckedInToday] = useState(false);
+  const [achievements, setAchievements] = useState<any[]>([]);
+  const [userAchievements, setUserAchievements] = useState<any[]>([]);
 
   const moods = [
     { id: 'happy', label: 'Happy', emoji: '😊' },
@@ -59,11 +94,35 @@ export default function ChildHome() {
 
         // Check if checked in today
         await checkTodayCheckIn(data.id);
+        
+        // Load achievements preview
+        await loadAchievementsPreview();
       }
     };
 
     loadProfile();
   }, [user]);
+
+  const loadAchievementsPreview = async () => {
+    // Load top 4 achievements
+    const { data: achievementsData } = await supabase
+      .from('achievements')
+      .select('*')
+      .limit(4);
+
+    if (achievementsData) {
+      setAchievements(achievementsData);
+    }
+
+    // Load user's earned achievements
+    const { data: userAchievementsData } = await supabase
+      .from('user_achievements')
+      .select('achievement_id');
+
+    if (userAchievementsData) {
+      setUserAchievements(userAchievementsData);
+    }
+  };
 
   const checkTodayCheckIn = async (childId: string) => {
     const today = new Date().toISOString().split('T')[0];
@@ -105,6 +164,25 @@ export default function ChildHome() {
           </div>
         </div>
 
+        {/* Achievements Preview */}
+        {achievements.length > 0 && (
+          <div className="flex items-center justify-center gap-3 px-2">
+            {achievements.map((achievement) => {
+              const isEarned = userAchievements.some(ua => ua.achievement_id === achievement.id);
+              return (
+                <button
+                  key={achievement.id}
+                  onClick={() => navigate('/child/achievements')}
+                  className={`text-4xl transition-all hover:scale-110 ${!isEarned ? 'grayscale opacity-40' : ''}`}
+                  title={achievement.name}
+                >
+                  {achievement.icon}
+                </button>
+              );
+            })}
+          </div>
+        )}
+
         {/* Daily Check-in */}
         {!hasCheckedInToday && (
           <Card className="p-6 bg-gradient-to-br from-primary/20 to-accent/20 border-primary/30">
@@ -124,8 +202,49 @@ export default function ChildHome() {
           </Card>
         )}
 
-        {/* Achievements Preview */}
-        <ChildAchievements />
+        {/* Calming Tools */}
+        <div className="space-y-3">
+          <h2 className="text-xl font-bold px-2">Calming Tools 🧘</h2>
+          {tools.map((tool) => {
+            const Icon = tool.icon;
+            return (
+              <Card
+                key={tool.title}
+                className="p-5 cursor-pointer transition-all hover:scale-[1.02] bg-gradient-to-br from-accent/20 to-warm/20"
+                onClick={() => tool.path && navigate(tool.path)}
+              >
+                <div className="flex items-center gap-4">
+                  <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Icon className="h-6 w-6 text-primary" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-bold text-lg">{tool.title}</h3>
+                    <p className="text-sm text-muted-foreground">{tool.description}</p>
+                  </div>
+                </div>
+                {!tool.path && (
+                  <p className="text-xs text-muted-foreground mt-3 text-center">Coming soon</p>
+                )}
+              </Card>
+            );
+          })}
+        </div>
+
+        {/* Learning Modules */}
+        <Card
+          className="p-5 cursor-pointer transition-all hover:scale-[1.02] bg-gradient-to-br from-secondary/20 to-accent/20"
+          onClick={() => navigate('/child/modules')}
+        >
+          <div className="flex items-center gap-4">
+            <div className="h-12 w-12 rounded-full bg-secondary/20 flex items-center justify-center">
+              <GraduationCap className="h-6 w-6 text-secondary" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-bold text-lg">Learning Modules</h3>
+              <p className="text-sm text-muted-foreground">Learn about anxiety and coping</p>
+            </div>
+          </div>
+        </Card>
       </div>
 
       <INeedHelpButton />

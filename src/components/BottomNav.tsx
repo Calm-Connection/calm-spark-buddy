@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Home, BookOpen, GraduationCap, Settings } from 'lucide-react';
+import { Home, BookOpen } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface BottomNavProps {
@@ -10,8 +10,6 @@ export function BottomNav({ role }: BottomNavProps) {
   const navItems = [
     { icon: Home, label: 'Home', path: `/${role}/home` },
     { icon: BookOpen, label: 'Journal', path: `/${role}/journal` },
-    { icon: GraduationCap, label: 'Learn', path: `/${role}/modules` },
-    { icon: Settings, label: 'Settings', path: '/settings' },
   ];
 
   return (

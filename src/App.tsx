@@ -26,6 +26,7 @@ import WendyChat from "./pages/child/WendyChat";
 import ViewEntries from "./pages/child/ViewEntries";
 import Tools from "./pages/child/Tools";
 import ChildJournal from "./pages/child/ChildJournal";
+import { ChildAchievements } from "./pages/child/ChildAchievements";
 
 // Carer pages
 import CarerHome from "./pages/carer/CarerHome";
@@ -93,6 +94,7 @@ function AppRoutes() {
       <Route path="/child/entries" element={<ProtectedRoute role="child"><ViewEntries /></ProtectedRoute>} />
       <Route path="/child/tools" element={<ProtectedRoute role="child"><Tools /></ProtectedRoute>} />
       <Route path="/child/journal" element={<ProtectedRoute role="child"><ChildJournal /></ProtectedRoute>} />
+      <Route path="/child/achievements" element={<ProtectedRoute role="child"><ChildAchievements /></ProtectedRoute>} />
       <Route path="/child/modules" element={<ProtectedRoute role="child"><Modules /></ProtectedRoute>} />
       <Route path="/child/modules/:moduleId" element={<ProtectedRoute role="child"><ModuleDetail /></ProtectedRoute>} />
       
