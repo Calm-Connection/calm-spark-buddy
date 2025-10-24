@@ -43,9 +43,20 @@ export function AddCarerCodeModal({ open, onOpenChange, onSuccess }: AddCarerCod
         .eq('code', trimmedCode)
         .eq('used', false)
         .gt('expires_at', new Date().toISOString())
-        .single();
+        .maybeSingle();
 
-      if (inviteError || !inviteData) {
+      if (inviteError) {
+        console.error('Invite code fetch error:', inviteError);
+        toast({
+          title: 'Error',
+          description: 'Could not verify code. Please try again.',
+          variant: 'destructive',
+        });
+        setLoading(false);
+        return;
+      }
+
+      if (!inviteData) {
         toast({
           title: 'Code not found',
           description: 'That code isn\'t valid or has expired. Please check and try again.',
@@ -58,46 +69,60 @@ export function AddCarerCodeModal({ open, onOpenChange, onSuccess }: AddCarerCod
       // Get current child profile
       const { data: childProfile, error: profileError } = await supabase
         .from('children_profiles')
-        .select('id')
+        .select('id, user_id')
         .eq('user_id', user?.id)
-        .single();
+        .maybeSingle();
 
-      if (profileError || !childProfile) {
+      if (profileError) {
+        console.error('Profile fetch error:', profileError);
         toast({
           title: 'Error',
-          description: 'Could not find your profile',
+          description: 'Could not access your profile. Please try again.',
           variant: 'destructive',
         });
         setLoading(false);
         return;
       }
 
-      // Mark code as used and link accounts
+      if (!childProfile) {
+        toast({
+          title: 'Error',
+          description: 'Please complete your profile setup first.',
+          variant: 'destructive',
+        });
+        setLoading(false);
+        return;
+      }
+
+      // Mark code as used (update by code to use RLS policy)
       const { error: updateCodeError } = await supabase
         .from('invite_codes')
         .update({ used: true, child_user_id: user?.id })
-        .eq('id', inviteData.id);
+        .eq('code', trimmedCode)
+        .eq('used', false);
 
       if (updateCodeError) {
+        console.error('Code update error:', updateCodeError);
         toast({
           title: 'Error',
-          description: 'Could not link accounts',
+          description: 'Could not mark code as used. Please try again.',
           variant: 'destructive',
         });
         setLoading(false);
         return;
       }
 
-      // Update child profile with linked carer
+      // Update child profile with linked carer (update by user_id for RLS)
       const { error: updateProfileError } = await supabase
         .from('children_profiles')
         .update({ linked_carer_id: inviteData.carer_user_id })
-        .eq('id', childProfile.id);
+        .eq('user_id', user?.id);
 
       if (updateProfileError) {
+        console.error('Profile update error:', updateProfileError);
         toast({
           title: 'Error',
-          description: 'Could not update profile',
+          description: 'Could not update your profile. Please try again.',
           variant: 'destructive',
         });
         setLoading(false);

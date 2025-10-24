@@ -18,6 +18,12 @@ serve(async (req) => {
     }
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    
+    // Create admin client for database operations
+    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
+    
+    // Create user client to verify authentication
     const supabaseKey = Deno.env.get('SUPABASE_ANON_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey, {
       global: { headers: { Authorization: authHeader } }
@@ -35,7 +41,8 @@ serve(async (req) => {
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 30);
 
-    const { data, error } = await supabase
+    // Use admin client to insert (bypasses RLS)
+    const { data, error } = await supabaseAdmin
       .from('invite_codes')
       .insert({
         code,

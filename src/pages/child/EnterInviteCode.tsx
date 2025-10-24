@@ -40,9 +40,20 @@ export default function EnterInviteCode() {
         .eq('code', trimmedCode)
         .eq('used', false)
         .gt('expires_at', new Date().toISOString())
-        .single();
+        .maybeSingle();
 
-      if (inviteError || !inviteData) {
+      if (inviteError) {
+        console.error('Invite code fetch error:', inviteError);
+        toast({
+          title: 'Error',
+          description: 'Could not verify code. Please try again.',
+          variant: 'destructive',
+        });
+        setLoading(false);
+        return;
+      }
+
+      if (!inviteData) {
         toast({
           title: 'Code not found',
           description: 'That code isn\'t valid or has expired. Please check and try again.',
@@ -52,16 +63,18 @@ export default function EnterInviteCode() {
         return;
       }
 
-      // Mark code as used
+      // Mark code as used (update by code to use RLS policy)
       const { error: updateError } = await supabase
         .from('invite_codes')
         .update({ used: true, child_user_id: user?.id })
-        .eq('id', inviteData.id);
+        .eq('code', trimmedCode)
+        .eq('used', false);
 
       if (updateError) {
+        console.error('Code update error:', updateError);
         toast({
           title: 'Error',
-          description: 'Could not link accounts. Please try again.',
+          description: 'Could not mark code as used. Please try again.',
           variant: 'destructive',
         });
         setLoading(false);
