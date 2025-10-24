@@ -18,6 +18,7 @@ import { AvatarCustomizer } from '@/components/AvatarCustomizer';
 import { ThemeSelector } from '@/components/ThemeSelector';
 import { ReportConcernModal } from '@/components/ReportConcernModal';
 import { FloatingElements } from '@/components/FloatingElements';
+import { AddCarerCodeModal } from '@/components/AddCarerCodeModal';
 
 export default function Settings() {
   const navigate = useNavigate();
@@ -35,6 +36,7 @@ export default function Settings() {
   
   const [avatarCustomizerOpen, setAvatarCustomizerOpen] = useState(false);
   const [reportModalOpen, setReportModalOpen] = useState(false);
+  const [addCarerCodeOpen, setAddCarerCodeOpen] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -208,13 +210,24 @@ export default function Settings() {
               )}
             </div>
 
-            {linkedCarerInfo && (
-              <div className="pt-2 border-t">
-                <div className="flex items-center gap-2 text-sm">
-                  <LinkIcon className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-muted-foreground">Linked to:</span>
-                  <span className="font-medium">{linkedCarerInfo.nickname}</span>
-                </div>
+            {userRole === 'child' && (
+              <div className="pt-2 border-t space-y-2">
+                {linkedCarerInfo ? (
+                  <div className="flex items-center gap-2 text-sm">
+                    <LinkIcon className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-muted-foreground">Linked to:</span>
+                    <span className="font-medium">{linkedCarerInfo.nickname}</span>
+                  </div>
+                ) : (
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => setAddCarerCodeOpen(true)}
+                  >
+                    <LinkIcon className="h-4 w-4 mr-2" />
+                    Add Carer Code
+                  </Button>
+                )}
               </div>
             )}
           </div>
@@ -368,6 +381,34 @@ export default function Settings() {
       <ReportConcernModal
         open={reportModalOpen}
         onOpenChange={setReportModalOpen}
+      />
+      <AddCarerCodeModal
+        open={addCarerCodeOpen}
+        onOpenChange={setAddCarerCodeOpen}
+        onSuccess={() => {
+          // Refresh profile to show linked carer
+          if (user && userRole === 'child') {
+            supabase
+              .from('children_profiles')
+              .select('linked_carer_id')
+              .eq('user_id', user.id)
+              .single()
+              .then(({ data }) => {
+                if (data?.linked_carer_id) {
+                  supabase
+                    .from('carer_profiles')
+                    .select('nickname')
+                    .eq('user_id', data.linked_carer_id)
+                    .single()
+                    .then(({ data: carerData }) => {
+                      if (carerData) {
+                        setLinkedCarerInfo(carerData);
+                      }
+                    });
+                }
+              });
+          }
+        }}
       />
     </div>
   );
