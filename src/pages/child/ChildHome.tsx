@@ -2,13 +2,15 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { BookOpen, Sparkles, Wrench, Settings } from 'lucide-react';
+import { Settings } from 'lucide-react';
 import { INeedHelpButton } from '@/components/INeedHelpButton';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { AvatarDisplay } from '@/components/AvatarDisplay';
 import { applyTheme, type ThemeName } from '@/hooks/useTheme';
 import { FloatingElements } from '@/components/FloatingElements';
+import { BottomNav } from '@/components/BottomNav';
+import { ChildAchievements } from './ChildAchievements';
 
 const affirmations = [
   "You are brave and strong 💪",
@@ -25,6 +27,15 @@ export default function ChildHome() {
   const [avatarData, setAvatarData] = useState<any>(null);
   const [currentTheme, setCurrentTheme] = useState<ThemeName>('classic');
   const [affirmation] = useState(() => affirmations[Math.floor(Math.random() * affirmations.length)]);
+  const [hasCheckedInToday, setHasCheckedInToday] = useState(false);
+
+  const moods = [
+    { id: 'happy', label: 'Happy', emoji: '😊' },
+    { id: 'okay', label: 'Okay', emoji: '😐' },
+    { id: 'sad', label: 'Sad', emoji: '😢' },
+    { id: 'worried', label: 'Worried', emoji: '😰' },
+    { id: 'angry', label: 'Angry', emoji: '😠' },
+  ];
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -32,7 +43,7 @@ export default function ChildHome() {
 
       const { data } = await supabase
         .from('children_profiles')
-        .select('nickname, avatar_json, theme')
+        .select('id, nickname, avatar_json, theme')
         .eq('user_id', user.id)
         .single();
 
@@ -45,23 +56,37 @@ export default function ChildHome() {
           applyTheme(data.theme as ThemeName);
           setCurrentTheme(data.theme as ThemeName);
         }
+
+        // Check if checked in today
+        await checkTodayCheckIn(data.id);
       }
     };
 
     loadProfile();
   }, [user]);
 
-  const menuItems = [
-    { icon: BookOpen, label: 'My Journal', path: '/child/journal-entry', color: 'bg-primary/20 hover:bg-primary/30 text-primary' },
-    { icon: Sparkles, label: 'Talk to Wendy', path: '/child/wendy-chat', color: 'bg-accent/30 hover:bg-accent/40 text-accent-foreground' },
-    { icon: Wrench, label: 'Calming Tools', path: '/child/tools', color: 'bg-secondary/20 hover:bg-secondary/30 text-secondary' },
-    { icon: BookOpen, label: 'All My Entries', path: '/child/entries', color: 'bg-warm/30 hover:bg-warm/40 text-foreground' },
-  ];
+  const checkTodayCheckIn = async (childId: string) => {
+    const today = new Date().toISOString().split('T')[0];
+    const { data } = await supabase
+      .from('journal_entries')
+      .select('id')
+      .eq('child_id', childId)
+      .gte('created_at', `${today}T00:00:00`)
+      .lte('created_at', `${today}T23:59:59`)
+      .maybeSingle();
+
+    setHasCheckedInToday(!!data);
+  };
+
+  const handleMoodSelect = async (moodId: string) => {
+    navigate('/child/journal-entry', { state: { selectedMood: moodId, quickCheckIn: true } });
+  };
+
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-primary/10 to-background p-6 relative">
+    <div className="min-h-screen bg-gradient-to-b from-primary/10 to-background p-6 pb-24 relative">
       <FloatingElements theme={currentTheme} />
-      <div className="max-w-2xl mx-auto space-y-6 pb-24 relative z-10">
+      <div className="max-w-2xl mx-auto space-y-6 relative z-10">
         {/* Header */}
         <div className="flex flex-col gap-4">
           <div className="flex justify-end">
@@ -80,36 +105,31 @@ export default function ChildHome() {
           </div>
         </div>
 
-        {/* Quick Actions */}
-        <div className="grid grid-cols-1 gap-4">
-          {menuItems.map((item) => {
-            const Icon = item.icon;
-            return (
-              <Card
-                key={item.path}
-                className={`p-6 cursor-pointer transition-all hover:scale-105 ${item.color}`}
-                onClick={() => navigate(item.path)}
-              >
-                <div className="flex flex-col items-center gap-3 text-center">
-                  <Icon className="h-10 w-10" />
-                  <span className="font-bold">{item.label}</span>
-                </div>
-              </Card>
-            );
-          })}
-        </div>
+        {/* Daily Check-in */}
+        {!hasCheckedInToday && (
+          <Card className="p-6 bg-gradient-to-br from-primary/20 to-accent/20 border-primary/30">
+            <h2 className="text-xl font-bold mb-3">How are you feeling today?</h2>
+            <div className="grid grid-cols-5 gap-2">
+              {moods.map((mood) => (
+                <button
+                  key={mood.id}
+                  onClick={() => handleMoodSelect(mood.id)}
+                  className="flex flex-col items-center gap-2 p-3 rounded-lg bg-background/80 hover:bg-background transition-all hover:scale-105"
+                >
+                  <span className="text-3xl">{mood.emoji}</span>
+                  <span className="text-xs font-medium">{mood.label}</span>
+                </button>
+              ))}
+            </div>
+          </Card>
+        )}
 
-        {/* Logout */}
-        <Button 
-          variant="outline" 
-          onClick={signOut}
-          className="w-full"
-        >
-          Log Out
-        </Button>
+        {/* Achievements Preview */}
+        <ChildAchievements />
       </div>
 
       <INeedHelpButton />
+      <BottomNav role="child" />
     </div>
   );
 }

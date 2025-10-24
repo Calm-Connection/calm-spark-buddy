@@ -25,6 +25,7 @@ import JournalEntry from "./pages/child/JournalEntry";
 import WendyChat from "./pages/child/WendyChat";
 import ViewEntries from "./pages/child/ViewEntries";
 import Tools from "./pages/child/Tools";
+import ChildJournal from "./pages/child/ChildJournal";
 
 // Carer pages
 import CarerHome from "./pages/carer/CarerHome";
@@ -33,6 +34,11 @@ import InviteCode from "./pages/carer/InviteCode";
 import Insights from "./pages/carer/Insights";
 import SharedEntries from "./pages/carer/SharedEntries";
 import JointTools from "./pages/carer/JointTools";
+import CarerJournal from "./pages/carer/CarerJournal";
+
+// Shared pages
+import Modules from "./pages/shared/Modules";
+import ModuleDetail from "./pages/shared/ModuleDetail";
 
 const queryClient = new QueryClient();
 
@@ -86,6 +92,9 @@ function AppRoutes() {
       <Route path="/child/wendy-chat" element={<ProtectedRoute role="child"><WendyChat /></ProtectedRoute>} />
       <Route path="/child/entries" element={<ProtectedRoute role="child"><ViewEntries /></ProtectedRoute>} />
       <Route path="/child/tools" element={<ProtectedRoute role="child"><Tools /></ProtectedRoute>} />
+      <Route path="/child/journal" element={<ProtectedRoute role="child"><ChildJournal /></ProtectedRoute>} />
+      <Route path="/child/modules" element={<ProtectedRoute role="child"><Modules /></ProtectedRoute>} />
+      <Route path="/child/modules/:moduleId" element={<ProtectedRoute role="child"><ModuleDetail /></ProtectedRoute>} />
       
       {/* Carer routes - protected */}
       <Route path="/carer/home" element={<ProtectedRoute role="carer"><CarerHome /></ProtectedRoute>} />
@@ -94,6 +103,9 @@ function AppRoutes() {
       <Route path="/carer/insights" element={<ProtectedRoute role="carer"><Insights /></ProtectedRoute>} />
       <Route path="/carer/shared-entries" element={<ProtectedRoute role="carer"><SharedEntries /></ProtectedRoute>} />
       <Route path="/carer/joint-tools" element={<ProtectedRoute role="carer"><JointTools /></ProtectedRoute>} />
+      <Route path="/carer/journal" element={<ProtectedRoute role="carer"><CarerJournal /></ProtectedRoute>} />
+      <Route path="/carer/modules" element={<ProtectedRoute role="carer"><Modules /></ProtectedRoute>} />
+      <Route path="/carer/modules/:moduleId" element={<ProtectedRoute role="carer"><ModuleDetail /></ProtectedRoute>} />
       
       {/* Shared routes - protected */}
       <Route path="/quick-tour" element={<ProtectedRoute><QuickTour /></ProtectedRoute>} />

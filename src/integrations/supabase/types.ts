@@ -14,6 +14,77 @@ export type Database = {
   }
   public: {
     Tables: {
+      achievements: {
+        Row: {
+          category: string
+          created_at: string
+          description: string
+          icon: string
+          id: string
+          name: string
+          requirement_count: number | null
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description: string
+          icon: string
+          id?: string
+          name: string
+          requirement_count?: number | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string
+          icon?: string
+          id?: string
+          name?: string
+          requirement_count?: number | null
+        }
+        Relationships: []
+      }
+      carer_journal_entries: {
+        Row: {
+          carer_id: string
+          created_at: string
+          drawing_data: Json | null
+          entry_text: string | null
+          entry_type: string
+          id: string
+          updated_at: string
+          voice_url: string | null
+        }
+        Insert: {
+          carer_id: string
+          created_at?: string
+          drawing_data?: Json | null
+          entry_text?: string | null
+          entry_type?: string
+          id?: string
+          updated_at?: string
+          voice_url?: string | null
+        }
+        Update: {
+          carer_id?: string
+          created_at?: string
+          drawing_data?: Json | null
+          entry_text?: string | null
+          entry_type?: string
+          id?: string
+          updated_at?: string
+          voice_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "carer_journal_entries_carer_id_fkey"
+            columns: ["carer_id"]
+            isOneToOne: false
+            referencedRelation: "carer_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       carer_profiles: {
         Row: {
           avatar_json: Json | null
@@ -108,6 +179,7 @@ export type Database = {
         Row: {
           child_id: string
           created_at: string
+          drawing_data: Json | null
           entry_text: string
           flag_reasons: Json | null
           flagged: boolean | null
@@ -115,10 +187,12 @@ export type Database = {
           mood_tag: Database["public"]["Enums"]["mood_tag"] | null
           share_with_carer: boolean | null
           updated_at: string
+          voice_url: string | null
         }
         Insert: {
           child_id: string
           created_at?: string
+          drawing_data?: Json | null
           entry_text: string
           flag_reasons?: Json | null
           flagged?: boolean | null
@@ -126,10 +200,12 @@ export type Database = {
           mood_tag?: Database["public"]["Enums"]["mood_tag"] | null
           share_with_carer?: boolean | null
           updated_at?: string
+          voice_url?: string | null
         }
         Update: {
           child_id?: string
           created_at?: string
+          drawing_data?: Json | null
           entry_text?: string
           flag_reasons?: Json | null
           flagged?: boolean | null
@@ -137,6 +213,7 @@ export type Database = {
           mood_tag?: Database["public"]["Enums"]["mood_tag"] | null
           share_with_carer?: boolean | null
           updated_at?: string
+          voice_url?: string | null
         }
         Relationships: [
           {
@@ -147,6 +224,77 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      module_lessons: {
+        Row: {
+          content: string
+          content_type: string
+          created_at: string
+          id: string
+          media_url: string | null
+          module_id: string
+          order_index: number
+          title: string
+        }
+        Insert: {
+          content: string
+          content_type?: string
+          created_at?: string
+          id?: string
+          media_url?: string | null
+          module_id: string
+          order_index?: number
+          title: string
+        }
+        Update: {
+          content?: string
+          content_type?: string
+          created_at?: string
+          id?: string
+          media_url?: string | null
+          module_id?: string
+          order_index?: number
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "module_lessons_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "modules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      modules: {
+        Row: {
+          category: string
+          created_at: string
+          description: string
+          icon: string
+          id: string
+          order_index: number
+          title: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description: string
+          icon: string
+          id?: string
+          order_index?: number
+          title: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string
+          icon?: string
+          id?: string
+          order_index?: number
+          title?: string
+        }
+        Relationships: []
       }
       safeguarding_logs: {
         Row: {
@@ -189,6 +337,86 @@ export type Database = {
             columns: ["journal_entry_id"]
             isOneToOne: false
             referencedRelation: "journal_entries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_achievements: {
+        Row: {
+          achievement_id: string
+          earned_at: string
+          id: string
+          progress: number | null
+          user_id: string
+        }
+        Insert: {
+          achievement_id: string
+          earned_at?: string
+          id?: string
+          progress?: number | null
+          user_id: string
+        }
+        Update: {
+          achievement_id?: string
+          earned_at?: string
+          id?: string
+          progress?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_achievements_achievement_id_fkey"
+            columns: ["achievement_id"]
+            isOneToOne: false
+            referencedRelation: "achievements"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_module_progress: {
+        Row: {
+          completed: boolean | null
+          completed_at: string | null
+          created_at: string
+          id: string
+          lesson_id: string | null
+          module_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean | null
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          lesson_id?: string | null
+          module_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed?: boolean | null
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          lesson_id?: string | null
+          module_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_module_progress_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "module_lessons"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_module_progress_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "modules"
             referencedColumns: ["id"]
           },
         ]
