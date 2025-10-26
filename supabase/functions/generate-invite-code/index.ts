@@ -17,22 +17,20 @@ serve(async (req) => {
       throw new Error('No authorization header');
     }
 
+    // Extract user ID from JWT (already verified by verify_jwt=true in config.toml)
+    const token = authHeader.replace('Bearer ', '');
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const userId = payload.sub;
+
+    if (!userId) {
+      throw new Error('Invalid token');
+    }
+
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     
-    // Create admin client for database operations
+    // Create admin client for database operations (bypasses RLS)
     const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
-    
-    // Create user client to verify authentication
-    const supabaseKey = Deno.env.get('SUPABASE_ANON_KEY')!;
-    const supabase = createClient(supabaseUrl, supabaseKey, {
-      global: { headers: { Authorization: authHeader } }
-    });
-
-    const { data: { user }, error: userError } = await supabase.auth.getUser();
-    if (userError || !user) {
-      throw new Error('Unauthorized');
-    }
 
     // Generate 6-digit alphanumeric code
     const code = Math.random().toString(36).substring(2, 8).toUpperCase();
@@ -46,7 +44,7 @@ serve(async (req) => {
       .from('invite_codes')
       .insert({
         code,
-        carer_user_id: user.id,
+        carer_user_id: userId,
         expires_at: expiresAt.toISOString()
       })
       .select()
