@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, BookOpen, AlertCircle, Wrench } from 'lucide-react';
+import { Home, BookOpen, AlertCircle, Wrench, Brain, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { HelplineModal } from './HelplineModal';
 
@@ -19,8 +19,10 @@ export function BottomNav({ role }: BottomNavProps) {
         { icon: AlertCircle, label: 'Help', path: null, action: () => setShowHelpModal(true) },
       ]
     : [
-        { icon: Home, label: 'Home', path: '/carer/home' },
+        { icon: Home, label: 'Dashboard', path: '/carer/home' },
         { icon: BookOpen, label: 'Journal', path: '/carer/journal' },
+        { icon: Brain, label: 'Insights', path: '/carer/insights' },
+        { icon: Sparkles, label: 'Resources', path: '/carer/resources' },
       ];
 
   return (

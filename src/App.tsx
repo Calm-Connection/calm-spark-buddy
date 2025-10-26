@@ -32,7 +32,8 @@ import { ChildAchievements } from "./pages/child/ChildAchievements";
 import CarerHome from "./pages/carer/CarerHome";
 import PickAvatar from "./pages/carer/PickAvatar";
 import InviteCode from "./pages/carer/InviteCode";
-import Insights from "./pages/carer/Insights";
+import CarerInsights from "./pages/carer/CarerInsights";
+import CarerResources from "./pages/carer/CarerResources";
 import SharedEntries from "./pages/carer/SharedEntries";
 import JointTools from "./pages/carer/JointTools";
 import CarerJournal from "./pages/carer/CarerJournal";
@@ -102,7 +103,8 @@ function AppRoutes() {
       <Route path="/carer/home" element={<ProtectedRoute role="carer"><CarerHome /></ProtectedRoute>} />
       <Route path="/carer/pick-avatar" element={<ProtectedRoute role="carer"><PickAvatar /></ProtectedRoute>} />
       <Route path="/carer/invite-code" element={<ProtectedRoute role="carer"><InviteCode /></ProtectedRoute>} />
-      <Route path="/carer/insights" element={<ProtectedRoute role="carer"><Insights /></ProtectedRoute>} />
+      <Route path="/carer/insights" element={<ProtectedRoute role="carer"><CarerInsights /></ProtectedRoute>} />
+      <Route path="/carer/resources" element={<ProtectedRoute role="carer"><CarerResources /></ProtectedRoute>} />
       <Route path="/carer/shared-entries" element={<ProtectedRoute role="carer"><SharedEntries /></ProtectedRoute>} />
       <Route path="/carer/joint-tools" element={<ProtectedRoute role="carer"><JointTools /></ProtectedRoute>} />
       <Route path="/carer/journal" element={<ProtectedRoute role="carer"><CarerJournal /></ProtectedRoute>} />

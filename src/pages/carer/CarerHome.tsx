@@ -2,96 +2,150 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Settings, BookOpen, TrendingUp, Heart } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Settings, TrendingUp, Heart, Brain, Sparkles, BookOpen, Bell } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { AvatarDisplay } from '@/components/AvatarDisplay';
 import { applyTheme } from '@/hooks/useTheme';
 import { BottomNav } from '@/components/BottomNav';
+import { format, subDays, startOfDay, endOfDay } from 'date-fns';
+
+interface MoodData {
+  date: string;
+  mood_score: number;
+}
+
+interface LatestInsight {
+  summary: string;
+  mood_score: number;
+  themes: string[];
+  created_at: string;
+}
 
 export default function CarerHome() {
   const navigate = useNavigate();
-  const { user, signOut } = useAuth();
-  const [nickname, setNickname] = useState('Carer');
+  const { user } = useAuth();
+  const [nickname, setNickname] = useState('');
   const [avatarData, setAvatarData] = useState<any>(null);
-  const [childMood, setChildMood] = useState<{
-    mood: string;
-    text: string;
-    date: string;
-    nickname: string;
-  } | null>(null);
+  const [childNickname, setChildNickname] = useState('');
+  const [linkedChildId, setLinkedChildId] = useState<string>('');
   const [journalCount, setJournalCount] = useState(0);
+  const [moodTrend, setMoodTrend] = useState<MoodData[]>([]);
+  const [latestInsight, setLatestInsight] = useState<LatestInsight | null>(null);
+  const [suggestedAction, setSuggestedAction] = useState('');
+  const [hasNewSharedEntry, setHasNewSharedEntry] = useState(false);
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      if (!user) return;
-      
-      const { data: carerProfile } = await supabase
-        .from('carer_profiles')
-        .select('id, nickname, avatar_json')
-        .eq('user_id', user.id)
-        .maybeSingle();
-      
-      if (carerProfile) {
-        if (carerProfile.nickname) setNickname(carerProfile.nickname);
-        if (carerProfile.avatar_json) setAvatarData(carerProfile.avatar_json);
-
-        // Load linked child's latest mood
-        await loadChildMood(carerProfile.id);
-      }
-      
-      // Carers always use Classic theme
-      applyTheme('classic');
-    };
-
-    fetchProfile();
+    loadCarerData();
   }, [user]);
 
-  const loadChildMood = async (carerId: string) => {
-    // Find linked child
+  const loadCarerData = async () => {
+    if (!user) return;
+
+    // Get carer profile
+    const { data: carerProfile } = await supabase
+      .from('carer_profiles')
+      .select('id, nickname, avatar_json')
+      .eq('user_id', user.id)
+      .maybeSingle();
+
+    if (carerProfile) {
+      setNickname(carerProfile.nickname || 'Carer');
+      setAvatarData(carerProfile.avatar_json);
+    }
+
+    // Get linked child
     const { data: linkedChild } = await supabase
       .from('children_profiles')
       .select('id, nickname')
-      .eq('linked_carer_id', user?.id)
+      .eq('linked_carer_id', user.id)
       .maybeSingle();
 
-    if (!linkedChild) return;
+    if (linkedChild) {
+      setLinkedChildId(linkedChild.id);
+      setChildNickname(linkedChild.nickname);
+      await loadChildData(linkedChild.id);
+    }
 
-    // Get their latest shared journal entry
-    const { data: latestEntry } = await supabase
+    applyTheme('classic');
+  };
+
+  const loadChildData = async (childId: string) => {
+    // Count shared entries
+    const { count } = await supabase
       .from('journal_entries')
-      .select('mood_tag, entry_text, created_at')
-      .eq('child_id', linkedChild.id)
-      .eq('share_with_carer', true)
+      .select('*', { count: 'exact', head: true })
+      .eq('child_id', childId)
+      .eq('share_with_carer', true);
+
+    setJournalCount(count || 0);
+
+    // Get mood trend (last 7 days from insights)
+    const sevenDaysAgo = subDays(new Date(), 7);
+    const { data: insights } = await supabase
+      .from('wendy_insights')
+      .select('created_at, mood_score')
+      .eq('child_id', childId)
+      .gte('created_at', sevenDaysAgo.toISOString())
+      .order('created_at', { ascending: true });
+
+    if (insights) {
+      const trendData = insights.map((i) => ({
+        date: format(new Date(i.created_at), 'MMM dd'),
+        mood_score: i.mood_score || 50,
+      }));
+      setMoodTrend(trendData);
+    }
+
+    // Get latest AI insight
+    const { data: latestInsightData } = await supabase
+      .from('wendy_insights')
+      .select('summary, mood_score, themes, created_at')
+      .eq('child_id', childId)
       .order('created_at', { ascending: false })
       .limit(1)
       .maybeSingle();
 
-    if (latestEntry) {
-      setChildMood({
-        mood: latestEntry.mood_tag || 'okay',
-        text: latestEntry.entry_text,
-        date: latestEntry.created_at,
-        nickname: linkedChild.nickname,
-      });
+    if (latestInsightData) {
+      setLatestInsight(latestInsightData as LatestInsight);
+      
+      // Generate suggested action based on mood score
+      const moodScore = latestInsightData.mood_score || 50;
+      if (moodScore < 40) {
+        setSuggestedAction('Try a calming activity together 🌿');
+      } else if (moodScore < 60) {
+        setSuggestedAction('Schedule some quality time together 💜');
+      } else {
+        setSuggestedAction('Keep up the great support! 🌟');
+      }
     }
 
-    // Count total shared entries
-    const { count } = await supabase
+    // Check for new shared entries (within last 24 hours)
+    const yesterday = subDays(new Date(), 1);
+    const { count: recentCount } = await supabase
       .from('journal_entries')
       .select('*', { count: 'exact', head: true })
-      .eq('child_id', linkedChild.id)
-      .eq('share_with_carer', true);
+      .eq('child_id', childId)
+      .eq('share_with_carer', true)
+      .gte('created_at', yesterday.toISOString());
 
-    if (count) setJournalCount(count);
+    setHasNewSharedEntry((recentCount || 0) > 0);
   };
 
-  const moodEmojis: Record<string, string> = {
-    happy: '😊',
-    okay: '😐',
-    sad: '😢',
-    angry: '😠',
-    worried: '😰',
+  const getMoodEmoji = (score: number) => {
+    if (score >= 80) return '😊';
+    if (score >= 60) return '😌';
+    if (score >= 40) return '😐';
+    if (score >= 20) return '😔';
+    return '😢';
+  };
+
+  const getMoodColor = (score: number) => {
+    if (score >= 80) return 'from-secondary/20 to-primary/10';
+    if (score >= 60) return 'from-primary/20 to-accent/10';
+    if (score >= 40) return 'from-warm/20 to-accent/10';
+    return 'from-dusty-rose/20 to-accent/10';
   };
 
   return (
@@ -107,92 +161,168 @@ export default function CarerHome() {
           </div>
           <AvatarDisplay avatarData={avatarData} size="lg" />
           <div className="text-center">
-            <h1 className="text-3xl font-bold">Welcome, {nickname}! 💜</h1>
-            <p className="text-muted-foreground mt-1">Supporting your child's emotional journey</p>
+            <h1 className="text-3xl font-bold">Welcome back, {nickname} 🌿</h1>
+            <p className="text-muted-foreground mt-1">
+              {childNickname ? `Supporting ${childNickname}'s wellbeing` : 'Supporting your child\'s emotional journey'}
+            </p>
           </div>
         </div>
 
-        {/* Child's Mood Note */}
-        {childMood && (
-          <Card className="p-6 bg-gradient-to-br from-accent/20 to-primary/10 border-primary/20">
-            <h2 className="text-xl font-bold mb-3">{childMood.nickname}'s Latest Mood</h2>
-            <div className="flex items-start gap-4">
-              <span className="text-4xl">{moodEmojis[childMood.mood]}</span>
-              <div className="flex-1">
-                <p className="text-sm text-muted-foreground mb-2">
-                  {new Date(childMood.date).toLocaleDateString('en-US', {
-                    weekday: 'short',
-                    month: 'short',
-                    day: 'numeric',
+        {!linkedChildId ? (
+          <Card className="p-8 text-center">
+            <Heart className="h-12 w-12 mx-auto mb-4 text-primary" />
+            <h2 className="text-xl font-bold mb-2">Connect with Your Child</h2>
+            <p className="text-muted-foreground mb-4">
+              Generate an invite code to link with your child's account
+            </p>
+            <Button onClick={() => navigate('/carer/invite-code')}>
+              Generate Invite Code
+            </Button>
+          </Card>
+        ) : (
+          <>
+            {/* Notifications Panel */}
+            {hasNewSharedEntry && (
+              <Card className="p-4 bg-gradient-to-r from-secondary/20 to-primary/20 border-primary/30">
+                <div className="flex items-center gap-3">
+                  <Bell className="h-5 w-5 text-primary" />
+                  <div className="flex-1">
+                    <p className="font-semibold text-sm">New shared reflection</p>
+                    <p className="text-xs text-muted-foreground">
+                      {childNickname} shared a journal entry with you
+                    </p>
+                  </div>
+                  <Button size="sm" variant="outline" onClick={() => navigate('/carer/shared-entries')}>
+                    View
+                  </Button>
+                </div>
+              </Card>
+            )}
+
+            {/* Wellbeing Overview - Latest Insight */}
+            {latestInsight && (
+              <Card className={`p-6 bg-gradient-to-br ${getMoodColor(latestInsight.mood_score)}`}>
+                <div className="flex items-start gap-4">
+                  <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                    <Brain className="h-6 w-6 text-primary" />
+                  </div>
+                  <div className="flex-1 space-y-3">
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-bold text-lg">Wellbeing Overview</h3>
+                      <span className="text-2xl">{getMoodEmoji(latestInsight.mood_score)}</span>
+                    </div>
+                    <p className="text-sm">{latestInsight.summary}</p>
+                    {latestInsight.themes && latestInsight.themes.length > 0 && (
+                      <div className="flex gap-2 flex-wrap">
+                        {latestInsight.themes.slice(0, 3).map((theme, idx) => (
+                          <Badge key={idx} variant="secondary" className="text-xs">
+                            {theme}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
+                    <p className="text-xs text-muted-foreground">
+                      Last updated: {format(new Date(latestInsight.created_at), 'PPp')}
+                    </p>
+                  </div>
+                </div>
+              </Card>
+            )}
+
+            {/* Mood Tracker */}
+            {moodTrend.length > 0 && (
+              <Card className="p-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <TrendingUp className="h-5 w-5 text-primary" />
+                  <h3 className="font-bold">Emotional Trend (Last 7 Days)</h3>
+                </div>
+                <div className="flex items-end gap-2 h-32">
+                  {moodTrend.map((data, idx) => {
+                    const height = (data.mood_score / 100) * 100;
+                    return (
+                      <div key={idx} className="flex-1 flex flex-col items-center gap-1">
+                        <div className="w-full bg-primary/20 rounded-t-lg relative" style={{ height: '100%' }}>
+                          <div
+                            className="absolute bottom-0 w-full bg-primary rounded-t-lg transition-all"
+                            style={{ height: `${height}%` }}
+                          />
+                        </div>
+                        <span className="text-xs text-muted-foreground">{data.date.split(' ')[1]}</span>
+                      </div>
+                    );
                   })}
-                </p>
-                <p className="line-clamp-3">{childMood.text}</p>
-              </div>
-            </div>
-          </Card>
-        )}
+                </div>
+              </Card>
+            )}
 
-        {/* Quick Stats */}
-        <div className="grid grid-cols-2 gap-3">
-          <Card className="p-5 bg-gradient-to-br from-primary/10 to-accent/10">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                <BookOpen className="h-5 w-5 text-primary" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{journalCount}</p>
-                <p className="text-xs text-muted-foreground">Shared Entries</p>
-              </div>
-            </div>
-          </Card>
+            {/* Suggested Action */}
+            {suggestedAction && (
+              <Card className="p-5 bg-gradient-to-br from-accent/20 to-warm/20">
+                <div className="flex items-center gap-3">
+                  <Sparkles className="h-6 w-6 text-primary" />
+                  <div>
+                    <p className="font-semibold text-sm">Suggested Action</p>
+                    <p className="text-sm text-muted-foreground">{suggestedAction}</p>
+                  </div>
+                </div>
+              </Card>
+            )}
 
-          <Card className="p-5 bg-gradient-to-br from-secondary/10 to-accent/10">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-full bg-secondary/10 flex items-center justify-center">
-                <Heart className="h-5 w-5 text-secondary" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">Active</p>
-                <p className="text-xs text-muted-foreground">Connection</p>
-              </div>
-            </div>
-          </Card>
-        </div>
+            {/* Quick Stats */}
+            <div className="grid grid-cols-2 gap-3">
+              <Card className="p-5 bg-gradient-to-br from-primary/10 to-accent/10">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center">
+                    <BookOpen className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold">{journalCount}</p>
+                    <p className="text-xs text-muted-foreground">Shared Entries</p>
+                  </div>
+                </div>
+              </Card>
 
-        {/* Support Resources */}
-        <Card className="p-6 bg-gradient-to-br from-warm/20 to-accent/20">
-          <div className="flex items-start gap-3">
-            <TrendingUp className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
-            <div>
-              <h3 className="font-bold text-lg mb-2">Supporting Your Child</h3>
-              <p className="text-sm text-muted-foreground mb-3">
-                Regular check-ins and open communication help build trust. Review shared journal entries to understand their emotional journey.
-              </p>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => navigate('/carer/shared-entries')}
+              <Card className="p-5 bg-gradient-to-br from-secondary/10 to-accent/10">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-full bg-secondary/20 flex items-center justify-center">
+                    <Heart className="h-5 w-5 text-secondary" />
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold">Active</p>
+                    <p className="text-xs text-muted-foreground">Connection</p>
+                  </div>
+                </div>
+              </Card>
+            </div>
+
+            {/* Quick Actions */}
+            <div className="grid gap-3">
+              <Button
+                variant="outline"
+                className="justify-start h-auto py-4"
+                onClick={() => navigate('/carer/insights')}
               >
-                View All Shared Entries
+                <Brain className="h-5 w-5 mr-3" />
+                <div className="text-left">
+                  <p className="font-semibold">View Detailed Insights</p>
+                  <p className="text-xs text-muted-foreground">AI summaries and trends</p>
+                </div>
+              </Button>
+
+              <Button
+                variant="outline"
+                className="justify-start h-auto py-4"
+                onClick={() => navigate('/carer/resources')}
+              >
+                <Sparkles className="h-5 w-5 mr-3" />
+                <div className="text-left">
+                  <p className="font-semibold">Parenting Resources</p>
+                  <p className="text-xs text-muted-foreground">Modules and guidance for carers</p>
+                </div>
               </Button>
             </div>
-          </div>
-        </Card>
-
-        {/* Your Journal Reminder */}
-        <Card className="p-5 bg-gradient-to-br from-accent/10 to-primary/10 border-primary/20">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="font-bold mb-1">Your Private Journal</h3>
-              <p className="text-sm text-muted-foreground">
-                Document your own experiences and reflections
-              </p>
-            </div>
-            <Button onClick={() => navigate('/carer/journal')}>
-              Write Entry
-            </Button>
-          </div>
-        </Card>
+          </>
+        )}
       </div>
 
       <BottomNav role="carer" />
