@@ -57,9 +57,48 @@ export function AddCarerCodeModal({ open, onOpenChange, onSuccess }: AddCarerCod
       }
 
       if (!inviteData) {
+        // Check if code exists but is used or expired
+        const { data: usedCode } = await supabase
+          .from('invite_codes')
+          .select('*')
+          .eq('code', trimmedCode)
+          .maybeSingle();
+
+        if (usedCode?.used) {
+          toast({
+            title: 'Code already used',
+            description: 'This code has already been used. Please ask your carer for a new code.',
+            variant: 'destructive',
+          });
+        } else if (usedCode && new Date(usedCode.expires_at) < new Date()) {
+          toast({
+            title: 'Code expired',
+            description: 'This code has expired. Please ask your carer for a new code.',
+            variant: 'destructive',
+          });
+        } else {
+          toast({
+            title: 'Code not found',
+            description: 'This code doesn\'t exist. Please check the code and try again.',
+            variant: 'destructive',
+          });
+        }
+        setLoading(false);
+        return;
+      }
+
+      // Verify carer profile exists
+      const { data: carerProfile, error: carerError } = await supabase
+        .from('carer_profiles')
+        .select('id')
+        .eq('user_id', inviteData.carer_user_id)
+        .maybeSingle();
+
+      if (carerError || !carerProfile) {
+        console.error('Carer profile check error:', carerError);
         toast({
-          title: 'Code not found',
-          description: 'That code isn\'t valid or has expired. Please check and try again.',
+          title: 'Unable to verify carer',
+          description: 'The carer account hasn\'t completed setup yet. Please ask them to log in and complete their profile.',
           variant: 'destructive',
         });
         setLoading(false);

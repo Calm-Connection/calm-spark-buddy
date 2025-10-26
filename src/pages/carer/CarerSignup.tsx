@@ -9,6 +9,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { applyTheme } from '@/hooks/useTheme';
+import { supabase } from '@/integrations/supabase/client';
 
 export default function CarerSignup() {
   const [nickname, setNickname] = useState('');
@@ -47,17 +48,65 @@ export default function CarerSignup() {
 
     setLoading(true);
 
-    const { error } = await signUp(email, password, 'carer');
+    try {
+      const { error } = await signUp(email, password, 'carer');
 
-    if (error) {
+      if (error) {
+        toast({
+          title: 'Signup failed',
+          description: error.message,
+          variant: 'destructive',
+        });
+        setLoading(false);
+        return;
+      }
+
+      // Get the newly created user
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast({
+          title: 'Error',
+          description: 'Could not create your profile. Please try logging in.',
+          variant: 'destructive',
+        });
+        setLoading(false);
+        return;
+      }
+
+      // Create carer profile immediately with nickname
+      const { error: profileError } = await supabase
+        .from('carer_profiles')
+        .insert({
+          user_id: user.id,
+          nickname: nickname,
+        });
+
+      if (profileError) {
+        console.error('Profile creation error:', profileError);
+        toast({
+          title: 'Error',
+          description: 'Failed to create your profile. Please contact support.',
+          variant: 'destructive',
+        });
+        setLoading(false);
+        return;
+      }
+
       toast({
-        title: 'Signup failed',
-        description: error.message,
+        title: 'Account created! 🎉',
+        description: 'Now let\'s pick your avatar',
+      });
+
+      navigate('/carer/pick-avatar');
+    } catch (error) {
+      console.error('Signup error:', error);
+      toast({
+        title: 'Error',
+        description: 'Something went wrong. Please try again.',
         variant: 'destructive',
       });
       setLoading(false);
-    } else {
-      navigate('/carer/pick-avatar');
     }
   };
 
