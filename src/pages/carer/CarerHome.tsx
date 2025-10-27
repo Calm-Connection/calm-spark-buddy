@@ -229,6 +229,71 @@ export default function CarerHome() {
               </Card>
             )}
 
+            {/* This Week with Wendy */}
+            {latestInsight && moodTrend.length > 0 && (
+              <Card className="p-6 bg-gradient-to-br from-primary/5 to-accent/5 border-primary/20">
+                <div className="space-y-4">
+                  {/* Header */}
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="h-5 w-5 text-primary" />
+                    <h3 className="font-bold text-lg">This Week with Wendy 🌿</h3>
+                  </div>
+
+                  {/* Weekly Insight */}
+                  <div className="bg-background/50 rounded-lg p-4">
+                    <p className="text-sm text-muted-foreground italic">
+                      "{latestInsight.summary.slice(0, 150)}{latestInsight.summary.length > 150 ? '...' : ''}"
+                    </p>
+                  </div>
+
+                  {/* Progress Tracker */}
+                  <div className="grid grid-cols-3 gap-3">
+                    <div className="text-center p-3 bg-background/50 rounded-lg">
+                      <p className="text-2xl font-bold text-primary">{journalCount}</p>
+                      <p className="text-xs text-muted-foreground">Journals</p>
+                    </div>
+                    <div className="text-center p-3 bg-background/50 rounded-lg">
+                      <p className="text-2xl font-bold text-secondary">
+                        {moodTrend.filter(m => m.mood_score >= 60).length}
+                      </p>
+                      <p className="text-xs text-muted-foreground">Calm Days</p>
+                    </div>
+                    <div className="text-center p-3 bg-background/50 rounded-lg">
+                      <p className="text-2xl font-bold text-accent">
+                        {Math.round(moodTrend.reduce((sum, m) => sum + m.mood_score, 0) / moodTrend.length)}%
+                      </p>
+                      <p className="text-xs text-muted-foreground">Avg Mood</p>
+                    </div>
+                  </div>
+
+                  {/* Mini 7-Day Mood Trend */}
+                  <div>
+                    <p className="text-xs font-semibold text-muted-foreground mb-2">7-Day Mood Snapshot</p>
+                    <div className="flex items-end gap-1 h-16">
+                      {moodTrend.map((data, idx) => {
+                        const height = (data.mood_score / 100) * 100;
+                        return (
+                          <div key={idx} className="flex-1 flex flex-col items-center gap-1">
+                            <div className="w-full bg-muted rounded-t relative" style={{ height: '100%' }}>
+                              <div
+                                className="absolute bottom-0 w-full bg-gradient-to-t from-primary to-secondary rounded-t transition-all"
+                                style={{ height: `${height}%` }}
+                                title={`${data.date}: ${data.mood_score}%`}
+                              />
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    <div className="flex justify-between mt-1">
+                      <span className="text-xs text-muted-foreground">7d ago</span>
+                      <span className="text-xs text-muted-foreground">Today</span>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            )}
+
             {/* Mood Tracker */}
             {moodTrend.length > 0 && (
               <Card className="p-6">
