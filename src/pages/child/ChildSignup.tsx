@@ -62,6 +62,13 @@ export default function ChildSignup() {
     return (
       <div className="min-h-screen flex items-center justify-center p-6 bg-background">
         <Card className="max-w-md w-full p-8 space-y-6">
+          <Button 
+            variant="ghost" 
+            onClick={() => navigate(-1)}
+            className="mb-4"
+          >
+            ← Back
+          </Button>
           <div className="text-center space-y-2">
             <h1 className="text-3xl font-bold">Hello! 👋</h1>
             <p className="text-muted-foreground">Do you have a parent or carer who will use this app with you?</p>

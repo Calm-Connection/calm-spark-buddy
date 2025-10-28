@@ -7,12 +7,26 @@ import { INeedHelpButton } from '@/components/INeedHelpButton';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { format } from 'date-fns';
-import { BookOpen } from 'lucide-react';
+import { BookOpen, Trash2 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 export default function ViewEntries() {
   const [entries, setEntries] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [entryToDelete, setEntryToDelete] = useState<string | null>(null);
   const { user } = useAuth();
+  const { toast } = useToast();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,6 +53,38 @@ export default function ViewEntries() {
 
     loadEntries();
   }, [user]);
+
+  const handleDeleteClick = (entryId: string) => {
+    setEntryToDelete(entryId);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!entryToDelete) return;
+
+    const { error } = await supabase
+      .from('journal_entries')
+      .delete()
+      .eq('id', entryToDelete);
+
+    if (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to delete entry',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    toast({
+      title: 'Deleted',
+      description: 'Entry has been deleted',
+    });
+    
+    setEntries(entries.filter(e => e.id !== entryToDelete));
+    setDeleteDialogOpen(false);
+    setEntryToDelete(null);
+  };
 
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
@@ -82,9 +128,19 @@ export default function ViewEntries() {
                       <Badge variant="outline">Shared with carer</Badge>
                     )}
                   </div>
-                  <span className="text-sm text-muted-foreground">
-                    {format(new Date(entry.created_at), 'MMM d, yyyy')}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-muted-foreground">
+                      {format(new Date(entry.created_at), 'MMM d, yyyy')}
+                    </span>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
+                      onClick={() => handleDeleteClick(entry.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
                 <p className="text-sm whitespace-pre-wrap line-clamp-3">{entry.entry_text}</p>
               </Card>
@@ -92,6 +148,26 @@ export default function ViewEntries() {
           </div>
         )}
       </div>
+
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Entry?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this entry? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={handleDeleteConfirm}
+              className="bg-destructive hover:bg-destructive/90"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       <INeedHelpButton />
     </div>
