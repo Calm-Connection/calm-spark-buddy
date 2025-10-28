@@ -24,11 +24,11 @@ export default function Welcome() {
         <Card>
           <CardContent className="space-y-8">
             <div className="space-y-4">
-              <h1 className="text-foreground">
+              <h1 className="text-foreground text-3xl md:text-5xl">
                 WELCOME!
               </h1>
               
-              <p className="text-xl text-foreground/80">
+              <p className="text-base md:text-xl text-foreground/80">
                 A gentle, nurturing space where children and carers grow emotionally together
               </p>
             </div>

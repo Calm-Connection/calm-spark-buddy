@@ -17,11 +17,11 @@ export default function RoleSelection() {
     <PageLayout>
       <div className="space-y-12">
         <div className="text-center space-y-4">
-          <h1 className="text-foreground">WHO'S LOGGING IN?</h1>
-          <p className="text-xl text-foreground/80">Choose your role to get started</p>
+          <h1 className="text-foreground text-3xl md:text-5xl">WHO'S LOGGING IN?</h1>
+          <p className="text-base md:text-xl text-foreground/80">Choose your role to get started</p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-2 gap-4 md:gap-6">
           <Card 
             className="cursor-pointer hover:shadow-2xl transition-all hover:scale-105 border-0"
             onClick={() => navigate('/child/signup')}

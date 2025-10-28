@@ -45,7 +45,14 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-background">
+    <div className="min-h-screen flex items-center justify-center p-6 bg-background relative">
+      <Button 
+        variant="ghost" 
+        onClick={() => navigate(-1)}
+        className="absolute top-6 left-6"
+      >
+        ← Back
+      </Button>
       <Card className="max-w-md w-full p-8 space-y-6">
         <div className="text-center space-y-2">
           <h1 className="text-3xl font-bold">Welcome Back</h1>
