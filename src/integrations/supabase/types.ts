@@ -145,6 +145,42 @@ export type Database = {
         }
         Relationships: []
       }
+      coping_tools: {
+        Row: {
+          age_range: string
+          category: string
+          created_at: string
+          description: string
+          icon: string
+          id: string
+          instructions: Json
+          name: string
+          tags: string[]
+        }
+        Insert: {
+          age_range?: string
+          category: string
+          created_at?: string
+          description: string
+          icon?: string
+          id?: string
+          instructions: Json
+          name: string
+          tags?: string[]
+        }
+        Update: {
+          age_range?: string
+          category?: string
+          created_at?: string
+          description?: string
+          icon?: string
+          id?: string
+          instructions?: Json
+          name?: string
+          tags?: string[]
+        }
+        Relationships: []
+      }
       invite_codes: {
         Row: {
           carer_user_id: string
@@ -450,6 +486,7 @@ export type Database = {
           id: string
           journal_entry_id: string
           mood_score: number | null
+          recommended_tool_ids: string[] | null
           recommended_tools: Json | null
           summary: string | null
           themes: Json | null
@@ -461,6 +498,7 @@ export type Database = {
           id?: string
           journal_entry_id: string
           mood_score?: number | null
+          recommended_tool_ids?: string[] | null
           recommended_tools?: Json | null
           summary?: string | null
           themes?: Json | null
@@ -472,6 +510,7 @@ export type Database = {
           id?: string
           journal_entry_id?: string
           mood_score?: number | null
+          recommended_tool_ids?: string[] | null
           recommended_tools?: Json | null
           summary?: string | null
           themes?: Json | null
