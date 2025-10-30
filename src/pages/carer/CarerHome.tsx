@@ -10,6 +10,7 @@ import { AvatarDisplay } from '@/components/AvatarDisplay';
 import { applyTheme } from '@/hooks/useTheme';
 import { BottomNav } from '@/components/BottomNav';
 import { format, subDays, startOfDay, endOfDay } from 'date-fns';
+import { NotificationBell } from '@/components/NotificationBell';
 
 interface MoodData {
   date: string;
@@ -155,9 +156,12 @@ export default function CarerHome() {
         <div className="flex flex-col items-center gap-4 mb-6">
           <div className="flex w-full justify-between items-start">
             <div className="flex-1" />
-            <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
-              <Settings className="h-5 w-5" />
-            </Button>
+            <div className="flex items-center gap-2">
+              <NotificationBell />
+              <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
+                <Settings className="h-5 w-5" />
+              </Button>
+            </div>
           </div>
           <AvatarDisplay avatarData={avatarData} size="lg" />
           <div className="text-center">

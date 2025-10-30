@@ -9,6 +9,7 @@ import { AvatarDisplay } from '@/components/AvatarDisplay';
 import { applyTheme, type ThemeName } from '@/hooks/useTheme';
 import { FloatingElements } from '@/components/FloatingElements';
 import { BottomNav } from '@/components/BottomNav';
+import { NotificationBell } from '@/components/NotificationBell';
 
 const affirmations = [
   "You are brave and strong 💪",
@@ -136,7 +137,8 @@ export default function ChildHome() {
       <div className="max-w-2xl mx-auto space-y-6 relative z-10">
         {/* Header */}
         <div className="flex flex-col gap-4">
-          <div className="flex justify-end">
+          <div className="flex justify-end gap-2">
+            <NotificationBell />
             <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
               <Settings className="h-5 w-5" />
             </Button>

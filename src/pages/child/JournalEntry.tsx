@@ -13,6 +13,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Sparkles, Pencil, Mic, Palette, StopCircle } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useNotificationTrigger } from '@/hooks/useNotificationTrigger';
 
 const moods = ['happy', 'sad', 'angry', 'worried', 'calm', 'excited', 'scared'] as const;
 type MoodType = typeof moods[number];
@@ -56,6 +57,7 @@ export default function JournalEntry() {
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { notifySharedEntry } = useNotificationTrigger();
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -247,6 +249,14 @@ export default function JournalEntry() {
         setShowSafeguardingModal(true);
         setLoading(false);
         return;
+      }
+
+      // Trigger notification if shared with carer
+      if (shareWithCarer && childProfile.linked_carer_id) {
+        await notifySharedEntry(
+          childProfile.linked_carer_id,
+          childProfile.nickname
+        );
       }
 
       toast({
