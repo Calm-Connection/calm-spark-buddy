@@ -7,6 +7,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { BottomNav } from '@/components/BottomNav';
+import { useNotificationTrigger } from '@/hooks/useNotificationTrigger';
 
 interface Lesson {
   id: string;
@@ -27,6 +28,7 @@ export default function ModuleDetail() {
   const navigate = useNavigate();
   const { moduleId } = useParams();
   const { user } = useAuth();
+  const { notifyModuleComplete } = useNotificationTrigger();
   const [module, setModule] = useState<Module | null>(null);
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [completedLessons, setCompletedLessons] = useState<Set<string>>(new Set());
@@ -109,8 +111,25 @@ export default function ModuleDetail() {
       setCompletedLessons((prev) => new Set([...prev, lessonId]));
       toast.success('Lesson completed! 🎉');
 
-      // Check if module is complete and award achievement
-      if (completedLessons.size + 1 === lessons.length) {
+      // Check if module is now complete
+      const newCompletedCount = completedLessons.size + 1;
+      if (newCompletedCount === lessons.length && userRole === 'child') {
+        // Module complete - notify carer
+        const { data: childProfile } = await supabase
+          .from('children_profiles')
+          .select('nickname, linked_carer_id')
+          .eq('user_id', user.id)
+          .maybeSingle();
+
+        if (childProfile?.linked_carer_id && module) {
+          await notifyModuleComplete(
+            childProfile.linked_carer_id,
+            childProfile.nickname || 'Your child',
+            module.title
+          );
+        }
+
+        // Award achievement
         await checkAndAwardAchievement();
       }
     } catch (error) {

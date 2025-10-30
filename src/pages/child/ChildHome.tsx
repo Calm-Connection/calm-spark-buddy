@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Settings, BookOpen, Wrench, GraduationCap, Sparkles } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { useAchievementProgress } from '@/hooks/useAchievementProgress';
 import { supabase } from '@/integrations/supabase/client';
 import { AvatarDisplay } from '@/components/AvatarDisplay';
 import { applyTheme, type ThemeName } from '@/hooks/useTheme';
@@ -30,6 +31,10 @@ export default function ChildHome() {
   const [achievements, setAchievements] = useState<any[]>([]);
   const [userAchievements, setUserAchievements] = useState<any[]>([]);
   const [wendyTip, setWendyTip] = useState<string | null>(null);
+  const [childProfileId, setChildProfileId] = useState<string | undefined>();
+
+  // Track achievement progress automatically
+  useAchievementProgress(childProfileId);
 
   const moods = [
     { id: 'happy', label: 'Happy', emoji: '😊' },
@@ -52,6 +57,7 @@ export default function ChildHome() {
       if (data) {
         setNickname(data.nickname);
         setAvatarData(data.avatar_json);
+        setChildProfileId(data.id);
         
         // Apply saved theme
         if (data.theme) {

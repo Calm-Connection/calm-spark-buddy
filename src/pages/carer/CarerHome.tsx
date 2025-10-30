@@ -417,6 +417,30 @@ export default function CarerHome() {
                   <p className="text-xs text-muted-foreground">Modules and guidance for carers</p>
                 </div>
               </Button>
+
+              <Button
+                variant="outline"
+                className="justify-start h-auto py-4"
+                onClick={() => navigate('/carer/notification-settings')}
+              >
+                <Bell className="h-5 w-5 mr-3" />
+                <div className="text-left">
+                  <p className="font-semibold">Notification Settings</p>
+                  <p className="text-xs text-muted-foreground">Manage alerts and reminders</p>
+                </div>
+              </Button>
+
+              <Button
+                variant="outline"
+                className="justify-start h-auto py-4"
+                onClick={() => navigate('/carer/notification-analytics')}
+              >
+                <TrendingUp className="h-5 w-5 mr-3" />
+                <div className="text-left">
+                  <p className="font-semibold">Notification Analytics</p>
+                  <p className="text-xs text-muted-foreground">View notification insights</p>
+                </div>
+              </Button>
             </div>
           </>
         )}

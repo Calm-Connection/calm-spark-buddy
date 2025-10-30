@@ -91,11 +91,59 @@ export function useNotificationTrigger() {
     });
   };
 
+  /**
+   * Notify when child earns an achievement
+   */
+  const notifyAchievementEarned = async (
+    userId: string,
+    achievementName: string,
+    achievementIcon: string
+  ) => {
+    await triggerNotification(userId, 'achievement', {
+      title: `Achievement unlocked! ${achievementIcon}`,
+      body: `You've earned: ${achievementName}`,
+    });
+  };
+
+  /**
+   * Notify carer when child completes a module
+   */
+  const notifyModuleComplete = async (
+    carerId: string,
+    childName: string,
+    moduleName: string
+  ) => {
+    await triggerNotification(carerId, 'module_completion', {
+      title: 'Module completed! 🎓',
+      body: `${childName} completed "${moduleName}"`,
+    });
+  };
+
+  /**
+   * Send connection prompt to child
+   */
+  const notifyConnectionPrompt = async (userId: string) => {
+    const prompts = [
+      'Would you like to share something you wrote with your grown-up today?',
+      'Your grown-up might love to hear about what made you smile this week.',
+      'Have you thought about sharing a reflection with your trusted adult?',
+    ];
+    const randomPrompt = prompts[Math.floor(Math.random() * prompts.length)];
+
+    await triggerNotification(userId, 'connection_prompt', {
+      title: 'Stay connected 💙',
+      body: randomPrompt,
+    });
+  };
+
   return {
     triggerNotification,
     notifySharedEntry,
     notifySafeguardingAlert,
     notifyInactiveChild,
     notifyNewResource,
+    notifyAchievementEarned,
+    notifyModuleComplete,
+    notifyConnectionPrompt,
   };
 }

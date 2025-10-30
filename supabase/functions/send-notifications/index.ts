@@ -111,6 +111,13 @@ Deno.serve(async (req) => {
     }
 
     const notifications: NotificationContent[] = [];
+    let notificationsSent = 0;
+    const processedNotifications: any[] = [];
+
+    const supabaseAdmin = createClient(supabaseUrl, supabaseKey);
+    const now = new Date();
+    const todayStart = new Date(now);
+    todayStart.setHours(0, 0, 0, 0);
 
     // Process each user's preferences
     for (const pref of preferences || []) {
@@ -246,15 +253,157 @@ Deno.serve(async (req) => {
             });
           }
         }
+
+        // Connection prompts - gentle reminders to share with carer
+        if (pref.connection_prompts && !inQuietHours && Math.random() < 0.15 && currentHour >= 17 && currentHour <= 20) {
+          const messages = notificationMessages.child.connection_prompt;
+          const message = messages[Math.floor(Math.random() * messages.length)];
+          
+          await supabaseAdmin.from('notification_history').insert({
+            user_id: pref.user_id,
+            notification_type: 'connection_prompt',
+            notification_content: JSON.stringify(message),
+          });
+
+          notifications.push({
+            type: 'connection_prompt',
+            ...message,
+            category: 'child',
+          });
+          notificationsSent++;
+        }
       }
     }
 
-    console.log(`Processed ${notifications.length} notifications`);
+    // PHASE 4: Inactivity Detection for Carers
+    console.log('Checking for inactive children...');
+    const { data: carerProfiles } = await supabaseAdmin
+      .from('carer_profiles')
+      .select('id, user_id, nickname');
+
+    if (carerProfiles) {
+      for (const carer of carerProfiles) {
+        // Get linked children
+        const { data: linkedChildren } = await supabaseAdmin
+          .from('children_profiles')
+          .select('id, nickname, user_id')
+          .eq('linked_carer_id', carer.user_id);
+
+        if (linkedChildren) {
+          for (const child of linkedChildren) {
+            // Check last journal entry
+            const { data: lastEntry } = await supabaseAdmin
+              .from('journal_entries')
+              .select('created_at')
+              .eq('child_id', child.id)
+              .order('created_at', { ascending: false })
+              .limit(1)
+              .maybeSingle();
+
+            if (lastEntry) {
+              const daysSinceLastEntry = Math.floor(
+                (now.getTime() - new Date(lastEntry.created_at).getTime()) / (1000 * 60 * 60 * 24)
+              );
+
+              // Alert if inactive for 5+ days
+              if (daysSinceLastEntry >= 5) {
+                // Check if we already sent this alert today
+                const { data: alreadySent } = await supabaseAdmin
+                  .from('notification_history')
+                  .select('id')
+                  .eq('user_id', carer.user_id)
+                  .eq('notification_type', 'engagement_reminder')
+                  .gte('sent_at', todayStart.toISOString())
+                  .maybeSingle();
+
+                if (!alreadySent) {
+                  await supabaseAdmin.from('notification_history').insert({
+                    user_id: carer.user_id,
+                    notification_type: 'engagement_reminder',
+                    notification_content: JSON.stringify({
+                      title: 'Gentle check-in reminder',
+                      body: `${child.nickname || 'Your child'} hasn't checked in for ${daysSinceLastEntry} days. It might be a good time to see how they're doing.`,
+                    }),
+                  });
+                  notificationsSent++;
+                  console.log(`Sent inactivity alert for child ${child.id} to carer ${carer.user_id}`);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // PHASE 4: Weekly Insights Summary for Carers (Mondays at 9am)
+    if (now.getDay() === 1 && currentHour === 9) {
+      console.log('Generating weekly insights summaries...');
+      
+      if (carerProfiles) {
+        for (const carer of carerProfiles) {
+          const { data: linkedChildren } = await supabaseAdmin
+            .from('children_profiles')
+            .select('id, nickname')
+            .eq('linked_carer_id', carer.user_id);
+
+          if (linkedChildren && linkedChildren.length > 0) {
+            for (const child of linkedChildren) {
+              // Get insights from the past week
+              const weekAgo = new Date(now);
+              weekAgo.setDate(weekAgo.getDate() - 7);
+
+              const { data: weeklyInsights } = await supabaseAdmin
+                .from('wendy_insights')
+                .select('mood_score, themes, summary')
+                .eq('child_id', child.id)
+                .gte('created_at', weekAgo.toISOString())
+                .order('created_at', { ascending: false });
+
+              if (weeklyInsights && weeklyInsights.length > 0) {
+                // Calculate average mood
+                const avgMood = weeklyInsights.reduce((sum, i) => sum + (i.mood_score || 5), 0) / weeklyInsights.length;
+                const moodTrend = avgMood >= 6 ? 'positive' : avgMood >= 4 ? 'stable' : 'needs attention';
+
+                // Extract common themes
+                const allThemes: string[] = [];
+                weeklyInsights.forEach((insight: any) => {
+                  if (insight.themes && Array.isArray(insight.themes)) {
+                    allThemes.push(...insight.themes);
+                  }
+                });
+                const themeCount: Record<string, number> = allThemes.reduce((acc: any, theme: string) => {
+                  acc[theme] = (acc[theme] || 0) + 1;
+                  return acc;
+                }, {});
+                const topThemes = Object.entries(themeCount)
+                  .sort(([, a], [, b]) => (b as number) - (a as number))
+                  .slice(0, 3)
+                  .map(([theme]) => theme);
+
+                await supabaseAdmin.from('notification_history').insert({
+                  user_id: carer.user_id,
+                  notification_type: 'insights_summary',
+                  notification_content: JSON.stringify({
+                    title: `${child.nickname}'s weekly wellbeing summary`,
+                    body: `Mood trend: ${moodTrend}. ${topThemes.length > 0 ? `Recurring themes: ${topThemes.join(', ')}.` : ''} ${weeklyInsights.length} reflections this week.`,
+                  }),
+                });
+                notificationsSent++;
+                console.log(`Sent weekly summary for child ${child.id} to carer ${carer.user_id}`);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    console.log(`Processed ${notificationsSent} notifications`);
 
     return new Response(
       JSON.stringify({ 
         success: true, 
-        processed: notifications.length,
+        count: notificationsSent,
+        processed: processedNotifications.length,
         notifications 
       }),
       { 
