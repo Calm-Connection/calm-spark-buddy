@@ -332,6 +332,117 @@ export type Database = {
         }
         Relationships: []
       }
+      notification_history: {
+        Row: {
+          created_at: string
+          dismissed_at: string | null
+          id: string
+          notification_content: string
+          notification_type: string
+          read_at: string | null
+          sent_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          dismissed_at?: string | null
+          id?: string
+          notification_content: string
+          notification_type: string
+          read_at?: string | null
+          sent_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          dismissed_at?: string | null
+          id?: string
+          notification_content?: string
+          notification_type?: string
+          read_at?: string | null
+          sent_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      notification_preferences: {
+        Row: {
+          calm_activities: boolean | null
+          connection_prompts: boolean | null
+          created_at: string
+          encouragement_messages: boolean | null
+          id: string
+          insights_frequency: string | null
+          insights_summary: boolean | null
+          journal_reminder_time: string | null
+          journal_reminders: boolean | null
+          mood_checkin_frequency: string | null
+          mood_checkins: boolean | null
+          notification_sound: boolean | null
+          notification_vibration: boolean | null
+          quiet_hours_enabled: boolean | null
+          quiet_hours_end: string | null
+          quiet_hours_start: string | null
+          role: Database["public"]["Enums"]["app_role"]
+          safeguarding_alerts: boolean | null
+          shared_reflections: boolean | null
+          support_tools: boolean | null
+          updated_at: string
+          user_id: string
+          wellbeing_content: boolean | null
+        }
+        Insert: {
+          calm_activities?: boolean | null
+          connection_prompts?: boolean | null
+          created_at?: string
+          encouragement_messages?: boolean | null
+          id?: string
+          insights_frequency?: string | null
+          insights_summary?: boolean | null
+          journal_reminder_time?: string | null
+          journal_reminders?: boolean | null
+          mood_checkin_frequency?: string | null
+          mood_checkins?: boolean | null
+          notification_sound?: boolean | null
+          notification_vibration?: boolean | null
+          quiet_hours_enabled?: boolean | null
+          quiet_hours_end?: string | null
+          quiet_hours_start?: string | null
+          role: Database["public"]["Enums"]["app_role"]
+          safeguarding_alerts?: boolean | null
+          shared_reflections?: boolean | null
+          support_tools?: boolean | null
+          updated_at?: string
+          user_id: string
+          wellbeing_content?: boolean | null
+        }
+        Update: {
+          calm_activities?: boolean | null
+          connection_prompts?: boolean | null
+          created_at?: string
+          encouragement_messages?: boolean | null
+          id?: string
+          insights_frequency?: string | null
+          insights_summary?: boolean | null
+          journal_reminder_time?: string | null
+          journal_reminders?: boolean | null
+          mood_checkin_frequency?: string | null
+          mood_checkins?: boolean | null
+          notification_sound?: boolean | null
+          notification_vibration?: boolean | null
+          quiet_hours_enabled?: boolean | null
+          quiet_hours_end?: string | null
+          quiet_hours_start?: string | null
+          role?: Database["public"]["Enums"]["app_role"]
+          safeguarding_alerts?: boolean | null
+          shared_reflections?: boolean | null
+          support_tools?: boolean | null
+          updated_at?: string
+          user_id?: string
+          wellbeing_content?: boolean | null
+        }
+        Relationships: []
+      }
       safeguarding_logs: {
         Row: {
           action_taken: string | null
