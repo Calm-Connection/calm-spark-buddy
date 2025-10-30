@@ -39,6 +39,7 @@ import SharedEntries from "./pages/carer/SharedEntries";
 import JointTools from "./pages/carer/JointTools";
 import CarerJournal from "./pages/carer/CarerJournal";
 import CarerNotificationSettings from "./pages/carer/NotificationSettings";
+import SafeguardingDashboard from "./pages/carer/SafeguardingDashboard";
 
 // Shared pages
 import Modules from "./pages/shared/Modules";
@@ -112,6 +113,7 @@ function AppRoutes() {
       <Route path="/carer/joint-tools" element={<ProtectedRoute role="carer"><JointTools /></ProtectedRoute>} />
       <Route path="/carer/journal" element={<ProtectedRoute role="carer"><CarerJournal /></ProtectedRoute>} />
       <Route path="/carer/notification-settings" element={<ProtectedRoute role="carer"><CarerNotificationSettings /></ProtectedRoute>} />
+      <Route path="/carer/safeguarding" element={<ProtectedRoute role="carer"><SafeguardingDashboard /></ProtectedRoute>} />
       <Route path="/carer/modules" element={<ProtectedRoute role="carer"><Modules /></ProtectedRoute>} />
       <Route path="/carer/modules/:moduleId" element={<ProtectedRoute role="carer"><ModuleDetail /></ProtectedRoute>} />
       

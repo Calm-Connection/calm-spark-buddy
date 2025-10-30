@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Settings, TrendingUp, Heart, Brain, Sparkles, BookOpen, Bell } from 'lucide-react';
+import { Settings, TrendingUp, Heart, Brain, Sparkles, BookOpen, Bell, Shield } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { AvatarDisplay } from '@/components/AvatarDisplay';
@@ -36,6 +36,7 @@ export default function CarerHome() {
   const [latestInsight, setLatestInsight] = useState<LatestInsight | null>(null);
   const [suggestedAction, setSuggestedAction] = useState('');
   const [hasNewSharedEntry, setHasNewSharedEntry] = useState(false);
+  const [safeguardingAlertCount, setSafeguardingAlertCount] = useState(0);
 
   useEffect(() => {
     loadCarerData();
@@ -132,6 +133,16 @@ export default function CarerHome() {
       .gte('created_at', yesterday.toISOString());
 
     setHasNewSharedEntry((recentCount || 0) > 0);
+
+    // Count safeguarding alerts (last 30 days)
+    const thirtyDaysAgo = subDays(new Date(), 30);
+    const { count: alertCount } = await supabase
+      .from('safeguarding_logs')
+      .select('*', { count: 'exact', head: true })
+      .eq('child_id', childId)
+      .gte('created_at', thirtyDaysAgo.toISOString());
+
+    setSafeguardingAlertCount(alertCount || 0);
   };
 
   const getMoodEmoji = (score: number) => {
@@ -366,6 +377,23 @@ export default function CarerHome() {
 
             {/* Quick Actions */}
             <div className="grid gap-3">
+              <Button
+                variant="outline"
+                className="justify-start h-auto py-4 border-accent/50 hover:bg-accent/10 relative"
+                onClick={() => navigate('/carer/safeguarding')}
+              >
+                <Shield className="h-5 w-5 mr-3 text-accent" />
+                <div className="text-left flex-1">
+                  <p className="font-semibold">Safeguarding Dashboard</p>
+                  <p className="text-xs text-muted-foreground">Monitor wellbeing alerts and concerns</p>
+                </div>
+                {safeguardingAlertCount > 0 && (
+                  <Badge variant="destructive" className="ml-2">
+                    {safeguardingAlertCount}
+                  </Badge>
+                )}
+              </Button>
+
               <Button
                 variant="outline"
                 className="justify-start h-auto py-4"

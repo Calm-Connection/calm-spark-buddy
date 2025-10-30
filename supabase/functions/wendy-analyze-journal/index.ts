@@ -240,6 +240,14 @@ Journal entry to analyze: "${entryText}"`
     const shouldEscalate = hasHighRiskContent || analysis.escalate;
     const severityScore = hasHighRiskContent ? 90 : (analysis.mood_score < 30 ? 60 : 30);
 
+    // Determine severity level for notifications
+    let severity: 'medium' | 'high' | 'critical' = 'medium';
+    if (severityScore >= 80) {
+      severity = 'critical';
+    } else if (severityScore >= 60) {
+      severity = 'high';
+    }
+
     // Fetch tool IDs based on recommended tool names
     let recommendedToolIds: string[] = [];
     if (analysis.recommended_tools && analysis.recommended_tools.length > 0) {
@@ -265,14 +273,14 @@ Journal entry to analyze: "${entryText}"`
       escalate: shouldEscalate
     });
 
-    // If high risk, create safeguarding log and flag entry
+    // If high risk, create safeguarding log, flag entry, and notify carer
     if (shouldEscalate) {
       await supabase.from('safeguarding_logs').insert({
         journal_entry_id: journalEntryId,
         child_id: childId,
         detected_keywords: detectedKeywords,
         severity_score: severityScore,
-        action_taken: 'auto_modal_shown'
+        action_taken: 'carer_notified'
       });
 
       await supabase
@@ -282,6 +290,39 @@ Journal entry to analyze: "${entryText}"`
           flag_reasons: { keywords: detectedKeywords, ai_escalate: analysis.escalate }
         })
         .eq('id', journalEntryId);
+
+      // Get linked carer and send safeguarding notification
+      const { data: childProfile } = await supabase
+        .from('children_profiles')
+        .select('linked_carer_id, nickname')
+        .eq('id', childId)
+        .single();
+
+      if (childProfile?.linked_carer_id) {
+        const messages = {
+          medium: {
+            title: 'Wellbeing check suggested',
+            body: 'Calm Connection detected patterns that suggest checking in with your child might be helpful. Please review the insights when you have a moment.',
+          },
+          high: {
+            title: 'Attention needed',
+            body: 'Calm Connection has detected a reflection that may need your attention. Please check your safeguarding dashboard for more information.',
+          },
+          critical: {
+            title: 'Urgent: Please check in',
+            body: 'Calm Connection has flagged concerning content that requires your immediate attention. Please review the safeguarding dashboard.',
+          },
+        };
+
+        // Send notification to carer (bypasses quiet hours)
+        await supabase.from('notification_history').insert({
+          user_id: childProfile.linked_carer_id,
+          notification_type: 'safeguarding_alert',
+          notification_content: JSON.stringify(messages[severity]),
+        });
+
+        console.log(`Safeguarding alert sent to carer for child ${childId} (severity: ${severity})`);
+      }
     }
 
     return new Response(
