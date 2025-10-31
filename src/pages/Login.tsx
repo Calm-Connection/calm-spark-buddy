@@ -48,7 +48,7 @@ export default function Login() {
     <div className="min-h-screen flex items-center justify-center p-6 bg-background relative">
       <Button 
         variant="ghost" 
-        onClick={() => navigate(-1)}
+        onClick={() => navigate('/')}
         className="absolute top-6 left-6"
       >
         ← Back
