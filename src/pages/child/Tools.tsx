@@ -7,27 +7,33 @@ import { BottomNav } from '@/components/BottomNav';
 const tools = [
   {
     icon: Wind,
-    title: 'Breathing Exercise',
+    title: 'Breathing Space',
     description: 'Calm your mind with gentle breathing',
-    path: null,
+    path: '/child/tools/breathing-space',
   },
   {
     icon: Heart,
-    title: 'Guided Meditation',
-    description: 'Short, peaceful meditation for you',
-    path: null,
+    title: '5-4-3-2-1 Grounding',
+    description: 'Feel present and safe with your senses',
+    path: '/child/tools/grounding-game',
   },
   {
     icon: Music,
-    title: 'Calming Sounds',
-    description: 'Soothing music and nature sounds',
-    path: null,
+    title: 'Thought Clouds',
+    description: 'Work through big feelings gently',
+    path: '/child/tools/thought-clouds',
   },
   {
     icon: Palette,
-    title: 'Drawing Space',
-    description: 'Express yourself through art',
-    path: null,
+    title: 'Colour Calm',
+    description: 'Visualize peace with calming colors',
+    path: '/child/tools/colour-calm',
+  },
+  {
+    icon: Heart,
+    title: 'Gentle Reflections',
+    description: 'Check in with how you\'re feeling',
+    path: '/child/tools/gentle-reflections',
   },
   {
     icon: Sparkles,
@@ -61,7 +67,7 @@ export default function Tools() {
               <Card
                 key={tool.title}
                 className="p-5 cursor-pointer transition-all hover:scale-[1.02] bg-gradient-to-br from-accent/20 to-warm/20"
-                onClick={() => tool.path && navigate(tool.path)}
+                onClick={() => navigate(tool.path)}
               >
                 <div className="flex items-center gap-4">
                   <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
@@ -72,9 +78,6 @@ export default function Tools() {
                     <p className="text-sm text-muted-foreground">{tool.description}</p>
                   </div>
                 </div>
-                {!tool.path && (
-                  <p className="text-xs text-muted-foreground mt-3 text-center">Coming soon</p>
-                )}
               </Card>
             );
           })}

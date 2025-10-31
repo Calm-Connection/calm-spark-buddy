@@ -25,6 +25,11 @@ import JournalEntry from "./pages/child/JournalEntry";
 import WendyChat from "./pages/child/WendyChat";
 import ViewEntries from "./pages/child/ViewEntries";
 import Tools from "./pages/child/Tools";
+import BreathingSpace from "./pages/child/tools/BreathingSpace";
+import GroundingGame from "./pages/child/tools/GroundingGame";
+import ThoughtClouds from "./pages/child/tools/ThoughtClouds";
+import ColourCalm from "./pages/child/tools/ColourCalm";
+import GentleReflections from "./pages/child/tools/GentleReflections";
 import ChildJournal from "./pages/child/ChildJournal";
 import { ChildAchievements } from "./pages/child/ChildAchievements";
 import NotificationSettings from "./pages/child/NotificationSettings";
@@ -98,6 +103,11 @@ function AppRoutes() {
       <Route path="/child/wendy-chat" element={<ProtectedRoute role="child"><WendyChat /></ProtectedRoute>} />
       <Route path="/child/entries" element={<ProtectedRoute role="child"><ViewEntries /></ProtectedRoute>} />
       <Route path="/child/tools" element={<ProtectedRoute role="child"><Tools /></ProtectedRoute>} />
+      <Route path="/child/tools/breathing-space" element={<ProtectedRoute role="child"><BreathingSpace /></ProtectedRoute>} />
+      <Route path="/child/tools/grounding-game" element={<ProtectedRoute role="child"><GroundingGame /></ProtectedRoute>} />
+      <Route path="/child/tools/thought-clouds" element={<ProtectedRoute role="child"><ThoughtClouds /></ProtectedRoute>} />
+      <Route path="/child/tools/colour-calm" element={<ProtectedRoute role="child"><ColourCalm /></ProtectedRoute>} />
+      <Route path="/child/tools/gentle-reflections" element={<ProtectedRoute role="child"><GentleReflections /></ProtectedRoute>} />
       <Route path="/child/journal" element={<ProtectedRoute role="child"><ChildJournal /></ProtectedRoute>} />
       <Route path="/child/achievements" element={<ProtectedRoute role="child"><ChildAchievements /></ProtectedRoute>} />
       <Route path="/child/notification-settings" element={<ProtectedRoute role="child"><NotificationSettings /></ProtectedRoute>} />
