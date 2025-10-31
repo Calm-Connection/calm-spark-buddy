@@ -488,6 +488,33 @@ export type Database = {
           },
         ]
       }
+      tool_usage: {
+        Row: {
+          completed: boolean | null
+          created_at: string
+          duration_minutes: number | null
+          id: string
+          tool_name: string
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean | null
+          created_at?: string
+          duration_minutes?: number | null
+          id?: string
+          tool_name: string
+          user_id: string
+        }
+        Update: {
+          completed?: boolean | null
+          created_at?: string
+          duration_minutes?: number | null
+          id?: string
+          tool_name?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_achievements: {
         Row: {
           achievement_id: string
