@@ -102,6 +102,17 @@ export default function EnterInviteCode() {
         return;
       }
 
+      // Verify user is authenticated
+      if (!user?.id) {
+        toast({
+          title: 'Authentication Error',
+          description: 'Please refresh the page and try again.',
+          variant: 'destructive',
+        });
+        setLoading(false);
+        return;
+      }
+
       // Mark code as used (update by code to use RLS policy)
       const { error: updateError } = await supabase
         .from('invite_codes')
