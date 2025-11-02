@@ -50,6 +50,9 @@ import CarerInsights from "./pages/carer/CarerInsights";
 import CarerResources from "./pages/carer/CarerResources";
 import SharedEntries from "./pages/carer/SharedEntries";
 import JointTools from "./pages/carer/JointTools";
+import BreathingTogether from "./pages/carer/tools/BreathingTogether";
+import CalmMoment from "./pages/carer/tools/CalmMoment";
+import ReflectionPrompts from "./pages/carer/tools/ReflectionPrompts";
 import CarerJournal from "./pages/carer/CarerJournal";
 import CarerNotificationSettings from "./pages/carer/NotificationSettings";
 import SafeguardingDashboard from "./pages/carer/SafeguardingDashboard";
@@ -137,6 +140,9 @@ function AppRoutes() {
       <Route path="/carer/resources" element={<ProtectedRoute role="carer"><CarerResources /></ProtectedRoute>} />
       <Route path="/carer/shared-entries" element={<ProtectedRoute role="carer"><SharedEntries /></ProtectedRoute>} />
       <Route path="/carer/joint-tools" element={<ProtectedRoute role="carer"><JointTools /></ProtectedRoute>} />
+      <Route path="/carer/tools/breathing-together" element={<ProtectedRoute role="carer"><BreathingTogether /></ProtectedRoute>} />
+      <Route path="/carer/tools/calm-moment" element={<ProtectedRoute role="carer"><CalmMoment /></ProtectedRoute>} />
+      <Route path="/carer/tools/reflection-prompts" element={<ProtectedRoute role="carer"><ReflectionPrompts /></ProtectedRoute>} />
       <Route path="/carer/journal" element={<ProtectedRoute role="carer"><CarerJournal /></ProtectedRoute>} />
       <Route path="/carer/notification-settings" element={<ProtectedRoute role="carer"><CarerNotificationSettings /></ProtectedRoute>} />
       <Route path="/carer/notification-analytics" element={<ProtectedRoute role="carer"><NotificationAnalytics /></ProtectedRoute>} />

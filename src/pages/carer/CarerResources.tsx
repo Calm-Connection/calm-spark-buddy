@@ -66,23 +66,69 @@ export default function CarerResources() {
 
   const carerTools = [
     {
-      title: 'Breathing Together',
-      description: 'A guided breathing exercise you can do with your child',
+      title: 'Breathing Together 🫶',
+      description: 'Co-regulation through shared breath — your calm helps theirs',
       icon: Wind,
-      action: () => navigate('/child/tools'), // Share tools page
+      action: () => navigate('/carer/tools/breathing-together'),
     },
     {
-      title: 'Calm Moment for You',
-      description: 'Take 2 minutes for your own wellbeing',
+      title: 'Calm Moment for You ☀️',
+      description: 'Quick resets for your nervous system (1-2 minutes)',
       icon: Sparkles,
-      action: () => {}, // Could add meditation
+      action: () => navigate('/carer/tools/calm-moment'),
     },
     {
-      title: 'Reflection Prompts',
-      description: 'Journaling prompts to help you process your own feelings',
+      title: 'Reflection Prompts 💬',
+      description: 'Journaling prompts with gentle reframes from AI',
       icon: BookOpen,
-      action: () => navigate('/carer/journal'),
+      action: () => navigate('/carer/tools/reflection-prompts'),
     },
+  ];
+
+  const learningModules = [
+    {
+      id: 'connection',
+      title: 'Understanding Anxiety Through Connection',
+      description: "How your child's nervous system seeks safety through you",
+      icon: Heart,
+      content: "Based on Polyvagal Theory, anxiety isn't just in their head — it's their nervous system looking for safety signals. Your calm presence is the strongest signal of all.",
+    },
+    {
+      id: 'boundaries',
+      title: 'Boundaries, Standards, and Expectations',
+      description: 'Clear, compassionate guidance on the differences',
+      icon: GraduationCap,
+      content: `Boundaries protect safety. Standards reflect values. Expectations are what we hope for. Knowing the difference helps you parent with clarity and kindness.`,
+    },
+    {
+      id: 'coregulation',
+      title: 'Co-Regulation in Action',
+      description: 'Practical examples of calming together',
+      icon: Wind,
+      content: `Your calm nervous system is like Wi-Fi for safety — your child connects through you. Learn simple ways to regulate together in real moments.`,
+    },
+    {
+      id: 'grounding',
+      title: 'Grounding and Body Awareness',
+      description: 'Simple sensory tools you can use anywhere',
+      icon: Sparkles,
+      content: `The 5-4-3-2-1 technique, warming hands, slow sipping — small body-based practices that signal safety to the nervous system.`,
+    },
+    {
+      id: 'preventative',
+      title: 'Preventative Care: Creating Safety Before Stress',
+      description: 'Building calm rituals and predictable routines',
+      icon: Heart,
+      content: "Prevention isn't avoiding hard feelings — it's creating enough safety so your child has capacity to face them. Small rituals build big resilience.",
+    },
+  ];
+
+  const comingSoonModules = [
+    'Supporting anxious children through change',
+    'Repairing connection after conflict',
+    'Teaching consent and emotional language',
+    'Understanding your own triggers',
+    'Navigating professional support safely',
   ];
 
   const getIconComponent = (iconName: string) => {
@@ -144,62 +190,65 @@ export default function CarerResources() {
 
         {/* Learning Modules */}
         <div>
-          <h2 className="text-xl font-bold mb-3">Learning Modules</h2>
+          <h2 className="text-xl font-bold mb-3">Learning Modules 📘</h2>
           <p className="text-sm text-muted-foreground mb-4">
-            Bite-sized lessons to help you support your child's emotional wellbeing
+            Bite-sized psychoeducation in warm, everyday language — 2-minute reads
           </p>
           
-          {modules.length === 0 ? (
-            <Card className="p-8 text-center">
-              <GraduationCap className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-              <p className="text-muted-foreground">
-                Parenting modules coming soon! Check back later for guidance on supporting anxious children, co-regulation, and more.
-              </p>
-            </Card>
-          ) : (
-            <div className="space-y-3">
-              {modules.map((module) => {
-                const Icon = getIconComponent(module.icon);
-                const isCompleted = progress[module.id];
-                
-                return (
-                  <Card 
-                    key={module.id} 
-                    className="p-5 cursor-pointer hover:bg-accent/10 transition-colors"
-                    onClick={() => navigate(`/shared/modules/${module.id}`)}
-                  >
-                    <div className="flex items-start gap-4">
-                      <div className="h-12 w-12 rounded-full bg-secondary/20 flex items-center justify-center flex-shrink-0">
-                        <Icon className="h-6 w-6 text-secondary" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-semibold">{module.title}</h3>
-                          {isCompleted && (
-                            <Badge variant="secondary" className="text-xs">
-                              <CheckCircle2 className="h-3 w-3 mr-1" />
-                              Completed
-                            </Badge>
-                          )}
-                        </div>
-                        <p className="text-sm text-muted-foreground">{module.description}</p>
-                      </div>
+          <div className="space-y-3">
+            {learningModules.map((module) => {
+              const Icon = module.icon;
+              
+              return (
+                <Card 
+                  key={module.id} 
+                  className="p-5 hover:bg-accent/10 transition-colors"
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="h-12 w-12 rounded-full bg-secondary/20 flex items-center justify-center flex-shrink-0">
+                      <Icon className="h-6 w-6 text-secondary" />
                     </div>
-                  </Card>
-                );
-              })}
-            </div>
-          )}
+                    <div className="flex-1">
+                      <h3 className="font-semibold mb-1">{module.title}</h3>
+                      <p className="text-sm text-muted-foreground mb-3">{module.description}</p>
+                      <p className="text-sm leading-relaxed bg-accent/10 p-3 rounded-lg italic">
+                        {module.content}
+                      </p>
+                    </div>
+                  </div>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Coming Soon */}
+        <div>
+          <h2 className="text-xl font-bold mb-3">Coming Soon 🌱</h2>
+          <Card className="p-5">
+            <ul className="space-y-2">
+              {comingSoonModules.map((title, idx) => (
+                <li key={idx} className="text-sm text-muted-foreground flex items-center gap-2">
+                  <div className="h-1.5 w-1.5 rounded-full bg-primary/40" />
+                  {title}
+                </li>
+              ))}
+            </ul>
+          </Card>
         </div>
 
         {/* Encouragement */}
-        <Card className="p-6 bg-gradient-to-br from-warm/20 to-accent/20">
-          <div className="flex items-start gap-3">
-            <Heart className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
-            <div>
+        <Card className="p-6 bg-gradient-to-br from-warm/20 to-accent/20 relative overflow-hidden">
+          <div className="absolute top-0 right-0 text-6xl opacity-20">💚</div>
+          <div className="flex items-start gap-3 relative z-10">
+            <Heart className="h-6 w-6 text-primary flex-shrink-0 mt-1 animate-pulse" />
+            <div className="space-y-3">
               <p className="text-sm leading-relaxed">
                 <strong>You're doing amazing work.</strong> Supporting a child with anxiety takes patience, 
-                empathy, and courage. Small steps make a big difference, and you're not alone in this journey 💛
+                empathy, and courage. Small steps make a big difference, and you're not alone in this journey.
+              </p>
+              <p className="text-xs text-muted-foreground italic">
+                Your calm nervous system is like Wi-Fi for safety — your child connects through you.
               </p>
             </div>
           </div>
