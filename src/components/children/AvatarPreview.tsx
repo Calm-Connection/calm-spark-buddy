@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 import { Loader2 } from 'lucide-react';
-import { Canvas as FabricCanvas, FabricImage } from 'fabric';
 import { getAssetUrl } from '@/constants/avatarAssets';
 
 interface AvatarPreviewProps {
@@ -25,54 +24,28 @@ export function AvatarPreview({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const fabricCanvasRef = useRef<FabricCanvas | null>(null);
-  const isMountedRef = useRef(true);
 
-  // Initialize Fabric canvas once on mount
   useEffect(() => {
-    if (!canvasRef.current || fabricCanvasRef.current) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
 
-    try {
-      fabricCanvasRef.current = new FabricCanvas(canvasRef.current, {
-        width: 200,
-        height: 200,
-        backgroundColor: '#f0f0f0',
-      });
-    } catch (err) {
-      console.error('Failed to initialize Fabric canvas:', err);
-      setError(true);
-    }
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
 
-    // Cleanup only on unmount
-    return () => {
-      isMountedRef.current = false;
-      if (fabricCanvasRef.current) {
-        try {
-          fabricCanvasRef.current.dispose();
-        } catch (err) {
-          console.error('Error disposing canvas:', err);
-        }
-        fabricCanvasRef.current = null;
-      }
-    };
-  }, []);
+    let isCancelled = false;
 
-  // Update canvas content when avatar props change
-  useEffect(() => {
     const generateComposite = async () => {
-      if (!fabricCanvasRef.current || !isMountedRef.current) return;
-
       setLoading(true);
       setError(false);
 
       try {
-        const canvas = fabricCanvasRef.current;
+        // Set canvas size
+        canvas.width = 200;
+        canvas.height = 200;
         
-        // Guard against canvas being disposed
-        if (!canvas || !isMountedRef.current) return;
-        
-        canvas.clear();
-        canvas.backgroundColor = '#f0f0f0';
+        // Clear canvas with background
+        ctx.fillStyle = '#f0f0f0';
+        ctx.fillRect(0, 0, 200, 200);
 
         // Define the layers in order (back to front)
         const layers = [
@@ -86,60 +59,45 @@ export function AvatarPreview({
 
         console.log('Loading avatar layers:', layers);
 
-        // Load and add each layer
+        // Load and draw each layer
         for (const layer of layers) {
-          // Check if still mounted before processing each layer
-          if (!isMountedRef.current || !fabricCanvasRef.current) return;
+          if (isCancelled) return;
           
           try {
-            const img = await FabricImage.fromURL(layer.url, {
-              crossOrigin: 'anonymous',
-            });
+            const img = await loadImage(layer.url);
+            if (isCancelled) return;
             
-            // Double check still mounted after async operation
-            if (!isMountedRef.current || !fabricCanvasRef.current) return;
+            // Draw image at full canvas size
+            ctx.drawImage(img, 0, 0, 200, 200);
             
-            // Scale image to fit canvas
-            img.scaleToWidth(200);
-            img.scaleToHeight(200);
-            
-            // Position at top-left
-            img.set({
-              left: 0,
-              top: 0,
-              selectable: false,
-              evented: false,
-            });
-
-            canvas.add(img);
-            
-            // Debug transparency
-            const imgElement = img.getElement() as HTMLImageElement;
             console.log(`✓ Loaded ${layer.name} layer:`, {
               url: layer.url,
-              width: imgElement.naturalWidth,
-              height: imgElement.naturalHeight,
-              hasAlpha: layer.url.includes('.png'),
-              layerCount: canvas.getObjects().length
+              width: img.naturalWidth,
+              height: img.naturalHeight,
+              hasAlpha: layer.url.includes('.png')
             });
           } catch (imgError) {
             console.warn(`✗ Failed to load ${layer.name} layer:`, layer.url, imgError);
           }
         }
 
-        // Final check before rendering
-        if (isMountedRef.current && fabricCanvasRef.current) {
-          canvas.renderAll();
+        if (!isCancelled) {
           setLoading(false);
         }
       } catch (err) {
         console.error('Error generating composite avatar:', err);
-        setError(true);
-        setLoading(false);
+        if (!isCancelled) {
+          setError(true);
+          setLoading(false);
+        }
       }
     };
 
     generateComposite();
+
+    return () => {
+      isCancelled = true;
+    };
   }, [skinTone, eyeColor, hairColor, hairStyle, favoriteColor, accessory, comfortItem]);
 
   return (
@@ -163,4 +121,15 @@ export function AvatarPreview({
       </div>
     </div>
   );
+}
+
+// Helper function to load images
+function loadImage(url: string): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = url;
+  });
 }
