@@ -9,6 +9,13 @@ import { supabase } from '@/integrations/supabase/client';
 import { Loader2 } from 'lucide-react';
 import { PageLayout } from '@/components/PageLayout';
 
+interface ClaimInviteCodeResult {
+  success: boolean;
+  error?: string;
+  message?: string;
+  carer_user_id?: string;
+}
+
 export default function EnterInviteCode() {
   const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
@@ -33,98 +40,37 @@ export default function EnterInviteCode() {
     setLoading(true);
 
     try {
-      // Find valid invite code
-      const { data: inviteData, error: inviteError } = await supabase
-        .from('invite_codes')
-        .select('*')
-        .eq('code', trimmedCode)
-        .eq('used', false)
-        .gt('expires_at', new Date().toISOString())
-        .maybeSingle();
+      // Call the secure server-side function
+      const { data, error: claimError } = await supabase
+        .rpc('claim_invite_code', { _code: trimmedCode });
+      
+      const claimResult = data as unknown as ClaimInviteCodeResult;
 
-      if (inviteError) {
-        console.error('Invite code fetch error:', inviteError);
+      if (claimError) {
+        console.error('Claim error:', claimError);
         toast({
           title: 'Error',
-          description: 'Could not verify code. Please try again.',
+          description: 'Could not process code. Please try again.',
           variant: 'destructive',
         });
         setLoading(false);
         return;
       }
 
-      if (!inviteData) {
-        // Check if code exists but is used or expired
-        const { data: usedCode } = await supabase
-          .from('invite_codes')
-          .select('*')
-          .eq('code', trimmedCode)
-          .maybeSingle();
+      // Handle the response
+      if (!claimResult.success) {
+        const errorMessages: Record<string, string> = {
+          not_authenticated: 'Please log in and try again',
+          code_used: 'This code has already been used. Please ask your carer for a new code.',
+          code_expired: 'This code has expired. Please ask your carer for a new code.',
+          code_not_found: 'This code doesn\'t exist. Please check the code and try again.',
+          carer_not_found: 'The carer account hasn\'t completed setup yet. Please ask them to log in and complete their profile.',
+        };
 
-        if (usedCode?.used) {
-          toast({
-            title: 'Code already used',
-            description: 'This code has already been used. Please ask your carer for a new code.',
-            variant: 'destructive',
-          });
-        } else if (usedCode && new Date(usedCode.expires_at) < new Date()) {
-          toast({
-            title: 'Code expired',
-            description: 'This code has expired. Please ask your carer for a new code.',
-            variant: 'destructive',
-          });
-        } else {
-          toast({
-            title: 'Code not found',
-            description: 'This code doesn\'t exist. Please check the code and try again.',
-            variant: 'destructive',
-          });
-        }
-        setLoading(false);
-        return;
-      }
-
-      // Verify carer profile exists
-      const { data: carerProfile, error: carerError } = await supabase
-        .from('carer_profiles')
-        .select('id')
-        .eq('user_id', inviteData.carer_user_id)
-        .maybeSingle();
-
-      if (carerError || !carerProfile) {
-        console.error('Carer profile check error:', carerError);
         toast({
-          title: 'Unable to verify carer',
-          description: 'The carer account hasn\'t completed setup yet. Please ask them to log in and complete their profile.',
-          variant: 'destructive',
-        });
-        setLoading(false);
-        return;
-      }
-
-      // Verify user is authenticated
-      if (!user?.id) {
-        toast({
-          title: 'Authentication Error',
-          description: 'Please refresh the page and try again.',
-          variant: 'destructive',
-        });
-        setLoading(false);
-        return;
-      }
-
-      // Mark code as used (update by code to use RLS policy)
-      const { error: updateError } = await supabase
-        .from('invite_codes')
-        .update({ used: true, child_user_id: user?.id })
-        .eq('code', trimmedCode)
-        .eq('used', false);
-
-      if (updateError) {
-        console.error('Code update error:', updateError);
-        toast({
-          title: 'Error',
-          description: 'Could not mark code as used. Please try again.',
+          title: claimResult.error === 'code_used' ? 'Code already used' : 
+                 claimResult.error === 'code_expired' ? 'Code expired' : 'Error',
+          description: errorMessages[claimResult.error] || claimResult.message,
           variant: 'destructive',
         });
         setLoading(false);
@@ -137,7 +83,7 @@ export default function EnterInviteCode() {
       });
 
       // Store carer ID for later profile creation
-      localStorage.setItem('linkedCarerId', inviteData.carer_user_id);
+      localStorage.setItem('linkedCarerId', claimResult.carer_user_id);
       navigate('/child/pick-theme');
 
     } catch (error) {

@@ -7,6 +7,13 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Loader2 } from 'lucide-react';
 
+interface ClaimInviteCodeResult {
+  success: boolean;
+  error?: string;
+  message?: string;
+  carer_user_id?: string;
+}
+
 interface AddCarerCodeModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -36,136 +43,47 @@ export function AddCarerCodeModal({ open, onOpenChange, onSuccess }: AddCarerCod
     setLoading(true);
 
     try {
-      // Find valid invite code
-      const { data: inviteData, error: inviteError } = await supabase
-        .from('invite_codes')
-        .select('*')
-        .eq('code', trimmedCode)
-        .eq('used', false)
-        .gt('expires_at', new Date().toISOString())
-        .maybeSingle();
+      // Call the secure server-side function
+      const { data, error: claimError } = await supabase
+        .rpc('claim_invite_code', { _code: trimmedCode });
+      
+      const claimResult = data as unknown as ClaimInviteCodeResult;
 
-      if (inviteError) {
-        console.error('Invite code fetch error:', inviteError);
+      if (claimError) {
+        console.error('Claim error:', claimError);
         toast({
           title: 'Error',
-          description: 'Could not verify code. Please try again.',
+          description: 'Could not process code. Please try again.',
           variant: 'destructive',
         });
         setLoading(false);
         return;
       }
 
-      if (!inviteData) {
-        // Check if code exists but is used or expired
-        const { data: usedCode } = await supabase
-          .from('invite_codes')
-          .select('*')
-          .eq('code', trimmedCode)
-          .maybeSingle();
+      // Handle the response
+      if (!claimResult.success) {
+        const errorMessages: Record<string, string> = {
+          not_authenticated: 'Please log in and try again',
+          code_used: 'This code has already been used. Please ask your carer for a new code.',
+          code_expired: 'This code has expired. Please ask your carer for a new code.',
+          code_not_found: 'This code doesn\'t exist. Please check the code and try again.',
+          carer_not_found: 'The carer account hasn\'t completed setup yet. Please ask them to log in and complete their profile.',
+        };
 
-        if (usedCode?.used) {
-          toast({
-            title: 'Code already used',
-            description: 'This code has already been used. Please ask your carer for a new code.',
-            variant: 'destructive',
-          });
-        } else if (usedCode && new Date(usedCode.expires_at) < new Date()) {
-          toast({
-            title: 'Code expired',
-            description: 'This code has expired. Please ask your carer for a new code.',
-            variant: 'destructive',
-          });
-        } else {
-          toast({
-            title: 'Code not found',
-            description: 'This code doesn\'t exist. Please check the code and try again.',
-            variant: 'destructive',
-          });
-        }
-        setLoading(false);
-        return;
-      }
-
-      // Verify carer profile exists
-      const { data: carerProfile, error: carerError } = await supabase
-        .from('carer_profiles')
-        .select('id')
-        .eq('user_id', inviteData.carer_user_id)
-        .maybeSingle();
-
-      if (carerError || !carerProfile) {
-        console.error('Carer profile check error:', carerError);
         toast({
-          title: 'Unable to verify carer',
-          description: 'The carer account hasn\'t completed setup yet. Please ask them to log in and complete their profile.',
+          title: claimResult.error === 'code_used' ? 'Code already used' : 
+                 claimResult.error === 'code_expired' ? 'Code expired' : 'Error',
+          description: errorMessages[claimResult.error] || claimResult.message,
           variant: 'destructive',
         });
         setLoading(false);
         return;
       }
 
-      // Get current child profile
-      const { data: childProfile, error: profileError } = await supabase
-        .from('children_profiles')
-        .select('id, user_id')
-        .eq('user_id', user?.id)
-        .maybeSingle();
-
-      if (profileError) {
-        console.error('Profile fetch error:', profileError);
-        toast({
-          title: 'Error',
-          description: 'Could not access your profile. Please try again.',
-          variant: 'destructive',
-        });
-        setLoading(false);
-        return;
-      }
-
-      if (!childProfile) {
-        toast({
-          title: 'Error',
-          description: 'Please complete your profile setup first.',
-          variant: 'destructive',
-        });
-        setLoading(false);
-        return;
-      }
-
-      // Verify user is authenticated
-      if (!user?.id) {
-        toast({
-          title: 'Authentication Error',
-          description: 'Please refresh the page and try again.',
-          variant: 'destructive',
-        });
-        setLoading(false);
-        return;
-      }
-
-      // Mark code as used (update by code to use RLS policy)
-      const { error: updateCodeError } = await supabase
-        .from('invite_codes')
-        .update({ used: true, child_user_id: user?.id })
-        .eq('code', trimmedCode)
-        .eq('used', false);
-
-      if (updateCodeError) {
-        console.error('Code update error:', updateCodeError);
-        toast({
-          title: 'Error',
-          description: 'Could not mark code as used. Please try again.',
-          variant: 'destructive',
-        });
-        setLoading(false);
-        return;
-      }
-
-      // Update child profile with linked carer (update by user_id for RLS)
+      // Update child profile with linked carer
       const { error: updateProfileError } = await supabase
         .from('children_profiles')
-        .update({ linked_carer_id: inviteData.carer_user_id })
+        .update({ linked_carer_id: claimResult.carer_user_id })
         .eq('user_id', user?.id);
 
       if (updateProfileError) {
