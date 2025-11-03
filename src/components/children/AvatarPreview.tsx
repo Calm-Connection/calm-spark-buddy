@@ -29,7 +29,7 @@ export function AvatarPreview({
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { alpha: true });
     if (!ctx) return;
 
     let isCancelled = false;
@@ -39,15 +39,21 @@ export function AvatarPreview({
       setError(false);
 
       try {
-        // Set canvas size
-        canvas.width = 200;
-        canvas.height = 200;
+        // Set canvas size with proper pixel ratio for crisp rendering
+        const scale = window.devicePixelRatio || 1;
+        canvas.width = 200 * scale;
+        canvas.height = 200 * scale;
+        canvas.style.width = '200px';
+        canvas.style.height = '200px';
+        ctx.scale(scale, scale);
         
-        // Clear canvas with background
-        ctx.fillStyle = '#f0f0f0';
-        ctx.fillRect(0, 0, 200, 200);
+        // Clear canvas completely (transparent background)
+        ctx.clearRect(0, 0, 200, 200);
+        
+        // Set proper blending mode for transparent layers
+        ctx.globalCompositeOperation = 'source-over';
 
-        // Define the layers in order (back to front)
+        // Define the layers in correct z-index order (back to front)
         const layers = [
           { url: getAssetUrl('faces', skinTone), name: 'face' },
           { url: getAssetUrl('clothing', favoriteColor), name: 'clothing' },
@@ -57,9 +63,11 @@ export function AvatarPreview({
           comfortItem !== 'none' ? { url: getAssetUrl('comfortItems', comfortItem), name: 'comfort' } : null,
         ].filter(Boolean) as { url: string; name: string }[];
 
-        console.log('Loading avatar layers:', layers);
+        console.log('🎨 Loading avatar layers:', layers.map(l => l.name));
 
-        // Load and draw each layer
+        let loadedCount = 0;
+
+        // Load and draw each layer with proper compositing
         for (const layer of layers) {
           if (isCancelled) return;
           
@@ -67,14 +75,14 @@ export function AvatarPreview({
             const img = await loadImage(layer.url);
             if (isCancelled) return;
             
-            // Draw image at full canvas size
+            // Draw image with transparency preservation
+            ctx.globalCompositeOperation = 'source-over';
             ctx.drawImage(img, 0, 0, 200, 200);
             
-            console.log(`✓ Loaded ${layer.name} layer:`, {
-              url: layer.url,
-              width: img.naturalWidth,
-              height: img.naturalHeight,
-              hasAlpha: layer.url.includes('.png')
+            loadedCount++;
+            console.log(`✓ [${loadedCount}/${layers.length}] Loaded ${layer.name}`, {
+              dimensions: `${img.naturalWidth}x${img.naturalHeight}`,
+              url: layer.url.split('/').pop()
             });
           } catch (imgError) {
             console.warn(`✗ Failed to load ${layer.name} layer:`, layer.url, imgError);
@@ -82,10 +90,11 @@ export function AvatarPreview({
         }
 
         if (!isCancelled) {
+          console.log(`✅ Avatar composite complete: ${loadedCount}/${layers.length} layers loaded`);
           setLoading(false);
         }
       } catch (err) {
-        console.error('Error generating composite avatar:', err);
+        console.error('❌ Error generating composite avatar:', err);
         if (!isCancelled) {
           setError(true);
           setLoading(false);

@@ -26,6 +26,15 @@ serve(async (req) => {
 
     console.log(`Generating ${assetType}/${assetKey}...`);
 
+    // Enhance prompt to explicitly request transparent background
+    const enhancedPrompt = `${prompt}
+
+CRITICAL REQUIREMENTS:
+- Output MUST be PNG format with fully transparent background
+- NO white background, NO colored background, completely transparent areas around the subject
+- Clean alpha channel with no artifacts
+- High quality transparency with smooth edges`;
+
     // Retry logic for AI generation
     let lastError;
     let data;
@@ -49,7 +58,7 @@ serve(async (req) => {
             model: 'google/gemini-2.5-flash-image',
             messages: [{
               role: 'user',
-              content: prompt
+              content: enhancedPrompt
             }],
             modalities: ['image', 'text']
           })
