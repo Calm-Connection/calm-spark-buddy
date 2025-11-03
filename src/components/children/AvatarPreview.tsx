@@ -32,8 +32,8 @@ export function AvatarPreview({
     if (!canvasRef.current || fabricCanvasRef.current) return;
 
     fabricCanvasRef.current = new FabricCanvas(canvasRef.current, {
-      width: 1024,
-      height: 1024,
+      width: 200,
+      height: 200,
       backgroundColor: '#f0f0f0',
     });
 
@@ -79,8 +79,8 @@ export function AvatarPreview({
             });
             
             // Scale image to fit canvas
-            img.scaleToWidth(1024);
-            img.scaleToHeight(1024);
+            img.scaleToWidth(200);
+            img.scaleToHeight(200);
             
             // Position at top-left
             img.set({
@@ -91,7 +91,16 @@ export function AvatarPreview({
             });
 
             canvas.add(img);
-            console.log(`✓ Loaded ${layer.name} layer`);
+            
+            // Debug transparency
+            const imgElement = img.getElement() as HTMLImageElement;
+            console.log(`✓ Loaded ${layer.name} layer:`, {
+              url: layer.url,
+              width: imgElement.naturalWidth,
+              height: imgElement.naturalHeight,
+              hasAlpha: layer.url.includes('.png'),
+              layerCount: canvas.getObjects().length
+            });
           } catch (imgError) {
             console.warn(`✗ Failed to load ${layer.name} layer:`, layer.url, imgError);
           }
