@@ -120,9 +120,7 @@ export function AvatarPreview({
           </div>
         )}
         <canvas 
-          ref={canvasRef} 
-          width={1024} 
-          height={1024}
+          ref={canvasRef}
           className="w-full h-full rounded-2xl shadow-lg"
           style={{ display: loading || error ? 'none' : 'block' }}
         />
