@@ -34,7 +34,7 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash-image-preview',
+        model: 'google/gemini-2.5-flash-image',
         messages: [{
           role: 'user',
           content: prompt
@@ -46,13 +46,16 @@ serve(async (req) => {
     if (!response.ok) {
       const errorText = await response.text();
       console.error('AI generation error:', response.status, errorText);
-      throw new Error(`AI generation failed: ${response.status}`);
+      throw new Error(`AI generation failed: ${response.status} - ${errorText}`);
     }
 
     const data = await response.json();
+    console.log('AI response structure:', JSON.stringify(data, null, 2));
+    
     const imageBase64 = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
     
     if (!imageBase64) {
+      console.error('No image in response. Full response:', JSON.stringify(data));
       throw new Error('No image generated');
     }
 
