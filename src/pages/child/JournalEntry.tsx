@@ -264,7 +264,14 @@ export default function JournalEntry() {
         description: 'Your journal entry has been saved',
       });
 
-      navigate('/child/home');
+      // Navigate with Wendy's tip
+      navigate('/child/home', { 
+        state: { 
+          showWendyTip: true,
+          moodScore: analysisData?.moodScore || 50,
+          entryText: entryText 
+        } 
+      });
     } catch (error: any) {
       console.error('Error saving entry:', error);
       toast({

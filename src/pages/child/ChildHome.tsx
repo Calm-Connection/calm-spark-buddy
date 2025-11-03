@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Settings, BookOpen, Wrench, GraduationCap, Sparkles } from 'lucide-react';
@@ -11,6 +11,7 @@ import { applyTheme, type ThemeName } from '@/hooks/useTheme';
 import { FloatingElements } from '@/components/FloatingElements';
 import { BottomNav } from '@/components/BottomNav';
 import { NotificationBell } from '@/components/NotificationBell';
+import { WendyTipCard } from '@/components/WendyTipCard';
 
 const affirmations = [
   "You are brave and strong 💪",
@@ -22,6 +23,7 @@ const affirmations = [
 
 export default function ChildHome() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuth();
   const [nickname, setNickname] = useState('');
   const [avatarData, setAvatarData] = useState<any>(null);
@@ -32,9 +34,36 @@ export default function ChildHome() {
   const [userAchievements, setUserAchievements] = useState<any[]>([]);
   const [wendyTip, setWendyTip] = useState<string | null>(null);
   const [childProfileId, setChildProfileId] = useState<string | undefined>();
+  const [showPostJournalTip, setShowPostJournalTip] = useState(false);
+  const [postJournalAction, setPostJournalAction] = useState<{ type: string; link: string; label: string } | null>(null);
 
   // Track achievement progress automatically
   useAchievementProgress(childProfileId);
+
+  // Check for post-journal tips from navigation state
+  useEffect(() => {
+    if (location.state?.showWendyTip) {
+      const { moodScore, entryText } = location.state;
+      generatePostJournalTip(moodScore, entryText);
+      setShowPostJournalTip(true);
+      
+      // Clear the state
+      window.history.replaceState({}, document.title);
+    }
+  }, [location]);
+
+  const generatePostJournalTip = (moodScore: number, entryText: string) => {
+    if (moodScore < 40) {
+      setWendyTip("I'm proud of you for sharing how you're feeling. Remember, it's okay to not feel okay. Would you like to try something calming?");
+      setPostJournalAction({ type: 'tool', link: '/child/tools', label: 'Try a Calming Tool' });
+    } else if (moodScore < 60) {
+      setWendyTip("Thanks for checking in with your feelings. Taking a short break might help you feel even better!");
+      setPostJournalAction({ type: 'suggestion', link: '/child/tools', label: 'Explore Calming Activities' });
+    } else {
+      setWendyTip("You're doing great! Keep up this positive energy. Maybe try learning something new to keep that good feeling going.");
+      setPostJournalAction({ type: 'module', link: '/child/modules', label: 'Learn Something New' });
+    }
+  };
 
   const moods = [
     { id: 'happy', label: 'Happy', emoji: '😊' },
@@ -179,8 +208,18 @@ export default function ChildHome() {
           </div>
         )}
 
-        {/* Wendy's Tip */}
-        {wendyTip && (
+        {/* Post-Journal Wendy's Tip */}
+        {showPostJournalTip && wendyTip && postJournalAction && (
+          <WendyTipCard 
+            tip={wendyTip}
+            actionType={postJournalAction.type as any}
+            actionLink={postJournalAction.link}
+            actionLabel={postJournalAction.label}
+          />
+        )}
+
+        {/* Regular Wendy's Tip */}
+        {!showPostJournalTip && wendyTip && (
           <Card className="p-5 bg-gradient-to-br from-primary/10 to-accent/10 border-primary/20">
             <div className="flex items-start gap-3">
               <Sparkles className="h-6 w-6 text-primary flex-shrink-0 mt-1" />

@@ -40,7 +40,7 @@ import ColourCalm from "./pages/child/tools/ColourCalm";
 import GentleReflections from "./pages/child/tools/GentleReflections";
 import ChildJournal from "./pages/child/ChildJournal";
 import { ChildAchievements } from "./pages/child/ChildAchievements";
-import NotificationSettings from "./pages/child/NotificationSettings";
+import ChildNotificationSettingsPage from "./pages/child/NotificationSettingsPage";
 
 // Carer pages
 import CarerHome from "./pages/carer/CarerHome";
@@ -128,7 +128,7 @@ function AppRoutes() {
       <Route path="/child/tools/gentle-reflections" element={<ProtectedRoute role="child"><GentleReflections /></ProtectedRoute>} />
       <Route path="/child/journal" element={<ProtectedRoute role="child"><ChildJournal /></ProtectedRoute>} />
       <Route path="/child/achievements" element={<ProtectedRoute role="child"><ChildAchievements /></ProtectedRoute>} />
-      <Route path="/child/notification-settings" element={<ProtectedRoute role="child"><NotificationSettings /></ProtectedRoute>} />
+      <Route path="/child/notification-settings" element={<ProtectedRoute role="child"><ChildNotificationSettingsPage /></ProtectedRoute>} />
       <Route path="/child/modules" element={<ProtectedRoute role="child"><Modules /></ProtectedRoute>} />
       <Route path="/child/modules/:moduleId" element={<ProtectedRoute role="child"><ModuleDetail /></ProtectedRoute>} />
       

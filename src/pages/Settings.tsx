@@ -12,7 +12,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAccessibility, TextSize, FontFamily } from '@/hooks/useAccessibility';
 import { loadSavedTheme, ThemeName } from '@/hooks/useTheme';
-import { Settings as SettingsIcon, User, Save, Palette, Accessibility, MessageSquareWarning, Link as LinkIcon, Edit } from 'lucide-react';
+import { Settings as SettingsIcon, User, Save, Palette, Accessibility, MessageSquareWarning, Link as LinkIcon, Edit, Bell } from 'lucide-react';
 import { AvatarDisplay } from '@/components/AvatarDisplay';
 import { AvatarCustomizer } from '@/components/AvatarCustomizer';
 import { ThemeSelector } from '@/components/ThemeSelector';
@@ -243,6 +243,25 @@ export default function Settings() {
             currentTheme={currentTheme} 
             onThemeChange={(theme) => setCurrentTheme(theme)}
           />
+        </Card>
+
+        {/* Notifications */}
+        <Card className="p-6">
+          <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+            <Bell className="h-5 w-5" />
+            Notifications
+          </h2>
+          <p className="text-sm text-muted-foreground mb-4">
+            Manage your notification preferences
+          </p>
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={() => navigate(userRole === 'child' ? '/child/notification-settings' : '/carer/notification-settings')}
+          >
+            <Bell className="h-4 w-4 mr-2" />
+            Notification Settings
+          </Button>
         </Card>
 
         {/* Accessibility Settings */}

@@ -214,7 +214,7 @@ export default function CarerHome() {
               </Card>
             )}
 
-            {/* Wellbeing Overview - Latest Insight */}
+            {/* Wendy's Wellbeing Overview - Supporting Your Child */}
             {latestInsight && (
               <Card className={`p-6 bg-gradient-to-br ${getMoodColor(latestInsight.mood_score)}`}>
                 <div className="flex items-start gap-4">
@@ -223,10 +223,14 @@ export default function CarerHome() {
                   </div>
                   <div className="flex-1 space-y-3">
                     <div className="flex items-center gap-2">
-                      <h3 className="font-bold text-lg">Wellbeing Overview</h3>
+                      <h3 className="font-bold text-lg">Wendy's Wellbeing Overview</h3>
                       <span className="text-2xl">{getMoodEmoji(latestInsight.mood_score)}</span>
                     </div>
+                    <p className="text-sm font-semibold text-primary">How to support {childNickname}</p>
                     <p className="text-sm">{latestInsight.summary}</p>
+                    <p className="text-sm text-muted-foreground italic">
+                      💡 This insight helps you understand {childNickname}'s emotional patterns and offers guidance on how you can provide support.
+                    </p>
                     {latestInsight.themes && latestInsight.themes.length > 0 && (
                       <div className="flex gap-2 flex-wrap">
                         {latestInsight.themes.slice(0, 3).map((theme, idx) => (
@@ -244,21 +248,59 @@ export default function CarerHome() {
               </Card>
             )}
 
-            {/* This Week with Wendy */}
+            {/* The Week with Wendy - Understanding Your Child */}
             {latestInsight && moodTrend.length > 0 && (
               <Card className="p-6 bg-gradient-to-br from-primary/5 to-accent/5 border-primary/20">
                 <div className="space-y-4">
                   {/* Header */}
                   <div className="flex items-center gap-2">
                     <Sparkles className="h-5 w-5 text-primary" />
-                    <h3 className="font-bold text-lg">This Week with Wendy 🌿</h3>
+                    <h3 className="font-bold text-lg">The Week with Wendy 🌿</h3>
                   </div>
 
-                  {/* Weekly Insight */}
-                  <div className="bg-background/50 rounded-lg p-4">
-                    <p className="text-sm text-muted-foreground italic">
-                      "{latestInsight.summary.slice(0, 150)}{latestInsight.summary.length > 150 ? '...' : ''}"
-                    </p>
+                  <p className="text-sm text-muted-foreground">
+                    Gentle insights into how {childNickname} has been using the app
+                  </p>
+
+                  {/* App Usage Insights */}
+                  <div className="bg-background/50 rounded-lg p-4 space-y-3">
+                    <div className="flex items-start gap-2">
+                      <span className="text-primary">📝</span>
+                      <div className="flex-1">
+                        <p className="text-sm font-semibold">Journaling Consistency</p>
+                        <p className="text-xs text-muted-foreground">
+                          {journalCount > 5 ? `${childNickname} has been journaling regularly this week - great progress!` : 
+                           journalCount > 2 ? `${childNickname} is building a journaling habit, with ${journalCount} entries this week.` :
+                           `${childNickname} might benefit from gentle encouragement to journal more often.`}
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start gap-2">
+                      <span className="text-primary">😊</span>
+                      <div className="flex-1">
+                        <p className="text-sm font-semibold">Emotional Trends</p>
+                        <p className="text-xs text-muted-foreground">
+                          {moodTrend.filter(m => m.mood_score >= 60).length >= 5 ? 
+                            `${childNickname} has had mostly positive days - they're doing well emotionally.` :
+                           moodTrend.filter(m => m.mood_score < 40).length >= 3 ?
+                            `${childNickname} has experienced some challenging days. Extra support may be helpful.` :
+                            `${childNickname}'s mood has been balanced this week with both ups and downs.`}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-2">
+                      <span className="text-primary">🎯</span>
+                      <div className="flex-1">
+                        <p className="text-sm font-semibold">Activity Engagement</p>
+                        <p className="text-xs text-muted-foreground">
+                          {journalCount >= 7 ? `Very engaged - ${childNickname} is actively using calming tools and resources.` :
+                           journalCount >= 3 ? `Moderately engaged - ${childNickname} is exploring available features.` :
+                           `Low engagement - Consider doing activities together to encourage participation.`}
+                        </p>
+                      </div>
+                    </div>
                   </div>
 
                   {/* Progress Tracker */}
@@ -283,7 +325,7 @@ export default function CarerHome() {
 
                   {/* Mini 7-Day Mood Trend */}
                   <div>
-                    <p className="text-xs font-semibold text-muted-foreground mb-2">7-Day Mood Snapshot</p>
+                    <p className="text-xs font-semibold text-muted-foreground mb-2">7-Day Emotional Journey</p>
                     <div className="flex items-end gap-1 h-16">
                       {moodTrend.map((data, idx) => {
                         const height = (data.mood_score / 100) * 100;
@@ -335,14 +377,75 @@ export default function CarerHome() {
               </Card>
             )}
 
-            {/* Suggested Action */}
-            {suggestedAction && (
-              <Card className="p-5 bg-gradient-to-br from-accent/20 to-warm/20">
-                <div className="flex items-center gap-3">
-                  <Sparkles className="h-6 w-6 text-primary" />
-                  <div>
-                    <p className="font-semibold text-sm">Suggested Action</p>
-                    <p className="text-sm text-muted-foreground">{suggestedAction}</p>
+            {/* Personalized Suggested Actions */}
+            {latestInsight && (
+              <Card className="p-5 bg-gradient-to-br from-accent/20 to-warm/20 border-accent/30">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <Sparkles className="h-6 w-6 text-primary" />
+                    <h3 className="font-semibold text-lg">Suggested Actions</h3>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    {latestInsight.mood_score < 40 && (
+                      <>
+                        <div className="bg-background/60 rounded-lg p-3">
+                          <p className="text-sm font-medium mb-1">🌿 In-App Activity</p>
+                          <p className="text-xs text-muted-foreground mb-2">
+                            Try the <span className="font-semibold">Breathing Together</span> tool with {childNickname} for a calming moment together.
+                          </p>
+                          <Button size="sm" variant="outline" onClick={() => navigate('/carer/joint-tools')}>
+                            Explore Joint Tools
+                          </Button>
+                        </div>
+                        <div className="bg-background/60 rounded-lg p-3">
+                          <p className="text-sm font-medium mb-1">💬 Real-World Tip</p>
+                          <p className="text-xs text-muted-foreground">
+                            Start with: "I noticed you might be feeling a bit down. Want to talk about it, or would you like to do something fun together?"
+                          </p>
+                        </div>
+                      </>
+                    )}
+                    
+                    {latestInsight.mood_score >= 40 && latestInsight.mood_score < 60 && (
+                      <>
+                        <div className="bg-background/60 rounded-lg p-3">
+                          <p className="text-sm font-medium mb-1">📚 Learning Resource</p>
+                          <p className="text-xs text-muted-foreground mb-2">
+                            Check out the <span className="font-semibold">Understanding Emotions</span> module together.
+                          </p>
+                          <Button size="sm" variant="outline" onClick={() => navigate('/carer/resources')}>
+                            View Resources
+                          </Button>
+                        </div>
+                        <div className="bg-background/60 rounded-lg p-3">
+                          <p className="text-sm font-medium mb-1">🌟 Real-World Tip</p>
+                          <p className="text-xs text-muted-foreground">
+                            Try: "How about we do something you enjoy today? What sounds fun to you?"
+                          </p>
+                        </div>
+                      </>
+                    )}
+                    
+                    {latestInsight.mood_score >= 60 && (
+                      <>
+                        <div className="bg-background/60 rounded-lg p-3">
+                          <p className="text-sm font-medium mb-1">✨ Continue the Momentum</p>
+                          <p className="text-xs text-muted-foreground mb-2">
+                            {childNickname} is doing great! Explore <span className="font-semibold">Reflection Prompts</span> to deepen your connection.
+                          </p>
+                          <Button size="sm" variant="outline" onClick={() => navigate('/carer/joint-tools')}>
+                            Try Reflection Prompts
+                          </Button>
+                        </div>
+                        <div className="bg-background/60 rounded-lg p-3">
+                          <p className="text-sm font-medium mb-1">💜 Real-World Tip</p>
+                          <p className="text-xs text-muted-foreground">
+                            Celebrate the good: "I've noticed you've been feeling good lately. What's been going well for you?"
+                          </p>
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
               </Card>
