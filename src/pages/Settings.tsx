@@ -89,7 +89,7 @@ export default function Settings() {
     };
 
     fetchProfile();
-  }, [user, userRole]);
+  }, [user, userRole, avatarCustomizerOpen]);
 
   useEffect(() => {
     const fetchAvatarHistory = async () => {
@@ -108,7 +108,7 @@ export default function Settings() {
     };
 
     fetchAvatarHistory();
-  }, [user, avatarData]);
+  }, [user, avatarCustomizerOpen]);
 
   const handleSaveNickname = async () => {
     if (!user || newNickname.length < 3) {

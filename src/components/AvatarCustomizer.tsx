@@ -98,41 +98,35 @@ export function AvatarCustomizer({ open, onOpenChange, currentAvatar, onAvatarUp
     try {
       const table = userRole === 'child' ? 'children_profiles' : 'carer_profiles';
       
-      // Update current avatar
-      const { error } = await supabase
+      // Step 1: Update the profile with new avatar
+      const { error: profileError } = await supabase
         .from(table)
         .update({ avatar_json: newAvatarData })
         .eq('user_id', user.id);
 
-      if (error) throw error;
+      if (profileError) {
+        console.error('Profile update error:', profileError);
+        throw profileError;
+      }
 
-      // Mark all other avatars as not current
+      // Step 2: Mark all history as not current
       await supabase
         .from('avatar_history')
         .update({ is_current: false })
         .eq('user_id', user.id);
 
-      // Mark this avatar as current or create new history entry
-      const { data: existingHistory } = await supabase
+      // Step 3: Insert new history record as current
+      const { error: historyError } = await supabase
         .from('avatar_history')
-        .select('id')
-        .eq('user_id', user.id)
-        .eq('avatar_json', newAvatarData)
-        .single();
+        .insert({
+          user_id: user.id,
+          avatar_json: newAvatarData,
+          is_current: true
+        });
 
-      if (existingHistory) {
-        await supabase
-          .from('avatar_history')
-          .update({ is_current: true })
-          .eq('id', existingHistory.id);
-      } else {
-        await supabase
-          .from('avatar_history')
-          .insert({
-            user_id: user.id,
-            avatar_json: newAvatarData,
-            is_current: true
-          });
+      if (historyError) {
+        console.error('History insert error:', historyError);
+        // Don't throw - profile is already updated
       }
 
       onAvatarUpdate(newAvatarData);

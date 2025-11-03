@@ -60,8 +60,8 @@ export function AvatarDisplay({ avatarData, size = 'md', className = '' }: Avata
     );
   }
 
-  // AI-generated image avatar
-  if (avatarData?.imageUrl) {
+  // AI-generated image avatar (check both imageUrl and type)
+  if (avatarData?.imageUrl || avatarData?.type === 'ai_generated') {
     return (
       <Avatar className={`${sizeClasses[size]} ${className}`}>
         <AvatarImage src={avatarData.imageUrl} alt="Avatar" />
