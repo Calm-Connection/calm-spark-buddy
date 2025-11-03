@@ -26,21 +26,32 @@ export function AvatarPreview({
   const [error, setError] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fabricCanvasRef = useRef<FabricCanvas | null>(null);
+  const isMountedRef = useRef(true);
 
   // Initialize Fabric canvas once on mount
   useEffect(() => {
     if (!canvasRef.current || fabricCanvasRef.current) return;
 
-    fabricCanvasRef.current = new FabricCanvas(canvasRef.current, {
-      width: 200,
-      height: 200,
-      backgroundColor: '#f0f0f0',
-    });
+    try {
+      fabricCanvasRef.current = new FabricCanvas(canvasRef.current, {
+        width: 200,
+        height: 200,
+        backgroundColor: '#f0f0f0',
+      });
+    } catch (err) {
+      console.error('Failed to initialize Fabric canvas:', err);
+      setError(true);
+    }
 
     // Cleanup only on unmount
     return () => {
+      isMountedRef.current = false;
       if (fabricCanvasRef.current) {
-        fabricCanvasRef.current.dispose();
+        try {
+          fabricCanvasRef.current.dispose();
+        } catch (err) {
+          console.error('Error disposing canvas:', err);
+        }
         fabricCanvasRef.current = null;
       }
     };
@@ -49,13 +60,17 @@ export function AvatarPreview({
   // Update canvas content when avatar props change
   useEffect(() => {
     const generateComposite = async () => {
-      if (!fabricCanvasRef.current) return;
+      if (!fabricCanvasRef.current || !isMountedRef.current) return;
 
       setLoading(true);
       setError(false);
 
       try {
         const canvas = fabricCanvasRef.current;
+        
+        // Guard against canvas being disposed
+        if (!canvas || !isMountedRef.current) return;
+        
         canvas.clear();
         canvas.backgroundColor = '#f0f0f0';
 
@@ -73,10 +88,16 @@ export function AvatarPreview({
 
         // Load and add each layer
         for (const layer of layers) {
+          // Check if still mounted before processing each layer
+          if (!isMountedRef.current || !fabricCanvasRef.current) return;
+          
           try {
             const img = await FabricImage.fromURL(layer.url, {
               crossOrigin: 'anonymous',
             });
+            
+            // Double check still mounted after async operation
+            if (!isMountedRef.current || !fabricCanvasRef.current) return;
             
             // Scale image to fit canvas
             img.scaleToWidth(200);
@@ -106,8 +127,11 @@ export function AvatarPreview({
           }
         }
 
-        canvas.renderAll();
-        setLoading(false);
+        // Final check before rendering
+        if (isMountedRef.current && fabricCanvasRef.current) {
+          canvas.renderAll();
+          setLoading(false);
+        }
       } catch (err) {
         console.error('Error generating composite avatar:', err);
         setError(true);
