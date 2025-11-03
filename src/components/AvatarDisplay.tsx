@@ -6,6 +6,7 @@ interface AvatarData {
   accessory?: string;
   expression?: string;
   emoji?: string;
+  imageUrl?: string;
 }
 
 interface AvatarDisplayProps {
@@ -26,6 +27,18 @@ export function AvatarDisplay({ avatarData, size = 'md', className = '' }: Avata
     md: 'text-2xl',
     lg: 'text-4xl',
   };
+
+  // AI-generated image avatar
+  if (avatarData?.imageUrl) {
+    return (
+      <Avatar className={`${sizeClasses[size]} ${className}`}>
+        <AvatarImage src={avatarData.imageUrl} alt="Avatar" />
+        <AvatarFallback className="bg-muted">
+          <span className={textSizes[size]}>👤</span>
+        </AvatarFallback>
+      </Avatar>
+    );
+  }
 
   if (avatarData?.emoji) {
     // Carer emoji avatar

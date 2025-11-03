@@ -3,10 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { PageLayout } from '@/components/PageLayout';
-import { Check } from 'lucide-react';
+import { Check, Sparkles, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
+import { Input } from '@/components/ui/input';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const skinTones = ['#FFE5D9', '#F7D5BE', '#E3B392', '#C68E65', '#8D5524', '#4A2F1E'];
 
@@ -41,21 +43,56 @@ export default function CreateAvatarEnhanced() {
   const [accessory, setAccessory] = useState('none');
   const [expression, setExpression] = useState('happy');
   const [loading, setLoading] = useState(false);
+  const [aiPrompt, setAiPrompt] = useState('');
+  const [aiGenerating, setAiGenerating] = useState(false);
+  const [generatedImageUrl, setGeneratedImageUrl] = useState<string | null>(null);
   const navigate = useNavigate();
   const { user } = useAuth();
   const { toast } = useToast();
+
+  const handleGenerateAI = async () => {
+    if (!aiPrompt.trim()) {
+      toast({
+        title: 'Prompt required',
+        description: 'Please describe your avatar',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    setAiGenerating(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('generate-avatar', {
+        body: { prompt: aiPrompt }
+      });
+
+      if (error) throw error;
+
+      setGeneratedImageUrl(data.imageUrl);
+      toast({
+        title: 'Avatar generated! ✨',
+        description: 'Your unique avatar is ready'
+      });
+    } catch (error: any) {
+      console.error('Error generating avatar:', error);
+      toast({
+        title: 'Generation failed',
+        description: error.message || 'Please try again',
+        variant: 'destructive'
+      });
+    } finally {
+      setAiGenerating(false);
+    }
+  };
 
   const handleSave = async () => {
     if (!user) return;
     
     setLoading(true);
     try {
-      const avatar = { 
-        skinTone, 
-        hairStyle, 
-        accessory, 
-        expression 
-      };
+      const avatar = generatedImageUrl 
+        ? { imageUrl: generatedImageUrl }
+        : { skinTone, hairStyle, accessory, expression };
       
       localStorage.setItem('avatarData', JSON.stringify(avatar));
       
@@ -88,9 +125,20 @@ export default function CreateAvatarEnhanced() {
           <div className="text-center space-y-3">
             <h1 className="text-foreground">CREATE YOUR AVATAR</h1>
             <p className="text-lg text-foreground/70">
-              Design your unique avatar!
+              Choose customization or AI generation
             </p>
           </div>
+
+          <Tabs defaultValue="customize" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="customize">Customize</TabsTrigger>
+              <TabsTrigger value="ai">
+                <Sparkles className="h-4 w-4 mr-2" />
+                AI Generate
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="customize" className="space-y-8 mt-6">
 
           {/* Avatar Preview */}
           <div className="flex justify-center">
@@ -217,15 +265,92 @@ export default function CreateAvatarEnhanced() {
             </div>
           </div>
 
-          <Button 
-            onClick={handleSave}
-            variant="gradient"
-            size="lg"
-            className="w-full"
-            disabled={loading}
-          >
-            {loading ? 'SAVING...' : 'SAVE AVATAR'}
-          </Button>
+              <Button 
+                onClick={handleSave}
+                variant="gradient"
+                size="lg"
+                className="w-full"
+                disabled={loading}
+              >
+                {loading ? 'SAVING...' : 'SAVE AVATAR'}
+              </Button>
+            </TabsContent>
+
+            <TabsContent value="ai" className="space-y-6 mt-6">
+              {generatedImageUrl ? (
+                <div className="space-y-4">
+                  <div className="flex justify-center">
+                    <img 
+                      src={generatedImageUrl} 
+                      alt="Generated avatar"
+                      className="w-64 h-64 rounded-full object-cover shadow-xl"
+                    />
+                  </div>
+                  <div className="flex gap-2">
+                    <Button 
+                      onClick={() => {
+                        setGeneratedImageUrl(null);
+                        setAiPrompt('');
+                      }}
+                      variant="outline"
+                      className="flex-1"
+                    >
+                      Try Again
+                    </Button>
+                    <Button 
+                      onClick={handleSave}
+                      variant="gradient"
+                      className="flex-1"
+                      disabled={loading}
+                    >
+                      {loading ? 'SAVING...' : 'USE THIS AVATAR'}
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="text-center space-y-2">
+                    <Sparkles className="h-12 w-12 mx-auto text-primary" />
+                    <p className="text-muted-foreground">
+                      Describe your dream avatar and AI will create it for you!
+                    </p>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Input
+                      placeholder="e.g., a friendly robot with blue eyes and a big smile"
+                      value={aiPrompt}
+                      onChange={(e) => setAiPrompt(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && handleGenerateAI()}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Tip: Be specific! Mention colors, expressions, and style.
+                    </p>
+                  </div>
+
+                  <Button 
+                    onClick={handleGenerateAI}
+                    variant="gradient"
+                    size="lg"
+                    className="w-full"
+                    disabled={aiGenerating || !aiPrompt.trim()}
+                  >
+                    {aiGenerating ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Generating...
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="mr-2 h-4 w-4" />
+                        Generate Avatar
+                      </>
+                    )}
+                  </Button>
+                </div>
+              )}
+            </TabsContent>
+          </Tabs>
         </CardContent>
       </Card>
     </PageLayout>
