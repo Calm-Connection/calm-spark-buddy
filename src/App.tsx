@@ -62,6 +62,9 @@ import NotificationAnalytics from "./pages/carer/NotificationAnalytics";
 import Modules from "./pages/shared/Modules";
 import ModuleDetail from "./pages/shared/ModuleDetail";
 
+// Admin pages
+import GenerateAvatarAssets from "./pages/admin/GenerateAvatarAssets";
+
 const queryClient = new QueryClient();
 
 function ProtectedRoute({ children, role }: { children: React.ReactNode; role?: 'child' | 'carer' }) {
@@ -153,6 +156,9 @@ function AppRoutes() {
       {/* Shared routes - protected */}
       <Route path="/quick-tour" element={<ProtectedRoute><QuickTour /></ProtectedRoute>} />
       <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+      
+      {/* Admin routes - protected */}
+      <Route path="/admin/generate-assets" element={<ProtectedRoute><GenerateAvatarAssets /></ProtectedRoute>} />
       
       {/* 404 catch-all */}
       <Route path="*" element={<NotFound />} />
