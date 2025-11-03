@@ -26,37 +26,62 @@ serve(async (req) => {
 
     console.log(`Generating ${assetType}/${assetKey}...`);
 
-    // Generate image using Lovable AI
-    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'google/gemini-2.5-flash-image',
-        messages: [{
-          role: 'user',
-          content: prompt
-        }],
-        modalities: ['image', 'text']
-      })
-    });
+    // Retry logic for AI generation
+    let lastError;
+    let data;
+    let imageBase64;
+    
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        // Add delay between retries
+        if (attempt > 1) {
+          console.log(`Retry attempt ${attempt} for ${assetType}/${assetKey}...`);
+          await new Promise(resolve => setTimeout(resolve, 2000 * attempt));
+        }
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('AI generation error:', response.status, errorText);
-      throw new Error(`AI generation failed: ${response.status} - ${errorText}`);
+        const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: 'google/gemini-2.5-flash-image',
+            messages: [{
+              role: 'user',
+              content: prompt
+            }],
+            modalities: ['image', 'text']
+          })
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error(`AI generation error (attempt ${attempt}):`, response.status, errorText.substring(0, 200));
+          throw new Error(`AI generation failed: ${response.status}`);
+        }
+
+        data = await response.json();
+        imageBase64 = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+        
+        if (!imageBase64) {
+          console.error('No image in response');
+          throw new Error('No image generated');
+        }
+
+        // Success! Break out of retry loop
+        lastError = null;
+        break;
+      } catch (error) {
+        lastError = error;
+        if (attempt === 3) {
+          throw error; // Throw on last attempt
+        }
+      }
     }
 
-    const data = await response.json();
-    console.log('AI response structure:', JSON.stringify(data, null, 2));
-    
-    const imageBase64 = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
-    
-    if (!imageBase64) {
-      console.error('No image in response. Full response:', JSON.stringify(data));
-      throw new Error('No image generated');
+    if (lastError) {
+      throw lastError;
     }
 
     // Convert base64 to blob
