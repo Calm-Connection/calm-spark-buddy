@@ -98,6 +98,16 @@ export function AvatarCustomizer({ open, onOpenChange, currentAvatar, onAvatarUp
     try {
       const table = userRole === 'child' ? 'children_profiles' : 'carer_profiles';
       
+      // Check if avatar is different from current one
+      const { data: currentProfile } = await supabase
+        .from(table)
+        .select('avatar_json')
+        .eq('user_id', user.id)
+        .single();
+
+      const isDifferent = !currentProfile?.avatar_json || 
+        (currentProfile.avatar_json as any)?.imageUrl !== newAvatarData.imageUrl;
+
       // Step 1: Update the profile with new avatar
       const { error: profileError } = await supabase
         .from(table)
@@ -109,24 +119,31 @@ export function AvatarCustomizer({ open, onOpenChange, currentAvatar, onAvatarUp
         throw profileError;
       }
 
-      // Step 2: Mark all history as not current
-      await supabase
-        .from('avatar_history')
-        .update({ is_current: false })
-        .eq('user_id', user.id);
+      // Only insert history if avatar has changed
+      if (isDifferent) {
+        // Step 2: Mark all history as not current
+        await supabase
+          .from('avatar_history')
+          .update({ is_current: false })
+          .eq('user_id', user.id);
 
-      // Step 3: Insert new history record as current
-      const { error: historyError } = await supabase
-        .from('avatar_history')
-        .insert({
-          user_id: user.id,
-          avatar_json: newAvatarData,
-          is_current: true
+        // Step 3: Insert new history record as current
+        const { error: historyError } = await supabase
+          .from('avatar_history')
+          .insert({
+            user_id: user.id,
+            avatar_json: newAvatarData,
+            is_current: true
+          });
+
+        if (historyError) {
+          console.error('History insert error:', historyError);
+        }
+      } else {
+        toast({
+          title: 'No changes',
+          description: 'This avatar is already saved',
         });
-
-      if (historyError) {
-        console.error('History insert error:', historyError);
-        // Don't throw - profile is already updated
       }
 
       onAvatarUpdate(newAvatarData);

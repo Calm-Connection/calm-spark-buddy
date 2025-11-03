@@ -41,55 +41,45 @@ export default function Settings() {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      if (!user) return;
-      
-      if (userRole === 'child') {
-        const { data } = await supabase
-          .from('children_profiles')
-          .select('nickname, avatar_json, theme, linked_carer_id')
-          .eq('user_id', user.id)
-          .single();
+      if (!user || !userRole) return;
+
+      const table = userRole === 'child' ? 'children_profiles' : 'carer_profiles';
+      const { data, error } = await supabase
+        .from(table)
+        .select('*')
+        .eq('user_id', user.id)
+        .single();
+
+      if (error) {
+        console.error('Error fetching profile:', error);
+        return;
+      }
+
+      if (data) {
+        setNickname(data.nickname || '');
+        setNewNickname(data.nickname || '');
+        setAvatarData(data.avatar_json);
         
-        if (data) {
-          setNickname(data.nickname || '');
-          setNewNickname(data.nickname || '');
-          setAvatarData(data.avatar_json);
+        if (userRole === 'child') {
+          setCurrentTheme((data as any).theme || null);
           
-          const savedTheme = data.theme || loadSavedTheme() || 'classic';
-          setCurrentTheme(savedTheme as ThemeName);
-          
-          // Fetch linked carer info if exists
-          if (data.linked_carer_id) {
-            supabase
+          if ((data as any).linked_carer_id) {
+            const { data: carerData } = await supabase
               .from('carer_profiles')
               .select('nickname')
-              .eq('user_id', data.linked_carer_id)
-              .single()
-              .then(({ data: carerData }) => {
-                if (carerData) {
-                  setLinkedCarerInfo(carerData);
-                }
-              });
+              .eq('user_id', (data as any).linked_carer_id)
+              .single();
+            
+            if (carerData) {
+              setLinkedCarerInfo(carerData);
+            }
           }
-        }
-      } else {
-        const { data } = await supabase
-          .from('carer_profiles')
-          .select('nickname, avatar_json')
-          .eq('user_id', user.id)
-          .single();
-        
-        if (data) {
-          setNickname(data.nickname || '');
-          setNewNickname(data.nickname || '');
-          setAvatarData(data.avatar_json);
-          setCurrentTheme('classic');
         }
       }
     };
 
     fetchProfile();
-  }, [user, userRole, avatarCustomizerOpen]);
+  }, [user, userRole]);
 
   useEffect(() => {
     const fetchAvatarHistory = async () => {
@@ -108,7 +98,7 @@ export default function Settings() {
     };
 
     fetchAvatarHistory();
-  }, [user, avatarCustomizerOpen]);
+  }, [user]);
 
   const handleSaveNickname = async () => {
     if (!user || newNickname.length < 3) {
@@ -151,7 +141,16 @@ export default function Settings() {
       
       <div className="max-w-2xl mx-auto space-y-6 relative z-10">
         <div>
-          <Button variant="ghost" onClick={() => navigate(-1)}>
+          <Button
+            variant="ghost"
+            onClick={() => {
+              if (window.history.length > 1) {
+                navigate(-1);
+              } else {
+                navigate(userRole === 'child' ? '/child/home' : '/carer/home');
+              }
+            }}
+          >
             ← Back
           </Button>
           <h1 className="text-3xl font-bold mt-2 flex items-center gap-2">
