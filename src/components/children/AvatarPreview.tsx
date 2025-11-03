@@ -27,23 +27,34 @@ export function AvatarPreview({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fabricCanvasRef = useRef<FabricCanvas | null>(null);
 
+  // Initialize Fabric canvas once on mount
+  useEffect(() => {
+    if (!canvasRef.current || fabricCanvasRef.current) return;
+
+    fabricCanvasRef.current = new FabricCanvas(canvasRef.current, {
+      width: 1024,
+      height: 1024,
+      backgroundColor: '#f0f0f0',
+    });
+
+    // Cleanup only on unmount
+    return () => {
+      if (fabricCanvasRef.current) {
+        fabricCanvasRef.current.dispose();
+        fabricCanvasRef.current = null;
+      }
+    };
+  }, []);
+
+  // Update canvas content when avatar props change
   useEffect(() => {
     const generateComposite = async () => {
-      if (!canvasRef.current) return;
+      if (!fabricCanvasRef.current) return;
 
       setLoading(true);
       setError(false);
 
       try {
-        // Initialize Fabric canvas if not already done
-        if (!fabricCanvasRef.current) {
-          fabricCanvasRef.current = new FabricCanvas(canvasRef.current, {
-            width: 1024,
-            height: 1024,
-            backgroundColor: '#f0f0f0',
-          });
-        }
-
         const canvas = fabricCanvasRef.current;
         canvas.clear();
         canvas.backgroundColor = '#f0f0f0';
@@ -96,14 +107,6 @@ export function AvatarPreview({
     };
 
     generateComposite();
-
-    // Cleanup
-    return () => {
-      if (fabricCanvasRef.current) {
-        fabricCanvasRef.current.dispose();
-        fabricCanvasRef.current = null;
-      }
-    };
   }, [skinTone, eyeColor, hairColor, hairStyle, favoriteColor, accessory, comfortItem]);
 
   return (
