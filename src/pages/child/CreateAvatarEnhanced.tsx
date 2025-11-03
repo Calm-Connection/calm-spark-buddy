@@ -31,12 +31,19 @@ export default function CreateAvatarEnhanced() {
     
     setLoading(true);
     try {
+      // Store avatar data for immediate display
       localStorage.setItem('avatarData', JSON.stringify(avatarData));
       
+      // Update database
       await supabase
         .from('children_profiles')
         .update({ avatar_json: avatarData })
         .eq('user_id', user.id);
+      
+      toast({
+        title: 'Success!',
+        description: 'Your avatar has been saved',
+      });
       
       navigate('/child/safety-note');
     } catch (error) {

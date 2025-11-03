@@ -1,12 +1,23 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { AvatarPreview } from './children/AvatarPreview';
 
 interface AvatarData {
+  type?: string;
   skinTone?: string;
   hairStyle?: string;
   accessory?: string;
   expression?: string;
   emoji?: string;
   imageUrl?: string;
+  customization?: {
+    skinTone: string;
+    eyeColor: string;
+    hairColor: string;
+    hairStyle: string;
+    favoriteColor: string;
+    accessory: string;
+    comfortItem: string;
+  };
 }
 
 interface AvatarDisplayProps {
@@ -27,6 +38,27 @@ export function AvatarDisplay({ avatarData, size = 'md', className = '' }: Avata
     md: 'text-2xl',
     lg: 'text-4xl',
   };
+
+  const svgSizes = {
+    sm: { width: 40, height: 36 },
+    md: { width: 64, height: 58 },
+    lg: { width: 96, height: 86 },
+  };
+
+  // Manual custom avatar with preview
+  if (avatarData?.type === 'manual_custom' && avatarData?.customization) {
+    const scaleFactor = size === 'sm' ? 0.2 : size === 'md' ? 0.32 : 0.48;
+    return (
+      <div className={`${className} overflow-hidden rounded-full`} style={{ 
+        width: svgSizes[size].width, 
+        height: svgSizes[size].height 
+      }}>
+        <div style={{ transform: `scale(${scaleFactor})`, transformOrigin: 'top left' }}>
+          <AvatarPreview {...avatarData.customization} />
+        </div>
+      </div>
+    );
+  }
 
   // AI-generated image avatar
   if (avatarData?.imageUrl) {
