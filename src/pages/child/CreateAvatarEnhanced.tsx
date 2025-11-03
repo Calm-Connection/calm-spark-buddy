@@ -40,6 +40,15 @@ export default function CreateAvatarEnhanced() {
         .update({ avatar_json: avatarData })
         .eq('user_id', user.id);
       
+      // Save to avatar history
+      await supabase
+        .from('avatar_history')
+        .insert({
+          user_id: user.id,
+          avatar_json: avatarData,
+          is_current: true
+        });
+      
       toast({
         title: 'Success!',
         description: 'Your avatar has been saved',

@@ -5,7 +5,6 @@ import { Card } from '@/components/ui/card';
 import { Loader2, Sparkles } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { AvatarPreview } from './AvatarPreview';
 
 interface AvatarBuilderProps {
   onAvatarGenerated: (avatarData: any) => void;
@@ -176,26 +175,10 @@ export function AvatarBuilder({ onAvatarGenerated }: AvatarBuilderProps) {
     }
   };
 
-  const handleUseManualAvatar = () => {
-    // Save the manual avatar without AI generation
-    onAvatarGenerated({
-      type: 'manual_custom',
-      customization: {
-        skinTone,
-        eyeColor,
-        hairColor,
-        hairStyle,
-        favoriteColor,
-        accessory,
-        comfortItem,
-      }
-    });
-  };
-
   const handleUseAvatar = () => {
     if (generatedImage) {
       onAvatarGenerated({
-        type: 'disney_custom',
+        type: 'ai_generated',
         imageUrl: generatedImage,
         customization: {
           skinTone,
@@ -207,6 +190,7 @@ export function AvatarBuilder({ onAvatarGenerated }: AvatarBuilderProps) {
           comfortItem,
         }
       });
+      toast.success('Avatar saved!');
     }
   };
 
@@ -239,22 +223,9 @@ export function AvatarBuilder({ onAvatarGenerated }: AvatarBuilderProps) {
             </div>
           ) : (
             <div className="space-y-6">
-              {/* Live Preview */}
-              <Card className="p-6 bg-gradient-to-br from-primary/5 to-secondary/5">
-                <h3 className="text-center font-semibold mb-4 text-lg">Your Avatar Preview</h3>
-                <AvatarPreview
-                  skinTone={skinTone}
-                  eyeColor={eyeColor}
-                  hairColor={hairColor}
-                  hairStyle={hairStyle}
-                  favoriteColor={favoriteColor}
-                  accessory={accessory}
-                  comfortItem={comfortItem}
-                />
-                <p className="text-center text-sm text-muted-foreground">
-                  Pick your features below to customize your avatar
-                </p>
-              </Card>
+              <p className="text-sm text-muted-foreground text-center">
+                Choose your avatar features below, then click "Generate Avatar" to create it!
+              </p>
               {/* Skin Tone */}
               <div>
                 <label className="text-sm font-semibold mb-3 block">Skin Tone</label>
@@ -395,39 +366,25 @@ export function AvatarBuilder({ onAvatarGenerated }: AvatarBuilderProps) {
                 </div>
               </div>
 
-              {/* Action Buttons */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <Button 
-                  onClick={handleUseManualAvatar}
-                  variant="default"
-                  size="lg"
-                  className="w-full"
-                >
-                  Save Avatar
-                </Button>
-                <Button 
-                  onClick={handleGenerateCustom} 
-                  disabled={generating}
-                  variant="outline"
-                  className="w-full"
-                  size="lg"
-                >
-                  {generating ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Generating AI Version...
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="mr-2 h-4 w-4" />
-                      Generate AI Version
-                    </>
-                  )}
-                </Button>
-              </div>
-              <p className="text-xs text-center text-muted-foreground">
-                Save your avatar as-is, or use AI to create a more detailed version
-              </p>
+              {/* Generate Button */}
+              <Button 
+                onClick={handleGenerateCustom} 
+                disabled={generating}
+                size="lg"
+                className="w-full"
+              >
+                {generating ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Generating Avatar...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="mr-2 h-4 w-4" />
+                    Generate Avatar
+                  </>
+                )}
+              </Button>
             </div>
           )}
         </TabsContent>

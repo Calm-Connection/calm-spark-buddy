@@ -37,6 +37,7 @@ export default function Settings() {
   const [avatarCustomizerOpen, setAvatarCustomizerOpen] = useState(false);
   const [reportModalOpen, setReportModalOpen] = useState(false);
   const [addCarerCodeOpen, setAddCarerCodeOpen] = useState(false);
+  const [avatarHistory, setAvatarHistory] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -89,6 +90,25 @@ export default function Settings() {
 
     fetchProfile();
   }, [user, userRole]);
+
+  useEffect(() => {
+    const fetchAvatarHistory = async () => {
+      if (!user) return;
+      
+      const { data } = await supabase
+        .from('avatar_history')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(6);
+      
+      if (data) {
+        setAvatarHistory(data);
+      }
+    };
+
+    fetchAvatarHistory();
+  }, [user, avatarData]);
 
   const handleSaveNickname = async () => {
     if (!user || newNickname.length < 3) {
@@ -209,6 +229,70 @@ export default function Settings() {
                 </div>
               )}
             </div>
+
+            {/* Avatar History */}
+            {avatarHistory.length > 0 && (
+              <div className="pt-4 border-t space-y-3">
+                <Label className="text-sm font-medium">Previous Avatars</Label>
+                <p className="text-xs text-muted-foreground">Click to restore a previous avatar</p>
+                <div className="grid grid-cols-3 gap-2">
+                  {avatarHistory.map((historyItem) => (
+                    <button
+                      key={historyItem.id}
+                      onClick={async () => {
+                        setLoading(true);
+                        try {
+                          const tableName = userRole === 'child' ? 'children_profiles' : 'carer_profiles';
+                          const { error } = await supabase
+                            .from(tableName)
+                            .update({ avatar_json: historyItem.avatar_json })
+                            .eq('user_id', user!.id);
+                          
+                          if (error) throw error;
+
+                          // Update history
+                          await supabase
+                            .from('avatar_history')
+                            .update({ is_current: false })
+                            .eq('user_id', user!.id);
+
+                          await supabase
+                            .from('avatar_history')
+                            .update({ is_current: true })
+                            .eq('id', historyItem.id);
+
+                          setAvatarData(historyItem.avatar_json);
+                          toast({
+                            title: 'Success',
+                            description: 'Avatar restored!',
+                          });
+                        } catch (error) {
+                          console.error('Error restoring avatar:', error);
+                          toast({
+                            title: 'Error',
+                            description: 'Failed to restore avatar',
+                            variant: 'destructive',
+                          });
+                        } finally {
+                          setLoading(false);
+                        }
+                      }}
+                      className={`p-2 rounded-lg border-2 transition-all ${
+                        historyItem.is_current
+                          ? 'border-primary bg-primary/10'
+                          : 'border-border hover:border-primary/50'
+                      }`}
+                      disabled={loading}
+                    >
+                      <AvatarDisplay 
+                        avatarData={historyItem.avatar_json}
+                        size="sm"
+                      />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {userRole === 'child' && (
               <div className="pt-2 border-t space-y-2">

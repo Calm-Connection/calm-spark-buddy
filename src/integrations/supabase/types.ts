@@ -44,6 +44,30 @@ export type Database = {
         }
         Relationships: []
       }
+      avatar_history: {
+        Row: {
+          avatar_json: Json
+          created_at: string
+          id: string
+          is_current: boolean | null
+          user_id: string
+        }
+        Insert: {
+          avatar_json: Json
+          created_at?: string
+          id?: string
+          is_current?: boolean | null
+          user_id: string
+        }
+        Update: {
+          avatar_json?: Json
+          created_at?: string
+          id?: string
+          is_current?: boolean | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       carer_journal_entries: {
         Row: {
           carer_id: string

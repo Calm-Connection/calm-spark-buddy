@@ -8,14 +8,12 @@ import { useToast } from '@/hooks/use-toast';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const preMadeAvatars = [
-  { id: 'professional1', label: 'Professional', prompt: 'a professional adult with a warm smile, wearing glasses and business casual attire' },
-  { id: 'caring1', label: 'Caring', prompt: 'a kind caring adult with a gentle expression, wearing comfortable clothing' },
-  { id: 'friendly1', label: 'Friendly', prompt: 'a friendly approachable adult with a welcoming smile' },
-  { id: 'wise1', label: 'Wise', prompt: 'a wise caring adult with grey hair and a gentle, knowing smile' },
-  { id: 'active1', label: 'Active', prompt: 'an active energetic adult in casual sporty clothing with a bright smile' },
-  { id: 'creative1', label: 'Creative', prompt: 'a creative artistic adult with colorful clothing and an inspiring expression' },
-  { id: 'professional2', label: 'Professional 2', prompt: 'a professional adult in formal attire with a confident smile' },
-  { id: 'nurturing1', label: 'Nurturing', prompt: 'a nurturing caring adult with soft features and a comforting presence' },
+  { id: 'professional', label: 'Professional', prompt: 'A friendly professional adult avatar with warm expression and glasses, clean corporate style with neutral background' },
+  { id: 'casual', label: 'Casual', prompt: 'A casual friendly adult avatar with approachable smile, wearing a comfortable sweater, warm natural style' },
+  { id: 'caring', label: 'Caring', prompt: 'A caring adult avatar with gentle expression and kind eyes, wearing soft colors, nurturing and supportive appearance' },
+  { id: 'creative', label: 'Creative', prompt: 'A creative and artistic adult avatar with bright expression, colorful accessories, unique and inspiring style' },
+  { id: 'active', label: 'Active', prompt: 'An active and energetic adult avatar with enthusiastic smile, sporty appearance, dynamic and encouraging style' },
+  { id: 'wise', label: 'Wise', prompt: 'A wise and thoughtful adult avatar with calm expression, mature appearance, trustworthy and experienced style' },
 ];
 
 export default function PickAvatar() {
@@ -118,6 +116,15 @@ export default function PickAvatar() {
         return;
       }
 
+      // Save to avatar history
+      await supabase
+        .from('avatar_history')
+        .insert({
+          user_id: user.id,
+          avatar_json: avatarData,
+          is_current: true
+        });
+
       toast({
         title: 'Avatar saved! ✨',
         description: 'Let\'s continue with the tour',
@@ -193,22 +200,20 @@ export default function PickAvatar() {
               </div>
             ) : (
               <div className="space-y-4">
+                <p className="text-sm text-muted-foreground text-center">
+                  Choose from 6 pre-made avatars or create your own with AI
+                </p>
                 <div className="grid grid-cols-2 gap-3">
                   {preMadeAvatars.map((avatar) => (
-                    <button
+                    <Button
                       key={avatar.id}
+                      variant={selectedAvatarPrompt === avatar.prompt ? "default" : "outline"}
                       onClick={() => setSelectedAvatarPrompt(avatar.prompt)}
-                      className={`p-4 rounded-xl border-2 transition-all text-left ${
-                        selectedAvatarPrompt === avatar.prompt
-                          ? 'border-primary bg-primary/10'
-                          : 'border-border hover:border-primary/50'
-                      }`}
+                      disabled={generating}
+                      className="h-24 flex flex-col items-center justify-center gap-2"
                     >
-                      <div className="font-semibold text-sm">{avatar.label}</div>
-                      <div className="text-xs text-muted-foreground mt-1 line-clamp-2">
-                        {avatar.prompt}
-                      </div>
-                    </button>
+                      <span className="text-lg font-medium">{avatar.label}</span>
+                    </Button>
                   ))}
                 </div>
 

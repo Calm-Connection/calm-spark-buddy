@@ -41,8 +41,23 @@ export function AvatarCustomizer({ open, onOpenChange, currentAvatar, onAvatarUp
     }
   }, [open]);
 
-  const handleAvatarGenerated = (data: any) => {
+  const handleAvatarGenerated = async (data: any) => {
+    console.log('Avatar generated in customizer:', data);
     setNewAvatarData(data);
+    
+    // Save to avatar history
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await supabase.from('avatar_history').insert({
+          user_id: user.id,
+          avatar_json: data,
+          is_current: false
+        });
+      }
+    } catch (error) {
+      console.error('Error saving to avatar history:', error);
+    }
   };
 
   const handleGeneratePreset = async (preset: any) => {
@@ -80,28 +95,62 @@ export function AvatarCustomizer({ open, onOpenChange, currentAvatar, onAvatarUp
     if (!user || !newAvatarData) return;
     
     setLoading(true);
-    const table = userRole === 'child' ? 'children_profiles' : 'carer_profiles';
-    
-    const { error } = await supabase
-      .from(table)
-      .update({ avatar_json: newAvatarData })
-      .eq('user_id', user.id);
+    try {
+      const table = userRole === 'child' ? 'children_profiles' : 'carer_profiles';
+      
+      // Update current avatar
+      const { error } = await supabase
+        .from(table)
+        .update({ avatar_json: newAvatarData })
+        .eq('user_id', user.id);
 
-    if (error) {
-      toast({
-        title: 'Error',
-        description: 'Failed to update avatar',
-        variant: 'destructive',
-      });
-    } else {
+      if (error) throw error;
+
+      // Mark all other avatars as not current
+      await supabase
+        .from('avatar_history')
+        .update({ is_current: false })
+        .eq('user_id', user.id);
+
+      // Mark this avatar as current or create new history entry
+      const { data: existingHistory } = await supabase
+        .from('avatar_history')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('avatar_json', newAvatarData)
+        .single();
+
+      if (existingHistory) {
+        await supabase
+          .from('avatar_history')
+          .update({ is_current: true })
+          .eq('id', existingHistory.id);
+      } else {
+        await supabase
+          .from('avatar_history')
+          .insert({
+            user_id: user.id,
+            avatar_json: newAvatarData,
+            is_current: true
+          });
+      }
+
       onAvatarUpdate(newAvatarData);
       toast({
         title: 'Success',
         description: 'Avatar updated successfully!',
       });
       onOpenChange(false);
+    } catch (error) {
+      console.error('Error saving avatar:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to update avatar',
+        variant: 'destructive',
+      });
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleSaveEmoji = async (emoji: string) => {
