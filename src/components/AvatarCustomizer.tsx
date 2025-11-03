@@ -96,19 +96,29 @@ export function AvatarCustomizer({ open, onOpenChange, currentAvatar, onAvatarUp
     
     setLoading(true);
     try {
-      const table = userRole === 'child' ? 'children_profiles' : 'carer_profiles';
-      
-      // Check if avatar is different from current one
-      const { data: currentProfile } = await supabase
-        .from(table)
-        .select('avatar_json')
+      // Check if this exact avatar already exists in history as current
+      const { data: existingCurrent } = await supabase
+        .from('avatar_history')
+        .select('id, avatar_json')
         .eq('user_id', user.id)
+        .eq('is_current', true)
         .single();
 
-      const isDifferent = !currentProfile?.avatar_json || 
-        (currentProfile.avatar_json as any)?.imageUrl !== newAvatarData.imageUrl;
+      const isDifferent = !existingCurrent || 
+        (existingCurrent.avatar_json as any)?.imageUrl !== newAvatarData.imageUrl;
 
-      // Step 1: Update the profile with new avatar
+      if (!isDifferent) {
+        toast({
+          title: 'No changes',
+          description: 'This avatar is already saved as your current avatar',
+        });
+        setLoading(false);
+        return;
+      }
+
+      const table = userRole === 'child' ? 'children_profiles' : 'carer_profiles';
+      
+      // Update the profile with new avatar
       const { error: profileError } = await supabase
         .from(table)
         .update({ avatar_json: newAvatarData })
@@ -119,31 +129,23 @@ export function AvatarCustomizer({ open, onOpenChange, currentAvatar, onAvatarUp
         throw profileError;
       }
 
-      // Only insert history if avatar has changed
-      if (isDifferent) {
-        // Step 2: Mark all history as not current
-        await supabase
-          .from('avatar_history')
-          .update({ is_current: false })
-          .eq('user_id', user.id);
+      // Mark all history as not current
+      await supabase
+        .from('avatar_history')
+        .update({ is_current: false })
+        .eq('user_id', user.id);
 
-        // Step 3: Insert new history record as current
-        const { error: historyError } = await supabase
-          .from('avatar_history')
-          .insert({
-            user_id: user.id,
-            avatar_json: newAvatarData,
-            is_current: true
-          });
-
-        if (historyError) {
-          console.error('History insert error:', historyError);
-        }
-      } else {
-        toast({
-          title: 'No changes',
-          description: 'This avatar is already saved',
+      // Insert new history record as current
+      const { error: historyError } = await supabase
+        .from('avatar_history')
+        .insert({
+          user_id: user.id,
+          avatar_json: newAvatarData,
+          is_current: true
         });
+
+      if (historyError) {
+        console.error('History insert error:', historyError);
       }
 
       onAvatarUpdate(newAvatarData);

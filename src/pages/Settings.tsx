@@ -144,7 +144,8 @@ export default function Settings() {
           <Button
             variant="ghost"
             onClick={() => {
-              if (window.history.length > 1) {
+              const canGoBack = window.history.state?.idx > 0;
+              if (canGoBack) {
                 navigate(-1);
               } else {
                 navigate(userRole === 'child' ? '/child/home' : '/carer/home');
@@ -259,6 +260,18 @@ export default function Settings() {
                             .from('avatar_history')
                             .update({ is_current: true })
                             .eq('id', historyItem.id);
+
+                          // Refresh avatar history to show updated current state
+                          const { data: updatedHistory } = await supabase
+                            .from('avatar_history')
+                            .select('*')
+                            .eq('user_id', user!.id)
+                            .order('created_at', { ascending: false })
+                            .limit(6);
+
+                          if (updatedHistory) {
+                            setAvatarHistory(updatedHistory);
+                          }
 
                           setAvatarData(historyItem.avatar_json);
                           toast({
