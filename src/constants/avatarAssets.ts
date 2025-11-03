@@ -18,6 +18,9 @@ export const ASSET_GENERATION_PROMPTS = {
     gray: "A pair of Disney/Pixar style cartoon eyes, gray colored, with sparkle highlights, looking forward, friendly and kind expression, no face, transparent background, centered composition",
     amber: "A pair of Disney/Pixar style cartoon eyes, amber colored, with sparkle highlights, looking forward, friendly and kind expression, no face, transparent background, centered composition",
     violet: "A pair of Disney/Pixar style cartoon eyes, violet colored, with sparkle highlights, looking forward, friendly and kind expression, no face, transparent background, centered composition",
+    honey: "A pair of Disney/Pixar style cartoon eyes, honey colored (warm golden amber), with sparkle highlights, looking forward, friendly and kind expression, no face, transparent background, centered composition",
+    onyx: "A pair of Disney/Pixar style cartoon eyes, onyx colored (deep black with subtle shine), with sparkle highlights, looking forward, friendly and kind expression, no face, transparent background, centered composition",
+    silver: "A pair of Disney/Pixar style cartoon eyes, silver colored (light metallic gray), with sparkle highlights, looking forward, friendly and kind expression, no face, transparent background, centered composition",
   },
   hair: {
     // Short hair - 10 colors
