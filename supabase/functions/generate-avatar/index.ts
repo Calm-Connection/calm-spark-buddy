@@ -12,11 +12,11 @@ serve(async (req) => {
   }
 
   try {
-    const { prompt } = await req.json();
+    const { type, customization, prompt } = await req.json();
     
-    if (!prompt) {
+    if (!type || (type !== 'child' && type !== 'carer')) {
       return new Response(
-        JSON.stringify({ error: 'Prompt is required' }),
+        JSON.stringify({ error: 'Type (child or carer) is required' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
@@ -26,8 +26,42 @@ serve(async (req) => {
       throw new Error('LOVABLE_API_KEY not configured');
     }
 
+    // Build prompt based on type and data
+    let finalPrompt = '';
+    
+    if (customization && type === 'child') {
+      // Structured Disney-style prompt for children
+      const { skinTone, eyeColor, hairColor, hairStyle, favoriteColor, accessory, comfortItem } = customization;
+      
+      finalPrompt = `Create a friendly, warm Disney/Pixar-style cartoon avatar of a child with ${skinTone} skin tone, 
+${eyeColor} eyes, ${hairColor} ${hairStyle} hair, wearing a ${favoriteColor} colored shirt or top. 
+${accessory !== 'none' ? `The child has ${accessory}.` : ''} 
+${comfortItem !== 'none' ? `The child is holding or has a ${comfortItem}.` : ''} 
+Style: soft, colorful, warm, appropriate for ages 7-16, Pixar/Disney animation quality, gentle expression, 
+non-scary, child-appropriate. Square format (1024x1024), friendly and calm expression, centered character 
+on a soft pastel or gradient background. Make it feel safe, comforting, and inclusive.`;
+    } else if (prompt) {
+      // Freestyle prompt
+      if (type === 'child') {
+        finalPrompt = `Create a friendly, warm Disney/Pixar-style cartoon avatar: ${prompt}. 
+Style: soft, colorful, appropriate for ages 7-16, Pixar/Disney quality, gentle and kind expression, 
+non-scary, child-appropriate. Square format, centered character on a calm background.`;
+      } else {
+        finalPrompt = `Create a professional, friendly Disney/Pixar-style avatar: ${prompt}. 
+Style: warm, approachable, professional adult character, Pixar/Disney animation quality, 
+kind and caring expression. Square format, centered character on a neutral background.`;
+      }
+    } else {
+      return new Response(
+        JSON.stringify({ error: 'Either customization or prompt is required' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     // Generate image using Lovable AI
-    console.log('Generating avatar with prompt:', prompt);
+    console.log('Generating avatar with type:', type);
+    console.log('Prompt:', finalPrompt);
+    
     const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -39,7 +73,7 @@ serve(async (req) => {
         messages: [
           {
             role: 'user',
-            content: `Create a cute, child-friendly avatar: ${prompt}. Style: cartoon, friendly, colorful, appropriate for ages 7-16. Square format, centered character.`
+            content: finalPrompt
           }
         ],
         modalities: ['image', 'text']

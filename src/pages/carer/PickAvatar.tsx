@@ -2,44 +2,36 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Check, Loader2, Sparkles } from 'lucide-react';
+import { Loader2, Sparkles } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-const avatars = [
-  { id: 'avatar1', emoji: '👨', label: 'Person 1' },
-  { id: 'avatar2', emoji: '👩', label: 'Person 2' },
-  { id: 'avatar3', emoji: '👴', label: 'Person 3' },
-  { id: 'avatar4', emoji: '👵', label: 'Person 4' },
-  { id: 'avatar5', emoji: '🧑', label: 'Person 5' },
-  { id: 'avatar6', emoji: '👱', label: 'Person 6' },
+const preMadeAvatars = [
+  { id: 'professional1', label: 'Professional', prompt: 'a professional adult with a warm smile, wearing glasses and business casual attire' },
+  { id: 'caring1', label: 'Caring', prompt: 'a kind caring adult with a gentle expression, wearing comfortable clothing' },
+  { id: 'friendly1', label: 'Friendly', prompt: 'a friendly approachable adult with a welcoming smile' },
+  { id: 'wise1', label: 'Wise', prompt: 'a wise caring adult with grey hair and a gentle, knowing smile' },
+  { id: 'active1', label: 'Active', prompt: 'an active energetic adult in casual sporty clothing with a bright smile' },
+  { id: 'creative1', label: 'Creative', prompt: 'a creative artistic adult with colorful clothing and an inspiring expression' },
+  { id: 'professional2', label: 'Professional 2', prompt: 'a professional adult in formal attire with a confident smile' },
+  { id: 'nurturing1', label: 'Nurturing', prompt: 'a nurturing caring adult with soft features and a comforting presence' },
 ];
 
 export default function PickAvatar() {
-  const [selectedAvatar, setSelectedAvatar] = useState<string>('');
+  const [selectedAvatarPrompt, setSelectedAvatarPrompt] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [aiPrompt, setAiPrompt] = useState('');
-  const [aiGenerating, setAiGenerating] = useState(false);
+  const [generating, setGenerating] = useState(false);
   const [generatedImageUrl, setGeneratedImageUrl] = useState<string | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleGenerateAI = async () => {
-    if (!aiPrompt.trim()) {
-      toast({
-        title: 'Prompt required',
-        description: 'Please describe your avatar',
-        variant: 'destructive'
-      });
-      return;
-    }
-
-    setAiGenerating(true);
+  const handleGenerateFromPrompt = async (prompt: string) => {
+    setGenerating(true);
     try {
       const { data, error } = await supabase.functions.invoke('generate-avatar', {
-        body: { prompt: aiPrompt }
+        body: { type: 'carer', prompt }
       });
 
       if (error) throw error;
@@ -51,18 +43,44 @@ export default function PickAvatar() {
       });
     } catch (error: any) {
       console.error('Error generating avatar:', error);
-      toast({
-        title: 'Generation failed',
-        description: error.message || 'Please try again',
-        variant: 'destructive'
-      });
+      if (error.message?.includes('429')) {
+        toast({
+          title: 'Rate limit exceeded',
+          description: 'Please try again later',
+          variant: 'destructive'
+        });
+      } else if (error.message?.includes('402')) {
+        toast({
+          title: 'Credits exhausted',
+          description: 'Please contact support',
+          variant: 'destructive'
+        });
+      } else {
+        toast({
+          title: 'Generation failed',
+          description: 'Please try again',
+          variant: 'destructive'
+        });
+      }
     } finally {
-      setAiGenerating(false);
+      setGenerating(false);
     }
   };
 
+  const handleGenerateCustom = async () => {
+    if (!aiPrompt.trim()) {
+      toast({
+        title: 'Prompt required',
+        description: 'Please describe your avatar',
+        variant: 'destructive'
+      });
+      return;
+    }
+    await handleGenerateFromPrompt(aiPrompt);
+  };
+
   const handleContinue = async () => {
-    if (!selectedAvatar && !generatedImageUrl) return;
+    if (!generatedImageUrl) return;
 
     setLoading(true);
 
@@ -79,22 +97,10 @@ export default function PickAvatar() {
         return;
       }
 
-      let avatarData;
-      if (generatedImageUrl) {
-        avatarData = { imageUrl: generatedImageUrl };
-      } else {
-        const avatar = avatars.find(a => a.id === selectedAvatar);
-        if (!avatar) {
-          toast({
-            title: 'Error',
-            description: 'Please select an avatar',
-            variant: 'destructive',
-          });
-          setLoading(false);
-          return;
-        }
-        avatarData = { emoji: avatar.emoji };
-      }
+      const avatarData = { 
+        type: 'disney_custom',
+        imageUrl: generatedImageUrl 
+      };
 
       const { error } = await supabase
         .from('carer_profiles')
@@ -135,71 +141,109 @@ export default function PickAvatar() {
         <div className="text-center space-y-2">
           <h1 className="text-3xl font-bold">Choose Your Avatar</h1>
           <p className="text-muted-foreground">
-            Pick an emoji or create with AI
+            Select a style or create with AI
           </p>
         </div>
 
-        <Tabs defaultValue="emoji" className="w-full">
+        <Tabs defaultValue="premade" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="emoji">Emoji</TabsTrigger>
-            <TabsTrigger value="ai">
+            <TabsTrigger value="premade">Pre-made</TabsTrigger>
+            <TabsTrigger value="custom">
               <Sparkles className="h-4 w-4 mr-2" />
-              AI Generate
+              Custom AI
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="emoji" className="space-y-6 mt-6">
-            <div className="grid grid-cols-3 gap-4">
-              {avatars.map((avatar) => (
-                <Card
-                  key={avatar.id}
-                  className={`p-6 cursor-pointer transition-all hover:scale-105 ${
-                    selectedAvatar === avatar.id ? 'ring-2 ring-primary' : ''
-                  }`}
-                  onClick={() => setSelectedAvatar(avatar.id)}
-                >
-                  <div className="flex flex-col items-center gap-3">
-                    <div className="text-6xl">{avatar.emoji}</div>
-                    {selectedAvatar === avatar.id && (
-                      <Check className="h-5 w-5 text-primary" />
-                    )}
-                  </div>
-                </Card>
-              ))}
-            </div>
-
-            <Button 
-              onClick={handleContinue}
-              className="w-full bg-primary hover:bg-primary/90" 
-              disabled={!selectedAvatar || loading}
-            >
-              {loading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Saving...
-                </>
-              ) : (
-                'Continue'
-              )}
-            </Button>
-          </TabsContent>
-
-          <TabsContent value="ai" className="space-y-6 mt-6">
+          <TabsContent value="premade" className="space-y-6 mt-6">
             {generatedImageUrl ? (
               <div className="space-y-4">
-                <div className="flex justify-center">
+                <Card className="p-6">
                   <img 
                     src={generatedImageUrl} 
                     alt="Generated avatar"
-                    className="w-48 h-48 rounded-full object-cover shadow-xl"
+                    className="w-full max-w-sm mx-auto rounded-2xl"
                   />
-                </div>
-                <div className="flex gap-2">
+                </Card>
+                <div className="flex gap-3">
                   <Button 
                     onClick={() => {
                       setGeneratedImageUrl(null);
-                      setAiPrompt('');
+                      setSelectedAvatarPrompt(null);
                     }}
+                    variant="outline"
+                    className="flex-1"
+                  >
+                    Choose Different
+                  </Button>
+                  <Button 
+                    onClick={handleContinue}
+                    className="flex-1 bg-primary hover:bg-primary/90"
+                    disabled={loading}
+                  >
+                    {loading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Saving...
+                      </>
+                    ) : (
+                      'Use This Avatar'
+                    )}
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-3">
+                  {preMadeAvatars.map((avatar) => (
+                    <button
+                      key={avatar.id}
+                      onClick={() => setSelectedAvatarPrompt(avatar.prompt)}
+                      className={`p-4 rounded-xl border-2 transition-all text-left ${
+                        selectedAvatarPrompt === avatar.prompt
+                          ? 'border-primary bg-primary/10'
+                          : 'border-border hover:border-primary/50'
+                      }`}
+                    >
+                      <div className="font-semibold text-sm">{avatar.label}</div>
+                      <div className="text-xs text-muted-foreground mt-1 line-clamp-2">
+                        {avatar.prompt}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+
+                <Button 
+                  onClick={() => selectedAvatarPrompt && handleGenerateFromPrompt(selectedAvatarPrompt)}
+                  disabled={!selectedAvatarPrompt || generating}
+                  className="w-full bg-primary hover:bg-primary/90"
+                  size="lg"
+                >
+                  {generating ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Generating...
+                    </>
+                  ) : (
+                    'Generate Avatar'
+                  )}
+                </Button>
+              </div>
+            )}
+          </TabsContent>
+
+          <TabsContent value="custom" className="space-y-6 mt-6">
+            {generatedImageUrl ? (
+              <div className="space-y-4">
+                <Card className="p-6">
+                  <img 
+                    src={generatedImageUrl} 
+                    alt="Generated avatar"
+                    className="w-full max-w-sm mx-auto rounded-2xl"
+                  />
+                </Card>
+                <div className="flex gap-3">
+                  <Button 
+                    onClick={() => setGeneratedImageUrl(null)}
                     variant="outline"
                     className="flex-1"
                   >
@@ -231,11 +275,11 @@ export default function PickAvatar() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Input
-                    placeholder="e.g., professional person with glasses and a friendly smile"
+                  <textarea
                     value={aiPrompt}
                     onChange={(e) => setAiPrompt(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && handleGenerateAI()}
+                    placeholder="Example: A professional parent with glasses, wearing a cardigan, with a warm and caring smile"
+                    className="w-full min-h-32 p-4 rounded-xl border-2 border-border bg-background resize-none"
                   />
                   <p className="text-xs text-muted-foreground">
                     Be specific about appearance and style
@@ -243,11 +287,12 @@ export default function PickAvatar() {
                 </div>
 
                 <Button 
-                  onClick={handleGenerateAI}
+                  onClick={handleGenerateCustom}
                   className="w-full bg-primary hover:bg-primary/90"
-                  disabled={aiGenerating || !aiPrompt.trim()}
+                  disabled={generating || !aiPrompt.trim()}
+                  size="lg"
                 >
-                  {aiGenerating ? (
+                  {generating ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       Generating...
