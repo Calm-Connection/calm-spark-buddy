@@ -6,17 +6,17 @@ interface GenderSelectorProps {
 }
 
 const genderOptions = [
-  { id: 'male', label: 'Male', emoji: '🙋‍♂️' },
-  { id: 'female', label: 'Female', emoji: '🙋‍♀️' },
-  { id: 'prefer_not_to_say', label: 'Prefer not to say', emoji: '🙋' },
+  { id: 'male', label: 'Boy', emoji: '🙋‍♂️' },
+  { id: 'female', label: 'Girl', emoji: '🙋‍♀️' },
+  { id: 'prefer_not_to_say', label: "I'll choose later", emoji: '🙋' },
 ];
 
 export function GenderSelector({ value, onChange }: GenderSelectorProps) {
   return (
     <div className="space-y-3">
-      <h3 className="text-sm font-semibold">Gender Presentation (Optional)</h3>
+      <h3 className="text-sm font-semibold">Choose Your Avatar Style</h3>
       <p className="text-xs text-muted-foreground">
-        This helps guide how your avatar is styled, but you can still customize everything!
+        Pick a style to start with - you can change anything you want!
       </p>
       <div className="grid grid-cols-1 gap-3">
         {genderOptions.map((option) => (
