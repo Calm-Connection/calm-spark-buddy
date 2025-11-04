@@ -89,11 +89,19 @@ export default function Settings() {
         .from('avatar_history')
         .select('*')
         .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
-        .limit(6);
+        .order('created_at', { ascending: false });
       
       if (data) {
-        setAvatarHistory(data);
+        // Deduplicate by imageUrl, keeping the most recent of each
+        const uniqueAvatars = data.reduce((acc, curr) => {
+          const imageUrl = (curr.avatar_json as any)?.imageUrl;
+          if (!acc.some(item => (item.avatar_json as any)?.imageUrl === imageUrl)) {
+            acc.push(curr);
+          }
+          return acc;
+        }, [] as typeof data);
+        
+        setAvatarHistory(uniqueAvatars.slice(0, 6));
       }
     };
 
@@ -266,11 +274,19 @@ export default function Settings() {
                             .from('avatar_history')
                             .select('*')
                             .eq('user_id', user!.id)
-                            .order('created_at', { ascending: false })
-                            .limit(6);
+                            .order('created_at', { ascending: false });
 
                           if (updatedHistory) {
-                            setAvatarHistory(updatedHistory);
+                            // Deduplicate by imageUrl, keeping the most recent of each
+                            const uniqueAvatars = updatedHistory.reduce((acc, curr) => {
+                              const imageUrl = (curr.avatar_json as any)?.imageUrl;
+                              if (!acc.some(item => (item.avatar_json as any)?.imageUrl === imageUrl)) {
+                                acc.push(curr);
+                              }
+                              return acc;
+                            }, [] as typeof updatedHistory);
+                            
+                            setAvatarHistory(uniqueAvatars.slice(0, 6));
                           }
 
                           setAvatarData(historyItem.avatar_json);
