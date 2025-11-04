@@ -12,6 +12,9 @@ verify_jwt = true
 [functions.generate-avatar]
 verify_jwt = true
 
+[functions.moderate-content]
+verify_jwt = true
+
 [functions.send-notifications]
 verify_jwt = false
 

@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card } from '@/components/ui/card';
-import { Loader2, Sparkles } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Loader2, Sparkles, Shield } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { GenderSelector } from './GenderSelector';
+import { useContentModeration } from '@/hooks/useContentModeration';
 
 interface AvatarBuilderProps {
   onAvatarGenerated: (avatarData: any) => void;
@@ -103,6 +105,7 @@ const comfortItems = [
 ];
 
 export function AvatarBuilder({ onAvatarGenerated, gender = 'prefer_not_to_say', onGenderChange, showGenderSelector = true }: AvatarBuilderProps) {
+  const { moderateContent } = useContentModeration();
   const [skinTone, setSkinTone] = useState('medium');
   const [eyeColor, setEyeColor] = useState('brown');
   const [hairColor, setHairColor] = useState('brown');
@@ -157,6 +160,16 @@ export function AvatarBuilder({ onAvatarGenerated, gender = 'prefer_not_to_say',
 
     setGenerating(true);
     try {
+      // Step 1: Moderate the input BEFORE avatar generation
+      const moderationResult = await moderateContent(aiPrompt, 'avatar_freestyle');
+      
+      if (!moderationResult.safe) {
+        toast.error(moderationResult.message || "Let's keep it kind and creative! Try describing your character another way.");
+        setGenerating(false);
+        return;
+      }
+
+      // Step 2: If safe, proceed with avatar generation
       const { data, error } = await supabase.functions.invoke('generate-avatar', {
         body: { type: 'child', prompt: aiPrompt, gender }
       });
@@ -421,6 +434,17 @@ export function AvatarBuilder({ onAvatarGenerated, gender = 'prefer_not_to_say',
             </div>
           ) : (
             <div className="space-y-4">
+              {/* Safety Badge */}
+              <div className="flex items-center justify-between bg-primary/5 border border-primary/20 rounded-lg p-3">
+                <p className="text-xs text-primary font-medium flex items-center gap-2">
+                  <Shield className="h-3 w-3" />
+                  Keep your description kind, creative, and appropriate for kids!
+                </p>
+                <Badge variant="secondary" className="text-xs">
+                  Child-Safe
+                </Badge>
+              </div>
+
               <div>
                 <label className="text-sm font-semibold mb-2 block">Describe Your Avatar</label>
                 <textarea
@@ -429,9 +453,19 @@ export function AvatarBuilder({ onAvatarGenerated, gender = 'prefer_not_to_say',
                   placeholder="Example: A friendly character with curly red hair, green eyes, wearing a blue hoodie and holding a book"
                   className="w-full min-h-32 p-4 rounded-xl border-2 border-border bg-background resize-none"
                 />
-                <p className="text-xs text-muted-foreground mt-2">
-                  Describe your dream avatar! Be creative and have fun 🎨
-                </p>
+                <div className="mt-2 space-y-2">
+                  <p className="text-xs text-muted-foreground">
+                    Describe your dream avatar! Be creative and have fun 🎨
+                  </p>
+                  <div className="text-xs text-muted-foreground">
+                    <p className="font-medium mb-1">Need ideas? Try:</p>
+                    <ul className="space-y-1 pl-3">
+                      <li>• "A character with curly blue hair and glasses"</li>
+                      <li>• "Someone with a big smile wearing a cozy sweater"</li>
+                      <li>• "A character with braids holding a stuffed animal"</li>
+                    </ul>
+                  </div>
+                </div>
               </div>
 
               <Button 

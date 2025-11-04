@@ -38,20 +38,41 @@ serve(async (req) => {
       // Structured Disney-style prompt for children with gender consideration
       const { skinTone, eyeColor, hairColor, hairStyle, favoriteColor, accessory, comfortItem } = customization;
       
-      finalPrompt = `Create a friendly, warm Disney/Pixar-style cartoon avatar of a ${genderDescriptor} with ${skinTone} skin tone, 
+      finalPrompt = `IMPORTANT SAFETY RULES: You are creating an avatar for a child-safe app (ages 7-16).
+STRICT REQUIREMENTS:
+- NO adult themes, violence, weapons, or scary elements
+- NO suggestive clothing, poses, or body features  
+- NO references to drugs, alcohol, or inappropriate topics
+- ONLY wholesome, friendly, age-appropriate characters
+- Disney/Pixar animation style ONLY
+
+Create a friendly, warm Disney/Pixar-style cartoon avatar of a ${genderDescriptor} with ${skinTone} skin tone, 
 ${eyeColor} eyes, ${hairColor} ${hairStyle} hair, wearing a ${favoriteColor} colored shirt or top. 
 ${accessory !== 'none' ? `The ${genderDescriptor} has ${accessory}.` : ''} 
 ${comfortItem !== 'none' ? `The ${genderDescriptor} is holding or has a ${comfortItem}.` : ''} 
 Style: soft, colorful, warm, appropriate for ages 7-16, Pixar/Disney animation quality, gentle expression, 
-non-scary, child-appropriate. Square format (1024x1024), friendly and calm expression, centered character 
-on a soft pastel or gradient background. Make it feel safe, comforting, and inclusive.`;
+non-scary, child-appropriate, fully clothed in age-appropriate outfit. Square format (1024x1024), friendly and calm expression, 
+centered character on a soft pastel or gradient background. Make it feel safe, comforting, and inclusive.`;
     } else if (prompt) {
-      // Freestyle prompt with gender consideration
+      // Freestyle prompt with gender consideration and ENHANCED SAFETY WRAPPER
       if (type === 'child') {
         const genderPrefix = gender !== 'prefer_not_to_say' ? `a ${genderDescriptor}` : 'a child';
-        finalPrompt = `Create a friendly, warm Disney/Pixar-style cartoon avatar of ${genderPrefix}: ${prompt}. 
+        finalPrompt = `IMPORTANT SAFETY RULES: You are creating an avatar for a child-safe app (ages 7-16).
+STRICT REQUIREMENTS:
+- NO adult themes, violence, weapons, or scary elements
+- NO suggestive clothing, poses, or body features
+- NO references to drugs, alcohol, or inappropriate topics
+- ONLY wholesome, friendly, age-appropriate characters
+- Disney/Pixar animation style ONLY
+
+User request: Create a friendly, warm Disney/Pixar-style cartoon avatar of ${genderPrefix}: ${prompt}. 
+
+SAFETY CHECK: If the user's description contains anything inappropriate, instead create a generic 
+friendly ${genderDescriptor} character with a big smile, casual clothing (t-shirt and jeans), 
+and a wholesome appearance.
+
 Style: soft, colorful, appropriate for ages 7-16, Pixar/Disney quality, gentle and kind expression, 
-non-scary, child-appropriate. Square format, centered character on a calm background.`;
+non-scary, child-appropriate, fully clothed in age-appropriate outfit. Square format, centered character on a calm pastel background.`;
       } else {
         finalPrompt = `Create a professional, friendly Disney/Pixar-style avatar: ${prompt}. 
 Style: warm, approachable, professional adult character, Pixar/Disney animation quality, 

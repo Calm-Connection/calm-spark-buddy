@@ -107,14 +107,7 @@ export default function ChildHome() {
         // Prompt for avatar if missing
         if (!data.avatar_json) {
           setTimeout(() => {
-            toast({
-              title: 'Create Your Avatar! 🎨',
-              description: 'Make your profile unique by creating an avatar.',
-              action: (
-                <Button size="sm" onClick={() => navigate('/child/create-avatar')}>
-                  Create Now
-                </Button>
-              ) as any,
+            toast.info('Create Your Avatar! 🎨 - Make your profile unique by creating an avatar.', {
               duration: 10000,
             });
           }, 2000);

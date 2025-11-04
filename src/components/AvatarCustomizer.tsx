@@ -7,6 +7,7 @@ import { useToast } from '@/hooks/use-toast';
 import { AvatarBuilder } from '@/components/children/AvatarBuilder';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Loader2 } from 'lucide-react';
+import { useContentModeration } from '@/hooks/useContentModeration';
 
 interface AvatarCustomizerProps {
   open: boolean;
@@ -19,6 +20,7 @@ interface AvatarCustomizerProps {
 export function AvatarCustomizer({ open, onOpenChange, currentAvatar, onAvatarUpdate, context = 'settings' }: AvatarCustomizerProps) {
   const { user, userRole } = useAuth();
   const { toast } = useToast();
+  const { moderateContent } = useContentModeration();
   const [loading, setLoading] = useState(false);
   const [newAvatarData, setNewAvatarData] = useState<any>(null);
   const [selectedPreset, setSelectedPreset] = useState<string | null>(null);

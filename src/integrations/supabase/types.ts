@@ -288,6 +288,39 @@ export type Database = {
           },
         ]
       }
+      moderation_logs: {
+        Row: {
+          category: string | null
+          confidence: number | null
+          context: string | null
+          flagged_at: string | null
+          id: string
+          input_text: string
+          is_safe: boolean
+          user_id: string | null
+        }
+        Insert: {
+          category?: string | null
+          confidence?: number | null
+          context?: string | null
+          flagged_at?: string | null
+          id?: string
+          input_text: string
+          is_safe: boolean
+          user_id?: string | null
+        }
+        Update: {
+          category?: string | null
+          confidence?: number | null
+          context?: string | null
+          flagged_at?: string | null
+          id?: string
+          input_text?: string
+          is_safe?: boolean
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       module_lessons: {
         Row: {
           content: string
@@ -467,6 +500,42 @@ export type Database = {
           updated_at?: string
           user_id?: string
           wellbeing_content?: boolean | null
+        }
+        Relationships: []
+      }
+      safeguarding_alerts: {
+        Row: {
+          alert_type: string
+          created_at: string | null
+          details: string | null
+          id: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          severity: string
+          status: string | null
+          user_id: string | null
+        }
+        Insert: {
+          alert_type: string
+          created_at?: string | null
+          details?: string | null
+          id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          severity: string
+          status?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          alert_type?: string
+          created_at?: string | null
+          details?: string | null
+          id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          severity?: string
+          status?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }
