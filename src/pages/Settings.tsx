@@ -193,14 +193,7 @@ export default function Settings() {
         <div>
           <Button
             variant="ghost"
-            onClick={() => {
-              const canGoBack = window.history.state?.idx > 0;
-              if (canGoBack) {
-                navigate(-1);
-              } else {
-                navigate(userRole === 'child' ? '/child/home' : '/carer/home');
-              }
-            }}
+            onClick={() => navigate(-1)}
           >
             ← Back
           </Button>
