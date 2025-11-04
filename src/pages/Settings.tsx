@@ -12,7 +12,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAccessibility, TextSize, FontFamily } from '@/hooks/useAccessibility';
 import { loadSavedTheme, ThemeName } from '@/hooks/useTheme';
-import { Settings as SettingsIcon, User, Save, Palette, Accessibility, MessageSquareWarning, Link as LinkIcon, Edit, Bell, CheckCircle, AlertCircle } from 'lucide-react';
+import { Settings as SettingsIcon, User, Save, Palette, Accessibility, MessageSquareWarning, Link as LinkIcon, Edit, Bell, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { AvatarDisplay } from '@/components/AvatarDisplay';
 import { AvatarCustomizer } from '@/components/AvatarCustomizer';
 import { ThemeSelector } from '@/components/ThemeSelector';
@@ -38,6 +39,8 @@ export default function Settings() {
   const [reportModalOpen, setReportModalOpen] = useState(false);
   const [addCarerCodeOpen, setAddCarerCodeOpen] = useState(false);
   const [avatarHistory, setAvatarHistory] = useState<any[]>([]);
+  const [disconnectModalOpen, setDisconnectModalOpen] = useState(false);
+  const [disconnecting, setDisconnecting] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -109,38 +112,77 @@ export default function Settings() {
   }, [user]);
 
   const handleSaveNickname = async () => {
-    if (!user || newNickname.length < 3) {
-      toast({
-        title: 'Invalid nickname',
-        description: 'Nickname must be at least 3 characters',
-        variant: 'destructive',
-      });
-      return;
-    }
+    if (!user) return;
 
     setLoading(true);
-    const table = userRole === 'child' ? 'children_profiles' : 'carer_profiles';
-    
-    const { error } = await supabase
-      .from(table)
-      .update({ nickname: newNickname })
-      .eq('user_id', user.id);
 
-    if (error) {
+    try {
+      const tableName = userRole === 'child' ? 'children_profiles' : 'carer_profiles';
+      const { error } = await supabase
+        .from(tableName)
+        .update({ nickname: newNickname })
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+
+      setNickname(newNickname);
+      setEditingNickname(false);
+
+      toast({
+        title: 'Success',
+        description: 'Nickname updated successfully',
+      });
+    } catch (error) {
+      console.error('Error updating nickname:', error);
       toast({
         title: 'Error',
         description: 'Failed to update nickname',
         variant: 'destructive',
       });
-    } else {
-      setNickname(newNickname);
-      setEditingNickname(false);
-      toast({
-        title: 'Success',
-        description: 'Nickname updated',
-      });
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
+  };
+
+  const handleDisconnectCarer = async () => {
+    if (!user) return;
+    
+    setDisconnecting(true);
+    
+    try {
+      const { error } = await supabase
+        .from('children_profiles')
+        .update({ linked_carer_id: null })
+        .eq('user_id', user.id);
+      
+      if (error) {
+        toast({
+          title: 'Error',
+          description: 'Failed to disconnect. Please try again.',
+          variant: 'destructive',
+        });
+        return;
+      }
+      
+      // Update local state
+      setLinkedCarerInfo(null);
+      setDisconnectModalOpen(false);
+      
+      toast({
+        title: 'Disconnected',
+        description: 'You can reconnect at any time using a carer code.',
+      });
+      
+    } catch (error) {
+      console.error('Error disconnecting:', error);
+      toast({
+        title: 'Error',
+        description: 'Something went wrong. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setDisconnecting(false);
+    }
   };
 
   return (
@@ -242,20 +284,32 @@ export default function Settings() {
             {userRole === 'child' && (
               <div className="pt-4">
                 {linkedCarerInfo ? (
-                  <div 
-                    className="rounded-lg border-2 border-green-500/50 bg-green-50 dark:bg-green-950/20 p-4"
-                    role="status"
-                    aria-label="Connected to carer"
-                  >
-                    <div className="flex items-center gap-2 mb-1">
-                      <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" aria-hidden="true" />
-                      <span className="font-semibold text-green-900 dark:text-green-100">
-                        Connected to {linkedCarerInfo.nickname}
-                      </span>
+                  <div className="space-y-3">
+                    <div 
+                      className="rounded-lg border-2 border-green-500/50 bg-green-50 dark:bg-green-950/20 p-4"
+                      role="status"
+                      aria-label="Connected to carer"
+                    >
+                      <div className="flex items-center gap-2 mb-1">
+                        <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" aria-hidden="true" />
+                        <span className="font-semibold text-green-900 dark:text-green-100">
+                          Connected to {linkedCarerInfo.nickname}
+                        </span>
+                      </div>
+                      <p className="text-sm text-green-700 dark:text-green-300">
+                        Your carer can see shared journal entries
+                      </p>
                     </div>
-                    <p className="text-sm text-green-700 dark:text-green-300">
-                      Your carer can see shared journal entries
-                    </p>
+                    
+                    {/* Disconnect Button */}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full border-red-200 text-red-700 hover:bg-red-50 hover:text-red-800 dark:border-red-900 dark:text-red-400 dark:hover:bg-red-950 dark:hover:text-red-300"
+                      onClick={() => setDisconnectModalOpen(true)}
+                    >
+                      Disconnect from Carer
+                    </Button>
                   </div>
                 ) : (
                   <div 
@@ -566,6 +620,36 @@ export default function Settings() {
           }
         }}
       />
+
+      {/* Disconnect Confirmation Dialog */}
+      <AlertDialog open={disconnectModalOpen} onOpenChange={setDisconnectModalOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Disconnect from Carer?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to disconnect from {linkedCarerInfo?.nickname}? 
+              You can reconnect at any time by entering a new carer code.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={disconnecting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDisconnectCarer}
+              disabled={disconnecting}
+              className="bg-red-600 hover:bg-red-700 focus:ring-red-600"
+            >
+              {disconnecting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Disconnecting...
+                </>
+              ) : (
+                'Disconnect'
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
