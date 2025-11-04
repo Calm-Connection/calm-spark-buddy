@@ -193,7 +193,7 @@ export default function Settings() {
         <div>
           <Button
             variant="ghost"
-            onClick={() => navigate(-1)}
+            onClick={() => navigate(userRole === 'child' ? '/child/home' : '/carer/home')}
           >
             ← Back
           </Button>
