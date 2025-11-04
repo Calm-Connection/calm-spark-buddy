@@ -12,7 +12,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAccessibility, TextSize, FontFamily } from '@/hooks/useAccessibility';
 import { loadSavedTheme, ThemeName } from '@/hooks/useTheme';
-import { Settings as SettingsIcon, User, Save, Palette, Accessibility, MessageSquareWarning, Link as LinkIcon, Edit, Bell } from 'lucide-react';
+import { Settings as SettingsIcon, User, Save, Palette, Accessibility, MessageSquareWarning, Link as LinkIcon, Edit, Bell, CheckCircle, AlertCircle } from 'lucide-react';
 import { AvatarDisplay } from '@/components/AvatarDisplay';
 import { AvatarCustomizer } from '@/components/AvatarCustomizer';
 import { ThemeSelector } from '@/components/ThemeSelector';
@@ -238,6 +238,52 @@ export default function Settings() {
               )}
             </div>
 
+            {/* Connection Status */}
+            {userRole === 'child' && (
+              <div className="pt-4">
+                {linkedCarerInfo ? (
+                  <div 
+                    className="rounded-lg border-2 border-green-500/50 bg-green-50 dark:bg-green-950/20 p-4"
+                    role="status"
+                    aria-label="Connected to carer"
+                  >
+                    <div className="flex items-center gap-2 mb-1">
+                      <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" aria-hidden="true" />
+                      <span className="font-semibold text-green-900 dark:text-green-100">
+                        Connected to {linkedCarerInfo.nickname}
+                      </span>
+                    </div>
+                    <p className="text-sm text-green-700 dark:text-green-300">
+                      Your carer can see shared journal entries
+                    </p>
+                  </div>
+                ) : (
+                  <div 
+                    className="rounded-lg border-2 border-amber-500/50 bg-amber-50 dark:bg-amber-950/20 p-4"
+                    role="status"
+                    aria-label="Not connected to carer"
+                  >
+                    <div className="flex items-center gap-2 mb-1">
+                      <AlertCircle className="h-5 w-5 text-amber-600 dark:text-amber-400" aria-hidden="true" />
+                      <span className="font-semibold text-amber-900 dark:text-amber-100">
+                        Not Connected
+                      </span>
+                    </div>
+                    <p className="text-sm text-amber-700 dark:text-amber-300 mb-3">
+                      Add a carer code to connect with your carer
+                    </p>
+                    <Button
+                      variant="default"
+                      size="sm"
+                      onClick={() => setAddCarerCodeOpen(true)}
+                    >
+                      Add Carer Code
+                    </Button>
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Avatar History */}
             {avatarHistory.length > 0 && (
               <div className="pt-4 border-t space-y-3">
@@ -319,27 +365,6 @@ export default function Settings() {
                     </button>
                   ))}
                 </div>
-              </div>
-            )}
-
-            {userRole === 'child' && (
-              <div className="pt-2 border-t space-y-2">
-                {linkedCarerInfo ? (
-                  <div className="flex items-center gap-2 text-sm">
-                    <LinkIcon className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-muted-foreground">Linked to:</span>
-                    <span className="font-medium">{linkedCarerInfo.nickname}</span>
-                  </div>
-                ) : (
-                  <Button
-                    variant="outline"
-                    className="w-full"
-                    onClick={() => setAddCarerCodeOpen(true)}
-                  >
-                    <LinkIcon className="h-4 w-4 mr-2" />
-                    Add Carer Code
-                  </Button>
-                )}
               </div>
             )}
           </div>
