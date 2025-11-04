@@ -11,6 +11,7 @@ import { AvatarBuilder } from '@/components/children/AvatarBuilder';
 export default function CreateAvatarEnhanced() {
   const [loading, setLoading] = useState(false);
   const [avatarData, setAvatarData] = useState<any>(null);
+  const [gender, setGender] = useState('prefer_not_to_say');
   const navigate = useNavigate();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -31,30 +32,33 @@ export default function CreateAvatarEnhanced() {
     
     setLoading(true);
     try {
-      // Store avatar data for immediate display
-      localStorage.setItem('avatarData', JSON.stringify(avatarData));
+      // Optimistic feedback
+      toast({ title: 'Saving...', duration: 1000 });
       
-      // Update database
-      await supabase
-        .from('children_profiles')
-        .update({ avatar_json: avatarData })
-        .eq('user_id', user.id);
+      // Parallel operations for speed
+      const [profileUpdate, historyInsert] = await Promise.all([
+        supabase
+          .from('children_profiles')
+          .update({ avatar_json: avatarData, gender })
+          .eq('user_id', user.id),
+        supabase
+          .from('avatar_history')
+          .insert({
+            user_id: user.id,
+            avatar_json: avatarData,
+            is_current: true
+          })
+      ]);
       
-      // Save to avatar history
-      await supabase
-        .from('avatar_history')
-        .insert({
-          user_id: user.id,
-          avatar_json: avatarData,
-          is_current: true
-        });
+      if (profileUpdate.error) throw profileUpdate.error;
       
       toast({
         title: 'Success!',
         description: 'Your avatar has been saved',
       });
       
-      navigate('/child/safety-note');
+      // Immediate navigation
+      navigate('/child/safety-note', { replace: true });
     } catch (error) {
       console.error('Error saving avatar:', error);
       toast({
@@ -78,7 +82,12 @@ export default function CreateAvatarEnhanced() {
             </p>
           </div>
 
-          <AvatarBuilder onAvatarGenerated={handleAvatarGenerated} />
+          <AvatarBuilder 
+            onAvatarGenerated={handleAvatarGenerated}
+            gender={gender}
+            onGenderChange={setGender}
+            showGenderSelector={true}
+          />
           
           {avatarData && (
             <Button 

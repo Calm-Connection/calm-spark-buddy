@@ -5,9 +5,13 @@ import { Card } from '@/components/ui/card';
 import { Loader2, Sparkles } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { GenderSelector } from './GenderSelector';
 
 interface AvatarBuilderProps {
   onAvatarGenerated: (avatarData: any) => void;
+  gender?: string;
+  onGenderChange?: (gender: string) => void;
+  showGenderSelector?: boolean;
 }
 
 const skinTones = [
@@ -98,7 +102,7 @@ const comfortItems = [
   { id: 'plant', label: 'Plant', value: 'small plant' },
 ];
 
-export function AvatarBuilder({ onAvatarGenerated }: AvatarBuilderProps) {
+export function AvatarBuilder({ onAvatarGenerated, gender = 'prefer_not_to_say', onGenderChange, showGenderSelector = true }: AvatarBuilderProps) {
   const [skinTone, setSkinTone] = useState('medium');
   const [eyeColor, setEyeColor] = useState('brown');
   const [hairColor, setHairColor] = useState('brown');
@@ -124,7 +128,7 @@ export function AvatarBuilder({ onAvatarGenerated }: AvatarBuilderProps) {
       };
 
       const { data, error } = await supabase.functions.invoke('generate-avatar', {
-        body: { type: 'child', customization }
+        body: { type: 'child', customization, gender }
       });
 
       if (error) throw error;
@@ -154,7 +158,7 @@ export function AvatarBuilder({ onAvatarGenerated }: AvatarBuilderProps) {
     setGenerating(true);
     try {
       const { data, error } = await supabase.functions.invoke('generate-avatar', {
-        body: { type: 'child', prompt: aiPrompt }
+        body: { type: 'child', prompt: aiPrompt, gender }
       });
 
       if (error) throw error;
@@ -190,12 +194,19 @@ export function AvatarBuilder({ onAvatarGenerated }: AvatarBuilderProps) {
           comfortItem,
         }
       });
-      toast.success('Avatar saved!');
+      // Immediate success feedback
+      toast.success('Avatar saved!', { duration: 1500 });
+      // Reset for next use
+      setGeneratedImage(null);
     }
   };
 
   return (
     <div className="space-y-6">
+      {showGenderSelector && onGenderChange && (
+        <GenderSelector value={gender} onChange={onGenderChange} />
+      )}
+      
       <Tabs defaultValue="custom" className="w-full">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="custom">Custom Builder</TabsTrigger>

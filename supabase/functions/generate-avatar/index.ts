@@ -12,7 +12,7 @@ serve(async (req) => {
   }
 
   try {
-    const { type, customization, prompt } = await req.json();
+    const { type, customization, prompt, gender = 'prefer_not_to_say' } = await req.json();
     
     if (!type || (type !== 'child' && type !== 'carer')) {
       return new Response(
@@ -29,21 +29,27 @@ serve(async (req) => {
     // Build prompt based on type and data
     let finalPrompt = '';
     
+    // Gender-based character descriptor
+    let genderDescriptor = 'child';
+    if (gender === 'male') genderDescriptor = 'boy';
+    else if (gender === 'female') genderDescriptor = 'girl';
+    
     if (customization && type === 'child') {
-      // Structured Disney-style prompt for children
+      // Structured Disney-style prompt for children with gender consideration
       const { skinTone, eyeColor, hairColor, hairStyle, favoriteColor, accessory, comfortItem } = customization;
       
-      finalPrompt = `Create a friendly, warm Disney/Pixar-style cartoon avatar of a child with ${skinTone} skin tone, 
+      finalPrompt = `Create a friendly, warm Disney/Pixar-style cartoon avatar of a ${genderDescriptor} with ${skinTone} skin tone, 
 ${eyeColor} eyes, ${hairColor} ${hairStyle} hair, wearing a ${favoriteColor} colored shirt or top. 
-${accessory !== 'none' ? `The child has ${accessory}.` : ''} 
-${comfortItem !== 'none' ? `The child is holding or has a ${comfortItem}.` : ''} 
+${accessory !== 'none' ? `The ${genderDescriptor} has ${accessory}.` : ''} 
+${comfortItem !== 'none' ? `The ${genderDescriptor} is holding or has a ${comfortItem}.` : ''} 
 Style: soft, colorful, warm, appropriate for ages 7-16, Pixar/Disney animation quality, gentle expression, 
 non-scary, child-appropriate. Square format (1024x1024), friendly and calm expression, centered character 
 on a soft pastel or gradient background. Make it feel safe, comforting, and inclusive.`;
     } else if (prompt) {
-      // Freestyle prompt
+      // Freestyle prompt with gender consideration
       if (type === 'child') {
-        finalPrompt = `Create a friendly, warm Disney/Pixar-style cartoon avatar: ${prompt}. 
+        const genderPrefix = gender !== 'prefer_not_to_say' ? `a ${genderDescriptor}` : 'a child';
+        finalPrompt = `Create a friendly, warm Disney/Pixar-style cartoon avatar of ${genderPrefix}: ${prompt}. 
 Style: soft, colorful, appropriate for ages 7-16, Pixar/Disney quality, gentle and kind expression, 
 non-scary, child-appropriate. Square format, centered character on a calm background.`;
       } else {

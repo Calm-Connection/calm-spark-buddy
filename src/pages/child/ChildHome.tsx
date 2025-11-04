@@ -12,6 +12,7 @@ import { FloatingElements } from '@/components/FloatingElements';
 import { BottomNav } from '@/components/BottomNav';
 import { NotificationBell } from '@/components/NotificationBell';
 import { WendyTipCard } from '@/components/WendyTipCard';
+import { toast } from 'sonner';
 
 const affirmations = [
   "You are brave and strong 💪",
@@ -79,7 +80,7 @@ export default function ChildHome() {
 
       const { data } = await supabase
         .from('children_profiles')
-        .select('id, nickname, avatar_json, theme')
+        .select('id, nickname, avatar_json, theme, gender')
         .eq('user_id', user.id)
         .single();
 
@@ -102,11 +103,27 @@ export default function ChildHome() {
         
         // Load Wendy's tip
         await loadWendyTip(data.id);
+        
+        // Prompt for avatar if missing
+        if (!data.avatar_json) {
+          setTimeout(() => {
+            toast({
+              title: 'Create Your Avatar! 🎨',
+              description: 'Make your profile unique by creating an avatar.',
+              action: (
+                <Button size="sm" onClick={() => navigate('/child/create-avatar')}>
+                  Create Now
+                </Button>
+              ) as any,
+              duration: 10000,
+            });
+          }, 2000);
+        }
       }
     };
 
     loadProfile();
-  }, [user]);
+  }, [user, navigate]);
 
   const loadAchievementsPreview = async () => {
     // Load top 4 achievements

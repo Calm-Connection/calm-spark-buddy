@@ -13,14 +13,16 @@ interface AvatarCustomizerProps {
   onOpenChange: (open: boolean) => void;
   currentAvatar: any;
   onAvatarUpdate: (avatar: any) => void;
+  context?: 'onboarding' | 'settings';
 }
 
-export function AvatarCustomizer({ open, onOpenChange, currentAvatar, onAvatarUpdate }: AvatarCustomizerProps) {
+export function AvatarCustomizer({ open, onOpenChange, currentAvatar, onAvatarUpdate, context = 'settings' }: AvatarCustomizerProps) {
   const { user, userRole } = useAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [newAvatarData, setNewAvatarData] = useState<any>(null);
   const [selectedPreset, setSelectedPreset] = useState<string | null>(null);
+  const [gender, setGender] = useState('prefer_not_to_say');
 
   const carerEmojis = ['👨', '👩', '🧑', '👨‍🦱', '👩‍🦱', '🧑‍🦱', '👨‍🦰', '👩‍🦰', '🧑‍🦰', '👨‍🦲', '👩‍🦲', '🧑‍🦲'];
 
@@ -98,6 +100,9 @@ export function AvatarCustomizer({ open, onOpenChange, currentAvatar, onAvatarUp
     try {
       const table = userRole === 'child' ? 'children_profiles' : 'carer_profiles';
       
+      // Optimistic local update
+      onAvatarUpdate(newAvatarData);
+      
       // Check if this avatar imageUrl already exists in history
       const { data: existingAvatars } = await supabase
         .from('avatar_history')
@@ -109,14 +114,21 @@ export function AvatarCustomizer({ open, onOpenChange, currentAvatar, onAvatarUp
         (item) => (item.avatar_json as any)?.imageUrl === newAvatarData.imageUrl
       );
 
-      // Update the profile with new avatar
+      // Update profile with gender if child
+      const updateData: any = { avatar_json: newAvatarData };
+      if (userRole === 'child') {
+        updateData.gender = gender;
+      }
+
       const { error: profileError } = await supabase
         .from(table)
-        .update({ avatar_json: newAvatarData })
+        .update(updateData)
         .eq('user_id', user.id);
 
       if (profileError) {
         console.error('Profile update error:', profileError);
+        // Revert optimistic update
+        onAvatarUpdate(currentAvatar);
         throw profileError;
       }
 
@@ -131,11 +143,6 @@ export function AvatarCustomizer({ open, onOpenChange, currentAvatar, onAvatarUp
           .from('avatar_history')
           .update({ is_current: true })
           .eq('id', existingAvatar.id);
-          
-        toast({
-          title: 'Avatar restored',
-          description: 'Switched to previously saved avatar',
-        });
       } else {
         // Brand new avatar - insert into history
         await supabase
@@ -143,23 +150,19 @@ export function AvatarCustomizer({ open, onOpenChange, currentAvatar, onAvatarUp
           .update({ is_current: false })
           .eq('user_id', user.id);
 
-        const { error: historyError } = await supabase
+        await supabase
           .from('avatar_history')
           .insert({
             user_id: user.id,
             avatar_json: newAvatarData,
             is_current: true
           });
-
-        if (historyError) {
-          console.error('History insert error:', historyError);
-        }
       }
 
-      onAvatarUpdate(newAvatarData);
+      // Immediate success feedback + close
       toast({
         title: 'Success',
-        description: 'Avatar updated successfully!',
+        description: 'Avatar updated!',
       });
       onOpenChange(false);
     } catch (error) {
@@ -212,7 +215,12 @@ export function AvatarCustomizer({ open, onOpenChange, currentAvatar, onAvatarUp
 
         {userRole === 'child' ? (
           <div className="py-4">
-            <AvatarBuilder onAvatarGenerated={handleAvatarGenerated} />
+            <AvatarBuilder 
+              onAvatarGenerated={handleAvatarGenerated}
+              gender={gender}
+              onGenderChange={setGender}
+              showGenderSelector={true}
+            />
             
             {newAvatarData && (
               <div className="mt-6">
