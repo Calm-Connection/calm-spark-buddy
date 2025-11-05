@@ -7,6 +7,7 @@ import { Settings, TrendingUp, Heart, Brain, Sparkles, BookOpen, Bell, Shield } 
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { AvatarDisplay } from '@/components/AvatarDisplay';
+import { WendyAvatar } from '@/components/WendyAvatar';
 import { applyTheme } from '@/hooks/useTheme';
 import { BottomNav } from '@/components/BottomNav';
 import { format, subDays, startOfDay, endOfDay } from 'date-fns';
@@ -220,9 +221,7 @@ export default function CarerHome() {
             {latestInsight && (
               <Card className={`p-6 bg-gradient-to-br ${getMoodColor(latestInsight.mood_score)}`}>
                 <div className="flex items-start gap-4">
-                  <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                    <Brain className="h-6 w-6 text-primary" />
-                  </div>
+                  <WendyAvatar size="lg" />
                   <div className="flex-1 space-y-3">
                     <div className="flex items-center gap-2">
                       <h3 className="font-bold text-lg">Wendy's Wellbeing Overview</h3>

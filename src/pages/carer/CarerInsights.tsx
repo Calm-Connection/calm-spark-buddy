@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
+import { WendyAvatar } from '@/components/WendyAvatar';
 import { Brain, TrendingUp, Heart, ArrowLeft, Lightbulb, AlertTriangle } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { format } from 'date-fns';
@@ -135,11 +136,10 @@ export default function CarerInsights() {
             {insights.map((insight) => (
               <Card key={insight.id} className="p-6">
                 <div className="flex items-start gap-4">
-                  <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                    <span className="text-2xl">{getMoodEmoji(insight.mood_score)}</span>
-                  </div>
+                  <WendyAvatar size="lg" />
                   <div className="flex-1 space-y-3">
                     <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-2xl">{getMoodEmoji(insight.mood_score)}</span>
                       <Badge variant="secondary" className="text-xs">
                         {getMoodLabel(insight.mood_score)} ({insight.mood_score}/100)
                       </Badge>
