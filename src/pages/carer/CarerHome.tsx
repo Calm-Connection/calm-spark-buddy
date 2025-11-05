@@ -20,6 +20,7 @@ interface MoodData {
 interface LatestInsight {
   summary: string;
   parent_summary?: string;
+  carer_actions?: string[];
   mood_score: number;
   themes: string[];
   created_at: string;
@@ -104,7 +105,7 @@ export default function CarerHome() {
     // Get latest AI insight
     const { data: latestInsightData } = await supabase
       .from('wendy_insights')
-      .select('summary, parent_summary, mood_score, themes, created_at')
+      .select('summary, parent_summary, carer_actions, mood_score, themes, created_at')
       .eq('child_id', childId)
       .order('created_at', { ascending: false })
       .limit(1)
@@ -234,15 +235,6 @@ export default function CarerHome() {
                     <p className="text-sm text-muted-foreground italic">
                       💡 This insight helps you understand {childNickname}'s emotional patterns and offers guidance on how you can provide support.
                     </p>
-                    {latestInsight.themes && latestInsight.themes.length > 0 && (
-                      <div className="flex gap-2 flex-wrap">
-                        {latestInsight.themes.slice(0, 3).map((theme, idx) => (
-                          <Badge key={idx} variant="secondary" className="text-xs">
-                            {theme}
-                          </Badge>
-                        ))}
-                      </div>
-                    )}
                     <p className="text-xs text-muted-foreground">
                       Last updated: {format(new Date(latestInsight.created_at), 'PPp')}
                     </p>
@@ -381,7 +373,7 @@ export default function CarerHome() {
             )}
 
             {/* Personalized Suggested Actions */}
-            {latestInsight && (
+            {latestInsight && latestInsight.carer_actions && latestInsight.carer_actions.length > 0 && (
               <Card className="p-5 bg-gradient-to-br from-accent/20 to-warm/20 border-accent/30">
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
@@ -389,66 +381,16 @@ export default function CarerHome() {
                     <h3 className="font-semibold text-lg">Suggested Actions</h3>
                   </div>
                   
+                  <p className="text-xs text-muted-foreground">
+                    Based on {childNickname}'s most recent journal entry
+                  </p>
+                  
                   <div className="space-y-3">
-                    {latestInsight.mood_score < 40 && (
-                      <>
-                        <div className="bg-background/60 rounded-lg p-3">
-                          <p className="text-sm font-medium mb-1">🌿 In-App Activity</p>
-                          <p className="text-xs text-muted-foreground mb-2">
-                            Try the <span className="font-semibold">Breathing Together</span> tool with {childNickname} for a calming moment together.
-                          </p>
-                          <Button size="sm" variant="outline" onClick={() => navigate('/carer/joint-tools')}>
-                            Explore Joint Tools
-                          </Button>
-                        </div>
-                        <div className="bg-background/60 rounded-lg p-3">
-                          <p className="text-sm font-medium mb-1">💬 Real-World Tip</p>
-                          <p className="text-xs text-muted-foreground">
-                            Start with: "I noticed you might be feeling a bit down. Want to talk about it, or would you like to do something fun together?"
-                          </p>
-                        </div>
-                      </>
-                    )}
-                    
-                    {latestInsight.mood_score >= 40 && latestInsight.mood_score < 60 && (
-                      <>
-                        <div className="bg-background/60 rounded-lg p-3">
-                          <p className="text-sm font-medium mb-1">📚 Learning Resource</p>
-                          <p className="text-xs text-muted-foreground mb-2">
-                            Check out the <span className="font-semibold">Understanding Emotions</span> module together.
-                          </p>
-                          <Button size="sm" variant="outline" onClick={() => navigate('/carer/resources')}>
-                            View Resources
-                          </Button>
-                        </div>
-                        <div className="bg-background/60 rounded-lg p-3">
-                          <p className="text-sm font-medium mb-1">🌟 Real-World Tip</p>
-                          <p className="text-xs text-muted-foreground">
-                            Try: "How about we do something you enjoy today? What sounds fun to you?"
-                          </p>
-                        </div>
-                      </>
-                    )}
-                    
-                    {latestInsight.mood_score >= 60 && (
-                      <>
-                        <div className="bg-background/60 rounded-lg p-3">
-                          <p className="text-sm font-medium mb-1">✨ Continue the Momentum</p>
-                          <p className="text-xs text-muted-foreground mb-2">
-                            {childNickname} is doing great! Explore <span className="font-semibold">Reflection Prompts</span> to deepen your connection.
-                          </p>
-                          <Button size="sm" variant="outline" onClick={() => navigate('/carer/joint-tools')}>
-                            Try Reflection Prompts
-                          </Button>
-                        </div>
-                        <div className="bg-background/60 rounded-lg p-3">
-                          <p className="text-sm font-medium mb-1">💜 Real-World Tip</p>
-                          <p className="text-xs text-muted-foreground">
-                            Celebrate the good: "I've noticed you've been feeling good lately. What's been going well for you?"
-                          </p>
-                        </div>
-                      </>
-                    )}
+                    {latestInsight.carer_actions.map((action, idx) => (
+                      <div key={idx} className="bg-background/60 rounded-lg p-3">
+                        <p className="text-sm">{action}</p>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </Card>

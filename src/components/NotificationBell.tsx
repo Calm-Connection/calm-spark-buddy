@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Bell } from 'lucide-react';
+import { Bell, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Popover,
@@ -103,6 +103,21 @@ export function NotificationBell() {
     setUnreadCount(0);
   };
 
+  const deleteNotification = async (notificationId: string) => {
+    const notification = notifications.find(n => n.id === notificationId);
+    const wasUnread = notification && !notification.read_at;
+
+    await supabase
+      .from('notification_history')
+      .delete()
+      .eq('id', notificationId);
+
+    setNotifications((prev) => prev.filter(n => n.id !== notificationId));
+    if (wasUnread) {
+      setUnreadCount((prev) => Math.max(0, prev - 1));
+    }
+  };
+
   const parseContent = (content: string) => {
     try {
       return JSON.parse(content);
@@ -153,18 +168,20 @@ export function NotificationBell() {
                 const isUnread = !notification.read_at;
 
                 return (
-                  <button
+                  <div
                     key={notification.id}
-                    className={`w-full text-left p-4 hover:bg-accent/50 transition-colors ${
+                    className={`w-full text-left p-4 hover:bg-accent/50 transition-colors relative group ${
                       isUnread ? 'bg-accent/20' : ''
                     }`}
-                    onClick={() => {
-                      if (isUnread) {
-                        markAsRead(notification.id);
-                      }
-                    }}
                   >
-                    <div className="flex items-start gap-3">
+                    <div 
+                      className="flex items-start gap-3 cursor-pointer"
+                      onClick={() => {
+                        if (isUnread) {
+                          markAsRead(notification.id);
+                        }
+                      }}
+                    >
                       {isUnread && (
                         <div className="h-2 w-2 rounded-full bg-primary mt-2 flex-shrink-0" />
                       )}
@@ -179,8 +196,19 @@ export function NotificationBell() {
                           })}
                         </p>
                       </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          deleteNotification(notification.id);
+                        }}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
                     </div>
-                  </button>
+                  </div>
                 );
               })}
             </div>

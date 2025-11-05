@@ -206,10 +206,29 @@ Provide evidence-based suggestions for parents (use supportive, non-prescriptive
 - "Spending time with your child while they play can help you understand their feelings" (NHS)
 - "If worry persists, consider speaking to your child's school or GP" (NHS)
 
+CARER-FOCUSED ACTIONABLE TIPS:
+Generate 2-3 specific, evidence-based suggestions directly related to the journal content. These should be:
+- Practical and immediately actionable
+- Warm, empathetic, and non-prescriptive
+- Directly referencing themes from this specific journal entry
+- Evidence-based (NHS, Childline, CAMHS guidance)
+
+Examples:
+- If sleep issues: "Try creating a calming bedtime routine together, perhaps including a short breathing exercise before bed."
+- If school stress: "Gently ask your child about their day using open-ended questions like 'What was the best part of your day?'"
+- If worry: "Consider setting aside a regular 'worry time' each day where your child can share concerns in a safe space."
+- If friendship issues: "Help your child practice what they might say in difficult social situations through gentle role-play."
+- If sadness: "Spend quality time doing an activity your child enjoys, without asking too many questions."
+
 OUTPUT FORMAT (JSON only):
 {
   "summary": "2-3 sentence warm, validating summary in child-friendly language speaking directly to the child (using 'you')",
   "parent_summary": "2-3 sentence carer-focused summary in 3rd person (referring to child as 'your child' or using their name if mentioned). Focus on practical, actionable support suggestions. Use warm, empathetic tone. Example: 'Your child has been struggling with falling asleep, which seems to be causing feelings of fear and worry. Consider creating a calming bedtime routine together, perhaps including a short breathing exercise before bed.'",
+  "carer_actions": [
+    "First specific, practical action related to journal themes",
+    "Second evidence-based suggestion that references journal content",
+    "Third actionable tip (optional, only if highly relevant)"
+  ],
   "themes": ["school", "worry-general", "sleep"],
   "mood_score": 4.5,
   "mood_context": "Brief explanation of score in child-friendly terms",
@@ -219,7 +238,7 @@ OUTPUT FORMAT (JSON only):
   "pattern_notes": "Any recurring themes or patterns observed (optional)"
 }
 
-CRITICAL: Always generate BOTH "summary" (child-focused) AND "parent_summary" (carer-focused) fields.
+CRITICAL: Always generate "summary" (child-focused), "parent_summary" (carer-focused), AND "carer_actions" (2-3 specific tips) fields.
 
 Return ONLY valid JSON. No markdown, no explanations outside the JSON structure. Use everyday language, avoid clinical terms.
 
@@ -268,7 +287,8 @@ Journal entry to analyze: "${entryText}"`
       journal_entry_id: journalEntryId,
       child_id: childId,
       summary: analysis.summary,
-      parent_summary: analysis.parent_summary || analysis.summary, // Fallback to summary if parent_summary not provided
+      parent_summary: analysis.parent_summary || analysis.summary,
+      carer_actions: analysis.carer_actions || null,
       themes: analysis.themes,
       mood_score: analysis.mood_score,
       recommended_tools: analysis.recommended_tools,

@@ -714,6 +714,7 @@ export type Database = {
       }
       wendy_insights: {
         Row: {
+          carer_actions: Json | null
           child_id: string
           created_at: string
           escalate: boolean | null
@@ -727,6 +728,7 @@ export type Database = {
           themes: Json | null
         }
         Insert: {
+          carer_actions?: Json | null
           child_id: string
           created_at?: string
           escalate?: boolean | null
@@ -740,6 +742,7 @@ export type Database = {
           themes?: Json | null
         }
         Update: {
+          carer_actions?: Json | null
           child_id?: string
           created_at?: string
           escalate?: boolean | null
