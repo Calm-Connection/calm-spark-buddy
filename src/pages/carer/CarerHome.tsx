@@ -19,6 +19,7 @@ interface MoodData {
 
 interface LatestInsight {
   summary: string;
+  parent_summary?: string;
   mood_score: number;
   themes: string[];
   created_at: string;
@@ -103,7 +104,7 @@ export default function CarerHome() {
     // Get latest AI insight
     const { data: latestInsightData } = await supabase
       .from('wendy_insights')
-      .select('summary, mood_score, themes, created_at')
+      .select('summary, parent_summary, mood_score, themes, created_at')
       .eq('child_id', childId)
       .order('created_at', { ascending: false })
       .limit(1)
@@ -227,7 +228,9 @@ export default function CarerHome() {
                       <span className="text-2xl">{getMoodEmoji(latestInsight.mood_score)}</span>
                     </div>
                     <p className="text-sm font-semibold text-primary">How to support {childNickname}</p>
-                    <p className="text-sm">{latestInsight.summary}</p>
+                    <p className="text-sm leading-relaxed text-muted-foreground">
+                      {latestInsight.parent_summary || latestInsight.summary}
+                    </p>
                     <p className="text-sm text-muted-foreground italic">
                       💡 This insight helps you understand {childNickname}'s emotional patterns and offers guidance on how you can provide support.
                     </p>
@@ -518,30 +521,6 @@ export default function CarerHome() {
                 <div className="text-left">
                   <p className="font-semibold">Parenting Resources</p>
                   <p className="text-xs text-muted-foreground">Modules and guidance for carers</p>
-                </div>
-              </Button>
-
-              <Button
-                variant="outline"
-                className="justify-start h-auto py-4"
-                onClick={() => navigate('/carer/notification-settings')}
-              >
-                <Bell className="h-5 w-5 mr-3" />
-                <div className="text-left">
-                  <p className="font-semibold">Notification Settings</p>
-                  <p className="text-xs text-muted-foreground">Manage alerts and reminders</p>
-                </div>
-              </Button>
-
-              <Button
-                variant="outline"
-                className="justify-start h-auto py-4"
-                onClick={() => navigate('/carer/notification-analytics')}
-              >
-                <TrendingUp className="h-5 w-5 mr-3" />
-                <div className="text-left">
-                  <p className="font-semibold">Notification Analytics</p>
-                  <p className="text-xs text-muted-foreground">View notification insights</p>
                 </div>
               </Button>
             </div>

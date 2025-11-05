@@ -208,16 +208,18 @@ Provide evidence-based suggestions for parents (use supportive, non-prescriptive
 
 OUTPUT FORMAT (JSON only):
 {
-  "summary": "2-3 sentence warm, validating summary in child-friendly language",
+  "summary": "2-3 sentence warm, validating summary in child-friendly language speaking directly to the child (using 'you')",
+  "parent_summary": "2-3 sentence carer-focused summary in 3rd person (referring to child as 'your child' or using their name if mentioned). Focus on practical, actionable support suggestions. Use warm, empathetic tone. Example: 'Your child has been struggling with falling asleep, which seems to be causing feelings of fear and worry. Consider creating a calming bedtime routine together, perhaps including a short breathing exercise before bed.'",
   "themes": ["school", "worry-general", "sleep"],
   "mood_score": 4.5,
   "mood_context": "Brief explanation of score in child-friendly terms",
   "recommended_tools": ["3-Breath Technique", "Worry Box (Physical)"],
   "escalate": false,
   "escalation_reason": "Specific reason for escalation (if applicable)",
-  "pattern_notes": "Any recurring themes or patterns observed (optional)",
-  "parent_insight": "Evidence-based suggestion for parent/carer (optional, supportive tone)"
+  "pattern_notes": "Any recurring themes or patterns observed (optional)"
 }
+
+CRITICAL: Always generate BOTH "summary" (child-focused) AND "parent_summary" (carer-focused) fields.
 
 Return ONLY valid JSON. No markdown, no explanations outside the JSON structure. Use everyday language, avoid clinical terms.
 
@@ -266,6 +268,7 @@ Journal entry to analyze: "${entryText}"`
       journal_entry_id: journalEntryId,
       child_id: childId,
       summary: analysis.summary,
+      parent_summary: analysis.parent_summary || analysis.summary, // Fallback to summary if parent_summary not provided
       themes: analysis.themes,
       mood_score: analysis.mood_score,
       recommended_tools: analysis.recommended_tools,

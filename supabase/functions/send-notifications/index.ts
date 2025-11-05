@@ -225,6 +225,24 @@ Deno.serve(async (req) => {
             category: 'child',
           });
         }
+
+        // Connection prompts - gentle reminders to share with carer (moved from carer section)
+        if (pref.connection_prompts && !inQuietHours && Math.random() < 0.15 && currentHour >= 17 && currentHour <= 20) {
+          const messages = notificationMessages.child.connection_prompt;
+          const message = messages[Math.floor(Math.random() * messages.length)];
+          
+          await supabase.from('notification_history').insert({
+            user_id: pref.user_id,
+            notification_type: 'connection_prompt',
+            notification_content: JSON.stringify(message),
+          });
+
+          notifications.push({
+            type: 'connection_prompt',
+            ...message,
+            category: 'child',
+          });
+        }
       }
 
       // Process carer notifications
@@ -252,25 +270,6 @@ Deno.serve(async (req) => {
               category: 'carer',
             });
           }
-        }
-
-        // Connection prompts - gentle reminders to share with carer
-        if (pref.connection_prompts && !inQuietHours && Math.random() < 0.15 && currentHour >= 17 && currentHour <= 20) {
-          const messages = notificationMessages.child.connection_prompt;
-          const message = messages[Math.floor(Math.random() * messages.length)];
-          
-          await supabaseAdmin.from('notification_history').insert({
-            user_id: pref.user_id,
-            notification_type: 'connection_prompt',
-            notification_content: JSON.stringify(message),
-          });
-
-          notifications.push({
-            type: 'connection_prompt',
-            ...message,
-            category: 'child',
-          });
-          notificationsSent++;
         }
       }
     }

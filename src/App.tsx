@@ -56,7 +56,6 @@ import ReflectionPrompts from "./pages/carer/tools/ReflectionPrompts";
 import CarerJournal from "./pages/carer/CarerJournal";
 import CarerNotificationSettings from "./pages/carer/NotificationSettings";
 import SafeguardingDashboard from "./pages/carer/SafeguardingDashboard";
-import NotificationAnalytics from "./pages/carer/NotificationAnalytics";
 
 // Shared pages
 import Modules from "./pages/shared/Modules";
@@ -148,7 +147,6 @@ function AppRoutes() {
       <Route path="/carer/tools/reflection-prompts" element={<ProtectedRoute role="carer"><ReflectionPrompts /></ProtectedRoute>} />
       <Route path="/carer/journal" element={<ProtectedRoute role="carer"><CarerJournal /></ProtectedRoute>} />
       <Route path="/carer/notification-settings" element={<ProtectedRoute role="carer"><CarerNotificationSettings /></ProtectedRoute>} />
-      <Route path="/carer/notification-analytics" element={<ProtectedRoute role="carer"><NotificationAnalytics /></ProtectedRoute>} />
       <Route path="/carer/safeguarding" element={<ProtectedRoute role="carer"><SafeguardingDashboard /></ProtectedRoute>} />
       <Route path="/carer/modules" element={<ProtectedRoute role="carer"><Modules /></ProtectedRoute>} />
       <Route path="/carer/modules/:moduleId" element={<ProtectedRoute role="carer"><ModuleDetail /></ProtectedRoute>} />

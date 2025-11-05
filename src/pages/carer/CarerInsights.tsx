@@ -12,6 +12,7 @@ import { format } from 'date-fns';
 interface Insight {
   id: string;
   summary: string;
+  parent_summary?: string;
   mood_score: number;
   themes: string[];
   recommended_tools: string[];
@@ -125,8 +126,8 @@ export default function CarerInsights() {
                 <h2 className="font-bold">How to use insights</h2>
               </div>
               <p className="text-sm text-muted-foreground">
-                These AI-generated summaries help you understand {childNickname}'s emotional patterns. 
-                They're designed to support conversations, not replace them. Small steps make a big difference 🌱
+                These AI-generated insights help you understand {childNickname}'s emotional patterns and offer practical ways to support them. 
+                They're designed to guide your conversations and actions. Small steps make a big difference 🌱
               </p>
             </Card>
 
@@ -153,7 +154,7 @@ export default function CarerInsights() {
                       </span>
                     </div>
 
-                    <p className="text-sm leading-relaxed">{insight.summary}</p>
+                    <p className="text-sm leading-relaxed">{insight.parent_summary || insight.summary}</p>
 
                     {insight.themes && insight.themes.length > 0 && (
                       <div>
@@ -181,7 +182,7 @@ export default function CarerInsights() {
                     )}
 
                     <p className="text-xs text-muted-foreground italic mt-2">
-                      💜 Remember: You're doing great. Every moment of support makes a difference.
+                      💜 Remember: You're doing an amazing job. Your support and presence make all the difference.
                     </p>
                   </div>
                 </div>

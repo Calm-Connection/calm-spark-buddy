@@ -720,6 +720,7 @@ export type Database = {
           id: string
           journal_entry_id: string
           mood_score: number | null
+          parent_summary: string | null
           recommended_tool_ids: string[] | null
           recommended_tools: Json | null
           summary: string | null
@@ -732,6 +733,7 @@ export type Database = {
           id?: string
           journal_entry_id: string
           mood_score?: number | null
+          parent_summary?: string | null
           recommended_tool_ids?: string[] | null
           recommended_tools?: Json | null
           summary?: string | null
@@ -744,6 +746,7 @@ export type Database = {
           id?: string
           journal_entry_id?: string
           mood_score?: number | null
+          parent_summary?: string | null
           recommended_tool_ids?: string[] | null
           recommended_tools?: Json | null
           summary?: string | null
