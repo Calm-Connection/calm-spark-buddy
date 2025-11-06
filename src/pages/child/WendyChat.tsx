@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { INeedHelpButton } from '@/components/INeedHelpButton';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
+import { WendyAvatar } from '@/components/WendyAvatar';
 import { Sparkles, Send, Loader2, Lightbulb } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
@@ -183,9 +184,7 @@ export default function WendyChat() {
           ← Back
         </Button>
         <div className="flex items-center gap-3 mt-2">
-          <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center">
-            <Sparkles className="h-6 w-6 text-primary" />
-          </div>
+          <WendyAvatar size="md" />
           <div>
             <h2 className="font-bold text-lg">Wendy</h2>
             <p className="text-sm text-muted-foreground">Your AI friend</p>
@@ -200,6 +199,9 @@ export default function WendyChat() {
             <div
               className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
+              {message.role === 'assistant' && (
+                <WendyAvatar size="sm" className="mr-2 mt-1" />
+              )}
               <Card
                 className={`max-w-[80%] p-4 ${
                   message.role === 'user'

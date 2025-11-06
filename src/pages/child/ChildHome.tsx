@@ -12,6 +12,7 @@ import { FloatingElements } from '@/components/FloatingElements';
 import { BottomNav } from '@/components/BottomNav';
 import { NotificationBell } from '@/components/NotificationBell';
 import { WendyTipCard } from '@/components/WendyTipCard';
+import { WendyAvatar } from '@/components/WendyAvatar';
 import { toast } from 'sonner';
 
 const affirmations = [
@@ -232,8 +233,8 @@ export default function ChildHome() {
         {!showPostJournalTip && wendyTip && (
           <Card className="p-5 bg-gradient-to-br from-primary/10 to-accent/10 border-primary/20">
             <div className="flex items-start gap-3">
-              <Sparkles className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
-              <div>
+              <WendyAvatar size="lg" />
+              <div className="flex-1">
                 <h3 className="font-bold text-lg mb-2">Wendy's Tip for You 💜</h3>
                 <p className="text-sm">{wendyTip}</p>
               </div>
