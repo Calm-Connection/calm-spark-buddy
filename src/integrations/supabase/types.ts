@@ -138,6 +138,7 @@ export type Database = {
       }
       children_profiles: {
         Row: {
+          age: string | null
           avatar_json: Json | null
           created_at: string
           gender: string | null
@@ -149,6 +150,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          age?: string | null
           avatar_json?: Json | null
           created_at?: string
           gender?: string | null
@@ -160,6 +162,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          age?: string | null
           avatar_json?: Json | null
           created_at?: string
           gender?: string | null
