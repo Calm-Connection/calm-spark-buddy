@@ -130,19 +130,23 @@ All colors MUST be HSL.
     @apply text-4xl md:text-5xl;
   }
 
-  /* Floating Animation Keyframes */
+  /* Floating Animation Keyframes - Optimized with GPU acceleration */
   @keyframes float-slow {
     0%, 100% {
-      transform: translateY(0) translateX(0) rotate(0deg);
+      transform: translate3d(0, 0, 0) rotate(0deg);
+      opacity: 0.4;
     }
     25% {
-      transform: translateY(-20px) translateX(10px) rotate(90deg);
+      transform: translate3d(10px, -20px, 0) rotate(45deg);
+      opacity: 0.6;
     }
     50% {
-      transform: translateY(-40px) translateX(-10px) rotate(180deg);
+      transform: translate3d(-10px, -40px, 0) rotate(90deg);
+      opacity: 0.5;
     }
     75% {
-      transform: translateY(-20px) translateX(-15px) rotate(270deg);
+      transform: translate3d(-15px, -20px, 0) rotate(135deg);
+      opacity: 0.6;
     }
   }
 
@@ -157,20 +161,20 @@ All colors MUST be HSL.
 
   @keyframes firefly {
     0%, 100% {
-      transform: translate(0, 0);
-      opacity: 0.3;
+      transform: translate3d(0, 0, 0);
+      opacity: 0.2;
     }
     25% {
-      transform: translate(20px, -30px);
-      opacity: 0.8;
+      transform: translate3d(15px, -10px, 0);
+      opacity: 0.7;
     }
     50% {
-      transform: translate(-15px, -60px);
-      opacity: 0.4;
+      transform: translate3d(25px, -20px, 0);
+      opacity: 0.9;
     }
     75% {
-      transform: translate(30px, -40px);
-      opacity: 0.7;
+      transform: translate3d(10px, -15px, 0);
+      opacity: 0.6;
     }
   }
 
@@ -204,10 +208,15 @@ All colors MUST be HSL.
 
   @keyframes cloud-drift {
     0% {
-      transform: translateX(-100%);
+      transform: translate3d(-10%, 0, 0);
+      opacity: 0.2;
+    }
+    50% {
+      opacity: 0.4;
     }
     100% {
-      transform: translateX(100vw);
+      transform: translate3d(110%, 5px, 0);
+      opacity: 0.2;
     }
   }
 
@@ -224,31 +233,37 @@ All colors MUST be HSL.
 
   @keyframes bubble-rise {
     0% {
-      transform: translateY(0) translateX(0);
+      transform: translate3d(0, 0, 0) scale(0.8);
+      opacity: 0;
+    }
+    10% {
       opacity: 0.4;
     }
     50% {
-      transform: translateY(-50vh) translateX(20px);
-      opacity: 0.3;
+      transform: translate3d(20px, -50vh, 0) scale(1.1);
+      opacity: 0.5;
     }
     100% {
-      transform: translateY(-100vh) translateX(-10px);
+      transform: translate3d(-15px, -100vh, 0) scale(1.2);
       opacity: 0;
     }
   }
 
   @keyframes fish-swim {
     0% {
-      transform: translateX(-100px) scaleX(1);
+      transform: translate3d(0, 0, 0) scaleX(1);
     }
     48% {
-      transform: translateX(calc(100vw + 100px)) scaleX(1);
+      transform: translate3d(50vw, -10px, 0) scaleX(1);
     }
-    52% {
-      transform: translateX(calc(100vw + 100px)) scaleX(-1);
+    50% {
+      transform: translate3d(50vw, -10px, 0) scaleX(-1);
+    }
+    98% {
+      transform: translate3d(0, 5px, 0) scaleX(-1);
     }
     100% {
-      transform: translateX(-100px) scaleX(-1);
+      transform: translate3d(0, 0, 0) scaleX(-1);
     }
   }
 
@@ -264,19 +279,21 @@ All colors MUST be HSL.
   }
 
   @keyframes heart-float {
-    0% {
-      transform: translateY(0) rotate(0deg);
-      opacity: 0;
+    0%, 100% {
+      transform: translate3d(0, 0, 0) rotate(-5deg);
+      opacity: 0.3;
     }
-    10% {
+    25% {
+      transform: translate3d(5px, -15px, 0) rotate(5deg);
+      opacity: 0.5;
+    }
+    50% {
+      transform: translate3d(-5px, -25px, 0) rotate(10deg);
       opacity: 0.4;
     }
-    90% {
-      opacity: 0.4;
-    }
-    100% {
-      transform: translateY(-100vh) rotate(360deg);
-      opacity: 0;
+    75% {
+      transform: translate3d(8px, -15px, 0) rotate(-8deg);
+      opacity: 0.5;
     }
   }
 
@@ -322,16 +339,48 @@ All colors MUST be HSL.
     }
   }
 
-  .animate-float-slow {
-    animation: float-slow 20s ease-in-out infinite;
+@keyframes leaf-float {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) rotate(-15deg);
+    opacity: 0.4;
   }
+  25% {
+    transform: translate3d(8px, -15px, 0) rotate(10deg);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translate3d(-8px, -30px, 0) rotate(35deg);
+    opacity: 0.5;
+  }
+  75% {
+    transform: translate3d(-12px, -15px, 0) rotate(-5deg);
+    opacity: 0.6;
+  }
+}
+
+.floating-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+  contain: layout style paint;
+}
+
+.animate-float-slow {
+  animation: float-slow 20s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.animate-leaf-float {
+  animation: leaf-float 18s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
 
   .animate-spin-slow {
     animation: spin-slow 20s linear infinite;
   }
 
   .animate-firefly {
-    animation: firefly 8s ease-in-out infinite;
+    animation: firefly 3.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
 
   .animate-particle-drift {
@@ -342,20 +391,20 @@ All colors MUST be HSL.
     animation: twinkle 3s ease-in-out infinite;
   }
 
-  .animate-cloud-drift {
-    animation: cloud-drift 40s linear infinite;
-  }
+.animate-cloud-drift {
+  animation: cloud-drift 28s linear infinite;
+}
 
   .animate-sparkle-float {
     animation: sparkle-float 4s ease-in-out infinite;
   }
 
   .animate-bubble-rise {
-    animation: bubble-rise 12s ease-out infinite;
+    animation: bubble-rise 12s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
   }
 
   .animate-fish-swim {
-    animation: fish-swim 20s linear infinite;
+    animation: fish-swim 16s ease-in-out infinite;
   }
 
   .animate-seaweed-sway {
@@ -363,7 +412,7 @@ All colors MUST be HSL.
   }
 
   .animate-heart-float {
-    animation: heart-float 12s ease-out infinite;
+    animation: heart-float 16s cubic-bezier(0.4, 0, 0.2, 1) infinite;
   }
 
   .animate-candle-flicker {
@@ -393,17 +442,30 @@ All colors MUST be HSL.
   --secondary-foreground: 0 0% 100%;
 }
 
-.calm-mode *,
-.reduce-motion * {
-  animation-duration: 0.01ms !important;
-  animation-iteration-count: 1 !important;
-  transition-duration: 0.01ms !important;
+/* Calm mode - reduces animations */
+.calm-mode .floating-container {
+  opacity: 0.3;
+  filter: blur(1px);
 }
 
-.reduce-motion {
-  scroll-behavior: auto !important;
-}
-
-.reduce-motion * {
+.calm-mode * {
   animation-play-state: paused !important;
+  animation-duration: 0s !important;
+  transition-duration: 0.2s !important;
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  .floating-container {
+    display: none;
+  }
+}
+
+.reduce-motion .floating-container {
+  display: none;
+}
+
+.reduce-motion * {
+  animation: none !important;
+  transition: none !important;
 }
