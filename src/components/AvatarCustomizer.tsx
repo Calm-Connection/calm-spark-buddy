@@ -25,6 +25,7 @@ export function AvatarCustomizer({ open, onOpenChange, currentAvatar, onAvatarUp
   const [newAvatarData, setNewAvatarData] = useState<any>(null);
   const [selectedPreset, setSelectedPreset] = useState<string | null>(null);
   const [gender, setGender] = useState('prefer_not_to_say');
+  const [age, setAge] = useState('child');
 
   const carerEmojis = ['👨', '👩', '🧑', '👨‍🦱', '👩‍🦱', '🧑‍🦱', '👨‍🦰', '👩‍🦰', '🧑‍🦰', '👨‍🦲', '👩‍🦲', '🧑‍🦲'];
 
@@ -102,7 +103,7 @@ export function AvatarCustomizer({ open, onOpenChange, currentAvatar, onAvatarUp
     try {
       const table = userRole === 'child' ? 'children_profiles' : 'carer_profiles';
       
-      // Optimistic local update
+      // IMMEDIATE optimistic update FIRST
       onAvatarUpdate(newAvatarData);
       
       // Check if this avatar imageUrl already exists in history
@@ -116,10 +117,11 @@ export function AvatarCustomizer({ open, onOpenChange, currentAvatar, onAvatarUp
         (item) => (item.avatar_json as any)?.imageUrl === newAvatarData.imageUrl
       );
 
-      // Update profile with gender if child
+      // Update profile with gender and age if child
       const updateData: any = { avatar_json: newAvatarData };
       if (userRole === 'child') {
         updateData.gender = gender;
+        updateData.age = age;
       }
 
       const { error: profileError } = await supabase
@@ -161,12 +163,16 @@ export function AvatarCustomizer({ open, onOpenChange, currentAvatar, onAvatarUp
           });
       }
 
-      // Immediate success feedback + close
+      // Success feedback
       toast({
-        title: 'Success',
-        description: 'Avatar updated!',
+        title: '✓ Avatar Updated',
+        description: 'Your new avatar is now active!',
       });
-      onOpenChange(false);
+      
+      // IMMEDIATE close with slight delay for visual feedback
+      setTimeout(() => {
+        onOpenChange(false);
+      }, 300);
     } catch (error) {
       console.error('Error saving avatar:', error);
       toast({
@@ -221,7 +227,10 @@ export function AvatarCustomizer({ open, onOpenChange, currentAvatar, onAvatarUp
               onAvatarGenerated={handleAvatarGenerated}
               gender={gender}
               onGenderChange={setGender}
+              age={age}
+              onAgeChange={setAge}
               showGenderSelector={true}
+              showAgeSelector={true}
             />
             
             {newAvatarData && (

@@ -12,6 +12,7 @@ export default function CreateAvatarEnhanced() {
   const [loading, setLoading] = useState(false);
   const [avatarData, setAvatarData] = useState<any>(null);
   const [gender, setGender] = useState('prefer_not_to_say');
+  const [age, setAge] = useState('child');
   const navigate = useNavigate();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -39,7 +40,7 @@ export default function CreateAvatarEnhanced() {
       const [profileUpdate, historyInsert] = await Promise.all([
         supabase
           .from('children_profiles')
-          .update({ avatar_json: avatarData, gender })
+          .update({ avatar_json: avatarData, gender, age })
           .eq('user_id', user.id),
         supabase
           .from('avatar_history')
@@ -86,7 +87,10 @@ export default function CreateAvatarEnhanced() {
             onAvatarGenerated={handleAvatarGenerated}
             gender={gender}
             onGenderChange={setGender}
+            age={age}
+            onAgeChange={setAge}
             showGenderSelector={true}
+            showAgeSelector={true}
           />
           
           {avatarData && (

@@ -12,7 +12,7 @@ serve(async (req) => {
   }
 
   try {
-    const { type, customization, prompt, gender = 'prefer_not_to_say' } = await req.json();
+    const { type, customization, prompt, gender = 'prefer_not_to_say', age = 'child' } = await req.json();
     
     if (!type || (type !== 'child' && type !== 'carer')) {
       return new Response(
@@ -34,6 +34,18 @@ serve(async (req) => {
     if (gender === 'male') genderDescriptor = 'boy';
     else if (gender === 'female') genderDescriptor = 'girl';
     
+    // Age-based character descriptors
+    let ageDescriptor = '';
+    let featureModifier = '';
+    
+    if (age === 'child') {
+      ageDescriptor = 'young child (7-11 years old)';
+      featureModifier = 'with soft, round facial features, big expressive eyes, chubby cheeks, smaller proportions, very child-like appearance';
+    } else if (age === 'teen') {
+      ageDescriptor = 'young teenager (12-16 years old)';
+      featureModifier = 'with slightly more mature facial features, taller proportions, but still youthful and age-appropriate for teens';
+    }
+    
     if (customization && type === 'child') {
       // Structured Disney-style prompt for children with gender consideration
       const { skinTone, eyeColor, hairColor, hairStyle, favoriteColor, accessory, comfortItem } = customization;
@@ -46,15 +58,16 @@ STRICT REQUIREMENTS:
 - ONLY wholesome, friendly, age-appropriate characters
 - Disney/Pixar animation style ONLY
 
-Create a friendly, warm Disney/Pixar-style cartoon avatar of a ${genderDescriptor} with ${skinTone} skin tone, 
-${eyeColor} eyes, ${hairColor} ${hairStyle} hair, wearing a ${favoriteColor} colored shirt or top. 
-${accessory !== 'none' ? `The ${genderDescriptor} has ${accessory}.` : ''} 
-${comfortItem !== 'none' ? `The ${genderDescriptor} is holding or has a ${comfortItem}.` : ''} 
+Create a friendly, warm Disney/Pixar-style cartoon avatar of a ${ageDescriptor} ${genderDescriptor} 
+${featureModifier}, with ${skinTone} skin tone, ${eyeColor} eyes, ${hairColor} ${hairStyle} hair, 
+wearing a ${favoriteColor} colored shirt or top. 
+${accessory !== 'none' ? `The character has ${accessory}.` : ''} 
+${comfortItem !== 'none' ? `The character is holding or has a ${comfortItem}.` : ''} 
 Style: soft, colorful, warm, appropriate for ages 7-16, Pixar/Disney animation quality, gentle expression, 
 non-scary, child-appropriate, fully clothed in age-appropriate outfit. Square format (1024x1024), friendly and calm expression, 
 centered character on a soft pastel or gradient background. Make it feel safe, comforting, and inclusive.`;
     } else if (prompt) {
-      // Freestyle prompt with gender consideration and ENHANCED SAFETY WRAPPER
+      // Freestyle prompt with gender and age consideration and ENHANCED SAFETY WRAPPER
       if (type === 'child') {
         const genderPrefix = gender !== 'prefer_not_to_say' ? `a ${genderDescriptor}` : 'a child';
         finalPrompt = `IMPORTANT SAFETY RULES: You are creating an avatar for a child-safe app (ages 7-16).
@@ -65,7 +78,8 @@ STRICT REQUIREMENTS:
 - ONLY wholesome, friendly, age-appropriate characters
 - Disney/Pixar animation style ONLY
 
-User request: Create a friendly, warm Disney/Pixar-style cartoon avatar of ${genderPrefix}: ${prompt}. 
+User request: Create a friendly, warm Disney/Pixar-style cartoon avatar of ${genderPrefix} who is a ${ageDescriptor} 
+${featureModifier}: ${prompt}. 
 
 SAFETY CHECK: If the user's description contains anything inappropriate, instead create a generic 
 friendly ${genderDescriptor} character with a big smile, casual clothing (t-shirt and jeans), 

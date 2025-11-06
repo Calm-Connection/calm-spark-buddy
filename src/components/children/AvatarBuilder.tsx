@@ -7,13 +7,17 @@ import { Loader2, Sparkles, Shield } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { GenderSelector } from './GenderSelector';
+import { AgeSelector } from './AgeSelector';
 import { useContentModeration } from '@/hooks/useContentModeration';
 
 interface AvatarBuilderProps {
   onAvatarGenerated: (avatarData: any) => void;
   gender?: string;
   onGenderChange?: (gender: string) => void;
+  age?: string;
+  onAgeChange?: (age: string) => void;
   showGenderSelector?: boolean;
+  showAgeSelector?: boolean;
 }
 
 const skinTones = [
@@ -104,7 +108,7 @@ const comfortItems = [
   { id: 'plant', label: 'Plant', value: 'small plant' },
 ];
 
-export function AvatarBuilder({ onAvatarGenerated, gender = 'prefer_not_to_say', onGenderChange, showGenderSelector = true }: AvatarBuilderProps) {
+export function AvatarBuilder({ onAvatarGenerated, gender = 'prefer_not_to_say', onGenderChange, age = 'child', onAgeChange, showGenderSelector = true, showAgeSelector = true }: AvatarBuilderProps) {
   const { moderateContent } = useContentModeration();
   const [skinTone, setSkinTone] = useState('medium');
   const [eyeColor, setEyeColor] = useState('brown');
@@ -131,7 +135,7 @@ export function AvatarBuilder({ onAvatarGenerated, gender = 'prefer_not_to_say',
       };
 
       const { data, error } = await supabase.functions.invoke('generate-avatar', {
-        body: { type: 'child', customization, gender }
+        body: { type: 'child', customization, gender, age }
       });
 
       if (error) throw error;
@@ -171,7 +175,7 @@ export function AvatarBuilder({ onAvatarGenerated, gender = 'prefer_not_to_say',
 
       // Step 2: If safe, proceed with avatar generation
       const { data, error } = await supabase.functions.invoke('generate-avatar', {
-        body: { type: 'child', prompt: aiPrompt, gender }
+        body: { type: 'child', prompt: aiPrompt, gender, age }
       });
 
       if (error) throw error;
@@ -218,6 +222,10 @@ export function AvatarBuilder({ onAvatarGenerated, gender = 'prefer_not_to_say',
     <div className="space-y-6">
       {showGenderSelector && onGenderChange && (
         <GenderSelector value={gender} onChange={onGenderChange} />
+      )}
+      
+      {showAgeSelector && onAgeChange && (
+        <AgeSelector value={age} onChange={onAgeChange} />
       )}
       
       <Tabs defaultValue="custom" className="w-full">

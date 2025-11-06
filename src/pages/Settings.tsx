@@ -579,7 +579,10 @@ export default function Settings() {
         open={avatarCustomizerOpen}
         onOpenChange={setAvatarCustomizerOpen}
         currentAvatar={avatarData}
-        onAvatarUpdate={setAvatarData}
+        onAvatarUpdate={(newAvatar) => {
+          // Force immediate re-render with new object reference
+          setAvatarData({ ...newAvatar, _updated: Date.now() });
+        }}
       />
       <ReportConcernModal
         open={reportModalOpen}
