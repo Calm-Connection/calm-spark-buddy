@@ -223,17 +223,31 @@ export default function CarerHome() {
                 <div className="flex items-start gap-4">
                   <WendyAvatar size="lg" />
                   <div className="flex-1 space-y-3">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
                       <h3 className="font-bold text-lg">Wendy's Wellbeing Overview</h3>
                       <span className="text-2xl">{getMoodEmoji(latestInsight.mood_score)}</span>
+                      <Badge variant="secondary" className="text-xs">
+                        {latestInsight.mood_score}/100
+                      </Badge>
                     </div>
                     <p className="text-sm font-semibold text-primary">How to support {childNickname}</p>
                     <p className="text-sm leading-relaxed text-muted-foreground">
                       {latestInsight.parent_summary || latestInsight.summary}
                     </p>
-                    <p className="text-sm text-muted-foreground italic">
-                      💡 This insight helps you understand {childNickname}'s emotional patterns and offers guidance on how you can provide support.
-                    </p>
+                    <div className="bg-background/50 rounded-lg p-3">
+                      <p className="text-sm text-muted-foreground">
+                        💡 Want more guidance? Check out the detailed <span className="font-semibold">Emotional Insights</span> for practical ways to support {childNickname}.
+                      </p>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => navigate('/carer/insights')}
+                        className="mt-3 w-full"
+                      >
+                        <Brain className="h-4 w-4 mr-2" />
+                        View Detailed Insights
+                      </Button>
+                    </div>
                     <p className="text-xs text-muted-foreground">
                       Last updated: {format(new Date(latestInsight.created_at), 'PPp')}
                     </p>
