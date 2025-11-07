@@ -251,19 +251,19 @@ All colors MUST be HSL.
 
   @keyframes fish-swim {
     0% {
-      transform: translate3d(0, 0, 0) scaleX(1);
+      transform: translate3d(0, 0, 0) scaleX(-1);
     }
     48% {
-      transform: translate3d(50vw, -10px, 0) scaleX(1);
-    }
-    50% {
       transform: translate3d(50vw, -10px, 0) scaleX(-1);
     }
+    50% {
+      transform: translate3d(50vw, -10px, 0) scaleX(1);
+    }
     98% {
-      transform: translate3d(0, 5px, 0) scaleX(-1);
+      transform: translate3d(0, 5px, 0) scaleX(1);
     }
     100% {
-      transform: translate3d(0, 0, 0) scaleX(-1);
+      transform: translate3d(0, 0, 0) scaleX(1);
     }
   }
 
