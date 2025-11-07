@@ -12,12 +12,10 @@ import { applyTheme } from '@/hooks/useTheme';
 import { BottomNav } from '@/components/BottomNav';
 import { format, subDays, startOfDay, endOfDay } from 'date-fns';
 import { NotificationBell } from '@/components/NotificationBell';
-
 interface MoodData {
   date: string;
   mood_score: number;
 }
-
 interface LatestInsight {
   summary: string;
   parent_summary?: string;
@@ -26,10 +24,11 @@ interface LatestInsight {
   themes: string[];
   created_at: string;
 }
-
 export default function CarerHome() {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const {
+    user
+  } = useAuth();
   const [nickname, setNickname] = useState('');
   const [avatarData, setAvatarData] = useState<any>(null);
   const [childNickname, setChildNickname] = useState('');
@@ -40,81 +39,66 @@ export default function CarerHome() {
   const [suggestedAction, setSuggestedAction] = useState('');
   const [hasNewSharedEntry, setHasNewSharedEntry] = useState(false);
   const [safeguardingAlertCount, setSafeguardingAlertCount] = useState(0);
-
   useEffect(() => {
     loadCarerData();
   }, [user]);
-
   const loadCarerData = async () => {
     if (!user) return;
 
     // Get carer profile
-    const { data: carerProfile } = await supabase
-      .from('carer_profiles')
-      .select('id, nickname, avatar_json')
-      .eq('user_id', user.id)
-      .maybeSingle();
-
+    const {
+      data: carerProfile
+    } = await supabase.from('carer_profiles').select('id, nickname, avatar_json').eq('user_id', user.id).maybeSingle();
     if (carerProfile) {
       setNickname(carerProfile.nickname || 'Carer');
       setAvatarData(carerProfile.avatar_json);
     }
 
     // Get linked child
-    const { data: linkedChild } = await supabase
-      .from('children_profiles')
-      .select('id, nickname')
-      .eq('linked_carer_id', user.id)
-      .maybeSingle();
-
+    const {
+      data: linkedChild
+    } = await supabase.from('children_profiles').select('id, nickname').eq('linked_carer_id', user.id).maybeSingle();
     if (linkedChild) {
       setLinkedChildId(linkedChild.id);
       setChildNickname(linkedChild.nickname);
       await loadChildData(linkedChild.id);
     }
-
     applyTheme('classic');
   };
-
   const loadChildData = async (childId: string) => {
     // Count shared entries
-    const { count } = await supabase
-      .from('journal_entries')
-      .select('*', { count: 'exact', head: true })
-      .eq('child_id', childId)
-      .eq('share_with_carer', true);
-
+    const {
+      count
+    } = await supabase.from('journal_entries').select('*', {
+      count: 'exact',
+      head: true
+    }).eq('child_id', childId).eq('share_with_carer', true);
     setJournalCount(count || 0);
 
     // Get mood trend (last 7 days from insights)
     const sevenDaysAgo = subDays(new Date(), 7);
-    const { data: insights } = await supabase
-      .from('wendy_insights')
-      .select('created_at, mood_score')
-      .eq('child_id', childId)
-      .gte('created_at', sevenDaysAgo.toISOString())
-      .order('created_at', { ascending: true });
-
+    const {
+      data: insights
+    } = await supabase.from('wendy_insights').select('created_at, mood_score').eq('child_id', childId).gte('created_at', sevenDaysAgo.toISOString()).order('created_at', {
+      ascending: true
+    });
     if (insights) {
-      const trendData = insights.map((i) => ({
+      const trendData = insights.map(i => ({
         date: format(new Date(i.created_at), 'MMM dd'),
-        mood_score: i.mood_score || 50,
+        mood_score: i.mood_score || 50
       }));
       setMoodTrend(trendData);
     }
 
     // Get latest AI insight
-    const { data: latestInsightData } = await supabase
-      .from('wendy_insights')
-      .select('summary, parent_summary, carer_actions, mood_score, themes, created_at')
-      .eq('child_id', childId)
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .maybeSingle();
-
+    const {
+      data: latestInsightData
+    } = await supabase.from('wendy_insights').select('summary, parent_summary, carer_actions, mood_score, themes, created_at').eq('child_id', childId).order('created_at', {
+      ascending: false
+    }).limit(1).maybeSingle();
     if (latestInsightData) {
       setLatestInsight(latestInsightData as LatestInsight);
-      
+
       // Generate suggested action based on mood score
       const moodScore = latestInsightData.mood_score || 50;
       if (moodScore < 40) {
@@ -128,26 +112,24 @@ export default function CarerHome() {
 
     // Check for new shared entries (within last 24 hours)
     const yesterday = subDays(new Date(), 1);
-    const { count: recentCount } = await supabase
-      .from('journal_entries')
-      .select('*', { count: 'exact', head: true })
-      .eq('child_id', childId)
-      .eq('share_with_carer', true)
-      .gte('created_at', yesterday.toISOString());
-
+    const {
+      count: recentCount
+    } = await supabase.from('journal_entries').select('*', {
+      count: 'exact',
+      head: true
+    }).eq('child_id', childId).eq('share_with_carer', true).gte('created_at', yesterday.toISOString());
     setHasNewSharedEntry((recentCount || 0) > 0);
 
     // Count safeguarding alerts (last 30 days)
     const thirtyDaysAgo = subDays(new Date(), 30);
-    const { count: alertCount } = await supabase
-      .from('safeguarding_logs')
-      .select('*', { count: 'exact', head: true })
-      .eq('child_id', childId)
-      .gte('created_at', thirtyDaysAgo.toISOString());
-
+    const {
+      count: alertCount
+    } = await supabase.from('safeguarding_logs').select('*', {
+      count: 'exact',
+      head: true
+    }).eq('child_id', childId).gte('created_at', thirtyDaysAgo.toISOString());
     setSafeguardingAlertCount(alertCount || 0);
   };
-
   const getMoodEmoji = (score: number) => {
     if (score >= 80) return '😊';
     if (score >= 60) return '😌';
@@ -155,16 +137,13 @@ export default function CarerHome() {
     if (score >= 20) return '😔';
     return '😢';
   };
-
   const getMoodColor = (score: number) => {
     if (score >= 80) return 'from-secondary/20 to-primary/10';
     if (score >= 60) return 'from-primary/20 to-accent/10';
     if (score >= 40) return 'from-warm/20 to-accent/10';
     return 'from-dusty-rose/20 to-accent/10';
   };
-
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-primary/10 to-background p-6 pb-24">
+  return <div className="min-h-screen bg-gradient-to-b from-primary/10 to-background p-6 pb-24">
       <div className="max-w-2xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex flex-col items-center gap-4 mb-6">
@@ -186,8 +165,7 @@ export default function CarerHome() {
           </div>
         </div>
 
-        {!linkedChildId ? (
-          <Card className="p-8 text-center">
+        {!linkedChildId ? <Card className="p-8 text-center">
             <Heart className="h-12 w-12 mx-auto mb-4 text-primary" />
             <h2 className="text-xl font-bold mb-2">Connect with Your Child</h2>
             <p className="text-muted-foreground mb-4">
@@ -196,12 +174,9 @@ export default function CarerHome() {
             <Button onClick={() => navigate('/carer/invite-code')}>
               Generate Invite Code
             </Button>
-          </Card>
-        ) : (
-          <>
+          </Card> : <>
             {/* Notifications Panel */}
-            {hasNewSharedEntry && (
-              <Card className="p-4 bg-gradient-to-r from-secondary/20 to-primary/20 border-primary/30">
+            {hasNewSharedEntry && <Card className="p-4 bg-gradient-to-r from-secondary/20 to-primary/20 border-primary/30">
                 <div className="flex items-center gap-3">
                   <Bell className="h-5 w-5 text-primary" />
                   <div className="flex-1">
@@ -214,12 +189,10 @@ export default function CarerHome() {
                     View
                   </Button>
                 </div>
-              </Card>
-            )}
+              </Card>}
 
             {/* Wendy's Wellbeing Overview - Supporting Your Child */}
-            {latestInsight && (
-              <Card className={`p-6 bg-gradient-to-br ${getMoodColor(latestInsight.mood_score)}`}>
+            {latestInsight && <Card className={`p-6 bg-gradient-to-br ${getMoodColor(latestInsight.mood_score)}`}>
                 <div className="flex items-start gap-4">
                   <WendyAvatar size="lg" />
                   <div className="flex-1 space-y-3">
@@ -230,7 +203,7 @@ export default function CarerHome() {
                         {latestInsight.mood_score}/100
                       </Badge>
                     </div>
-                    <p className="text-sm font-semibold text-primary">How to support {childNickname}</p>
+                    <p className="text-sm font-semibold text-primary">TestChild's recent journal entry{childNickname}</p>
                     <p className="text-sm leading-relaxed text-muted-foreground">
                       {latestInsight.parent_summary || latestInsight.summary}
                     </p>
@@ -238,12 +211,7 @@ export default function CarerHome() {
                       <p className="text-sm text-muted-foreground">
                         💡 Want more guidance? Check out the detailed <span className="font-semibold">Emotional Insights</span> for practical ways to support {childNickname}.
                       </p>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        onClick={() => navigate('/carer/insights')}
-                        className="mt-3 w-full"
-                      >
+                      <Button variant="outline" size="sm" onClick={() => navigate('/carer/insights')} className="mt-3 w-full">
                         <Brain className="h-4 w-4 mr-2" />
                         View Detailed Insights
                       </Button>
@@ -253,12 +221,10 @@ export default function CarerHome() {
                     </p>
                   </div>
                 </div>
-              </Card>
-            )}
+              </Card>}
 
             {/* The Week with Wendy - Understanding Your Child */}
-            {latestInsight && moodTrend.length > 0 && (
-              <Card className="p-6 bg-gradient-to-br from-primary/5 to-accent/5 border-primary/20">
+            {latestInsight && moodTrend.length > 0 && <Card className="p-6 bg-gradient-to-br from-primary/5 to-accent/5 border-primary/20">
                 <div className="space-y-4">
                   {/* Header */}
                   <div className="flex items-center gap-2">
@@ -277,9 +243,7 @@ export default function CarerHome() {
                       <div className="flex-1">
                         <p className="text-sm font-semibold">Journaling Consistency</p>
                         <p className="text-xs text-muted-foreground">
-                          {journalCount > 5 ? `${childNickname} has been journaling regularly this week - great progress!` : 
-                           journalCount > 2 ? `${childNickname} is building a journaling habit, with ${journalCount} entries this week.` :
-                           `${childNickname} might benefit from gentle encouragement to journal more often.`}
+                          {journalCount > 5 ? `${childNickname} has been journaling regularly this week - great progress!` : journalCount > 2 ? `${childNickname} is building a journaling habit, with ${journalCount} entries this week.` : `${childNickname} might benefit from gentle encouragement to journal more often.`}
                         </p>
                       </div>
                     </div>
@@ -289,11 +253,7 @@ export default function CarerHome() {
                       <div className="flex-1">
                         <p className="text-sm font-semibold">Emotional Trends</p>
                         <p className="text-xs text-muted-foreground">
-                          {moodTrend.filter(m => m.mood_score >= 60).length >= 5 ? 
-                            `${childNickname} has had mostly positive days - they're doing well emotionally.` :
-                           moodTrend.filter(m => m.mood_score < 40).length >= 3 ?
-                            `${childNickname} has experienced some challenging days. Extra support may be helpful.` :
-                            `${childNickname}'s mood has been balanced this week with both ups and downs.`}
+                          {moodTrend.filter(m => m.mood_score >= 60).length >= 5 ? `${childNickname} has had mostly positive days - they're doing well emotionally.` : moodTrend.filter(m => m.mood_score < 40).length >= 3 ? `${childNickname} has experienced some challenging days. Extra support may be helpful.` : `${childNickname}'s mood has been balanced this week with both ups and downs.`}
                         </p>
                       </div>
                     </div>
@@ -303,9 +263,7 @@ export default function CarerHome() {
                       <div className="flex-1">
                         <p className="text-sm font-semibold">Activity Engagement</p>
                         <p className="text-xs text-muted-foreground">
-                          {journalCount >= 7 ? `Very engaged - ${childNickname} is actively using calming tools and resources.` :
-                           journalCount >= 3 ? `Moderately engaged - ${childNickname} is exploring available features.` :
-                           `Low engagement - Consider doing activities together to encourage participation.`}
+                          {journalCount >= 7 ? `Very engaged - ${childNickname} is actively using calming tools and resources.` : journalCount >= 3 ? `Moderately engaged - ${childNickname} is exploring available features.` : `Low engagement - Consider doing activities together to encourage participation.`}
                         </p>
                       </div>
                     </div>
@@ -336,19 +294,17 @@ export default function CarerHome() {
                     <p className="text-xs font-semibold text-muted-foreground mb-2">7-Day Emotional Journey</p>
                     <div className="flex items-end gap-1 h-16">
                       {moodTrend.map((data, idx) => {
-                        const height = (data.mood_score / 100) * 100;
-                        return (
-                          <div key={idx} className="flex-1 flex flex-col items-center gap-1">
-                            <div className="w-full bg-muted rounded-t relative" style={{ height: '100%' }}>
-                              <div
-                                className="absolute bottom-0 w-full bg-gradient-to-t from-primary to-secondary rounded-t transition-all"
-                                style={{ height: `${height}%` }}
-                                title={`${data.date}: ${data.mood_score}%`}
-                              />
+                  const height = data.mood_score / 100 * 100;
+                  return <div key={idx} className="flex-1 flex flex-col items-center gap-1">
+                            <div className="w-full bg-muted rounded-t relative" style={{
+                      height: '100%'
+                    }}>
+                              <div className="absolute bottom-0 w-full bg-gradient-to-t from-primary to-secondary rounded-t transition-all" style={{
+                        height: `${height}%`
+                      }} title={`${data.date}: ${data.mood_score}%`} />
                             </div>
-                          </div>
-                        );
-                      })}
+                          </div>;
+                })}
                     </div>
                     <div className="flex justify-between mt-1">
                       <span className="text-xs text-muted-foreground">7d ago</span>
@@ -356,38 +312,33 @@ export default function CarerHome() {
                     </div>
                   </div>
                 </div>
-              </Card>
-            )}
+              </Card>}
 
             {/* Mood Tracker */}
-            {moodTrend.length > 0 && (
-              <Card className="p-6">
+            {moodTrend.length > 0 && <Card className="p-6">
                 <div className="flex items-center gap-2 mb-4">
                   <TrendingUp className="h-5 w-5 text-primary" />
                   <h3 className="font-bold">Emotional Trend (Last 7 Days)</h3>
                 </div>
                 <div className="flex items-end gap-2 h-32">
                   {moodTrend.map((data, idx) => {
-                    const height = (data.mood_score / 100) * 100;
-                    return (
-                      <div key={idx} className="flex-1 flex flex-col items-center gap-1">
-                        <div className="w-full bg-primary/20 rounded-t-lg relative" style={{ height: '100%' }}>
-                          <div
-                            className="absolute bottom-0 w-full bg-primary rounded-t-lg transition-all"
-                            style={{ height: `${height}%` }}
-                          />
+              const height = data.mood_score / 100 * 100;
+              return <div key={idx} className="flex-1 flex flex-col items-center gap-1">
+                        <div className="w-full bg-primary/20 rounded-t-lg relative" style={{
+                  height: '100%'
+                }}>
+                          <div className="absolute bottom-0 w-full bg-primary rounded-t-lg transition-all" style={{
+                    height: `${height}%`
+                  }} />
                         </div>
                         <span className="text-xs text-muted-foreground">{data.date.split(' ')[1]}</span>
-                      </div>
-                    );
-                  })}
+                      </div>;
+            })}
                 </div>
-              </Card>
-            )}
+              </Card>}
 
             {/* Personalized Suggested Actions */}
-            {latestInsight && latestInsight.carer_actions && latestInsight.carer_actions.length > 0 && (
-              <Card className="p-5 bg-gradient-to-br from-accent/20 to-warm/20 border-accent/30">
+            {latestInsight && latestInsight.carer_actions && latestInsight.carer_actions.length > 0 && <Card className="p-5 bg-gradient-to-br from-accent/20 to-warm/20 border-accent/30">
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
                     <Sparkles className="h-6 w-6 text-primary" />
@@ -399,15 +350,12 @@ export default function CarerHome() {
                   </p>
                   
                   <div className="space-y-3">
-                    {latestInsight.carer_actions.map((action, idx) => (
-                      <div key={idx} className="bg-background/60 rounded-lg p-3">
+                    {latestInsight.carer_actions.map((action, idx) => <div key={idx} className="bg-background/60 rounded-lg p-3">
                         <p className="text-sm">{action}</p>
-                      </div>
-                    ))}
+                      </div>)}
                   </div>
                 </div>
-              </Card>
-            )}
+              </Card>}
 
             {/* Quick Stats */}
             <div className="grid grid-cols-2 gap-3">
@@ -438,28 +386,18 @@ export default function CarerHome() {
 
             {/* Quick Actions */}
             <div className="grid gap-3">
-              <Button
-                variant="outline"
-                className="justify-start h-auto py-4 border-accent/50 hover:bg-accent/10 relative"
-                onClick={() => navigate('/carer/safeguarding')}
-              >
+              <Button variant="outline" className="justify-start h-auto py-4 border-accent/50 hover:bg-accent/10 relative" onClick={() => navigate('/carer/safeguarding')}>
                 <Shield className="h-5 w-5 mr-3 text-accent" />
                 <div className="text-left flex-1">
                   <p className="font-semibold">Safeguarding Dashboard</p>
                   <p className="text-xs text-muted-foreground">Monitor wellbeing alerts and concerns</p>
                 </div>
-                {safeguardingAlertCount > 0 && (
-                  <Badge variant="destructive" className="ml-2">
+                {safeguardingAlertCount > 0 && <Badge variant="destructive" className="ml-2">
                     {safeguardingAlertCount}
-                  </Badge>
-                )}
+                  </Badge>}
               </Button>
 
-              <Button
-                variant="outline"
-                className="justify-start h-auto py-4"
-                onClick={() => navigate('/carer/insights')}
-              >
+              <Button variant="outline" className="justify-start h-auto py-4" onClick={() => navigate('/carer/insights')}>
                 <Brain className="h-5 w-5 mr-3" />
                 <div className="text-left">
                   <p className="font-semibold">View Detailed Insights</p>
@@ -467,11 +405,7 @@ export default function CarerHome() {
                 </div>
               </Button>
 
-              <Button
-                variant="outline"
-                className="justify-start h-auto py-4"
-                onClick={() => navigate('/carer/resources')}
-              >
+              <Button variant="outline" className="justify-start h-auto py-4" onClick={() => navigate('/carer/resources')}>
                 <Sparkles className="h-5 w-5 mr-3" />
                 <div className="text-left">
                   <p className="font-semibold">Parenting Resources</p>
@@ -479,11 +413,9 @@ export default function CarerHome() {
                 </div>
               </Button>
             </div>
-          </>
-        )}
+          </>}
       </div>
 
       <BottomNav role="carer" />
-    </div>
-  );
+    </div>;
 }
