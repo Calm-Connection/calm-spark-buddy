@@ -255,7 +255,34 @@ Journal entry to analyze: "${entryText}"`
     }
 
     const wendyData = await wendyResponse.json();
-    const analysis = JSON.parse(wendyData.choices[0].message.content);
+    
+    // Parse AI response - strip markdown code blocks if present
+    let content = wendyData.choices[0].message.content;
+    content = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+    
+    let analysis;
+    try {
+      analysis = JSON.parse(content);
+    } catch (parseError) {
+      console.error('Failed to parse AI response:', parseError);
+      console.error('Raw content:', content);
+      
+      // Create a basic fallback insight
+      await supabase.from('wendy_insights').insert({
+        journal_entry_id: journalEntryId,
+        child_id: childId,
+        summary: "Thanks for sharing how you're feeling today. Every time you check in with yourself, you're building strength.",
+        parent_summary: "Your child has reflected on their feelings today.",
+        themes: ["general"],
+        mood_score: 50,
+        escalate: false
+      });
+      
+      return new Response(
+        JSON.stringify({ error: 'Failed to parse AI response', fallbackCreated: true }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
+      );
+    }
 
     // Combine keyword detection with AI analysis
     const shouldEscalate = hasHighRiskContent || analysis.escalate;

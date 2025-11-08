@@ -154,15 +154,15 @@ export default function ChildHome() {
   };
 
   const loadWendyTip = async (childId: string) => {
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    const yesterdayStr = yesterday.toISOString().split('T')[0];
+    const threeDaysAgo = new Date();
+    threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+    const threeDaysAgoStr = threeDaysAgo.toISOString().split('T')[0];
 
     const { data } = await supabase
       .from('wendy_insights')
       .select('summary')
       .eq('child_id', childId)
-      .gte('created_at', `${yesterdayStr}T00:00:00`)
+      .gte('created_at', `${threeDaysAgoStr}T00:00:00`)
       .order('created_at', { ascending: false })
       .limit(1)
       .maybeSingle();
