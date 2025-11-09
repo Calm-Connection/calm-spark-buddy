@@ -64,6 +64,9 @@ import ModuleDetail from "./pages/shared/ModuleDetail";
 // Admin pages
 import GenerateAvatarAssets from "./pages/admin/GenerateAvatarAssets";
 
+// Mockup pages
+import MoodSelectionMockup from "./pages/MoodSelectionMockup";
+
 const queryClient = new QueryClient();
 
 function ProtectedRoute({ children, role }: { children: React.ReactNode; role?: 'child' | 'carer' }) {
@@ -157,6 +160,9 @@ function AppRoutes() {
       
       {/* Admin routes - protected */}
       <Route path="/admin/generate-assets" element={<ProtectedRoute><GenerateAvatarAssets /></ProtectedRoute>} />
+      
+      {/* Mockup/Demo routes - public */}
+      <Route path="/mood-mockup" element={<MoodSelectionMockup />} />
       
       {/* 404 catch-all */}
       <Route path="*" element={<NotFound />} />
