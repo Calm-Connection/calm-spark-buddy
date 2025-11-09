@@ -211,6 +211,44 @@ export type Database = {
         }
         Relationships: []
       }
+      custom_moods: {
+        Row: {
+          child_id: string
+          created_at: string
+          emoji: string
+          id: string
+          label: string
+          last_used_at: string | null
+          use_count: number
+        }
+        Insert: {
+          child_id: string
+          created_at?: string
+          emoji: string
+          id?: string
+          label: string
+          last_used_at?: string | null
+          use_count?: number
+        }
+        Update: {
+          child_id?: string
+          created_at?: string
+          emoji?: string
+          id?: string
+          label?: string
+          last_used_at?: string | null
+          use_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "custom_moods_child_id_fkey"
+            columns: ["child_id"]
+            isOneToOne: false
+            referencedRelation: "children_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       invite_codes: {
         Row: {
           carer_user_id: string
@@ -245,6 +283,7 @@ export type Database = {
         Row: {
           child_id: string
           created_at: string
+          custom_mood_id: string | null
           drawing_data: Json | null
           entry_text: string
           flag_reasons: Json | null
@@ -258,6 +297,7 @@ export type Database = {
         Insert: {
           child_id: string
           created_at?: string
+          custom_mood_id?: string | null
           drawing_data?: Json | null
           entry_text: string
           flag_reasons?: Json | null
@@ -271,6 +311,7 @@ export type Database = {
         Update: {
           child_id?: string
           created_at?: string
+          custom_mood_id?: string | null
           drawing_data?: Json | null
           entry_text?: string
           flag_reasons?: Json | null
@@ -287,6 +328,13 @@ export type Database = {
             columns: ["child_id"]
             isOneToOne: false
             referencedRelation: "children_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "journal_entries_custom_mood_id_fkey"
+            columns: ["custom_mood_id"]
+            isOneToOne: false
+            referencedRelation: "custom_moods"
             referencedColumns: ["id"]
           },
         ]
@@ -799,6 +847,18 @@ export type Database = {
         | "calm"
         | "excited"
         | "scared"
+        | "proud"
+        | "lonely"
+        | "tired"
+        | "confused"
+        | "hopeful"
+        | "frustrated"
+        | "embarrassed"
+        | "nervous"
+        | "bored"
+        | "grateful"
+        | "peaceful"
+        | "okay"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -935,6 +995,18 @@ export const Constants = {
         "calm",
         "excited",
         "scared",
+        "proud",
+        "lonely",
+        "tired",
+        "confused",
+        "hopeful",
+        "frustrated",
+        "embarrassed",
+        "nervous",
+        "bored",
+        "grateful",
+        "peaceful",
+        "okay",
       ],
     },
   },
