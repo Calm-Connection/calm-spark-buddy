@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Settings, BookOpen, Wrench, GraduationCap, Sparkles } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useAchievementProgress } from '@/hooks/useAchievementProgress';
@@ -67,13 +68,33 @@ export default function ChildHome() {
     }
   };
 
-  const moods = [
-    { id: 'happy', label: 'Happy', emoji: '😊' },
-    { id: 'okay', label: 'Okay', emoji: '😐' },
-    { id: 'sad', label: 'Sad', emoji: '😢' },
-    { id: 'worried', label: 'Worried', emoji: '😰' },
-    { id: 'angry', label: 'Angry', emoji: '😠' },
-  ];
+  const presetMoods = {
+    positive: [
+      { id: 'happy', emoji: '😊', label: 'Happy' },
+      { id: 'excited', emoji: '🤩', label: 'Excited' },
+      { id: 'calm', emoji: '😌', label: 'Calm' },
+      { id: 'proud', emoji: '😎', label: 'Proud' },
+      { id: 'hopeful', emoji: '🌟', label: 'Hopeful' },
+      { id: 'grateful', emoji: '🙏', label: 'Grateful' },
+      { id: 'peaceful', emoji: '☮️', label: 'Peaceful' },
+    ],
+    neutral: [
+      { id: 'okay', emoji: '😐', label: 'Okay' },
+      { id: 'tired', emoji: '😴', label: 'Tired' },
+      { id: 'confused', emoji: '😕', label: 'Confused' },
+      { id: 'bored', emoji: '😑', label: 'Bored' },
+    ],
+    challenging: [
+      { id: 'sad', emoji: '😢', label: 'Sad' },
+      { id: 'angry', emoji: '😠', label: 'Angry' },
+      { id: 'anxious', emoji: '😰', label: 'Anxious' },
+      { id: 'worried', emoji: '😟', label: 'Worried' },
+      { id: 'lonely', emoji: '😔', label: 'Lonely' },
+      { id: 'frustrated', emoji: '😤', label: 'Frustrated' },
+      { id: 'embarrassed', emoji: '😳', label: 'Embarrassed' },
+      { id: 'nervous', emoji: '😬', label: 'Nervous' },
+    ],
+  };
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -245,18 +266,78 @@ export default function ChildHome() {
         {/* Daily Check-in */}
         {!hasCheckedInToday && (
           <Card className="p-6 bg-gradient-to-br from-primary/20 to-accent/20 border-primary/30">
-            <h2 className="text-xl font-bold mb-3">How are you feeling today?</h2>
-            <div className="grid grid-cols-5 gap-2">
-              {moods.map((mood) => (
-                <button
-                  key={mood.id}
-                  onClick={() => handleMoodSelect(mood.id)}
-                  className="flex flex-col items-center gap-2 p-3 rounded-lg bg-background/80 hover:bg-background transition-all hover:scale-105"
-                >
-                  <span className="text-3xl">{mood.emoji}</span>
-                  <span className="text-xs font-medium">{mood.label}</span>
-                </button>
-              ))}
+            <h2 className="text-xl font-bold mb-4">How are you feeling today?</h2>
+            
+            <Tabs defaultValue="positive" className="w-full">
+              <TabsList className="grid w-full grid-cols-3 mb-4">
+                <TabsTrigger value="positive" className="text-sm">
+                  😊 Positive
+                </TabsTrigger>
+                <TabsTrigger value="neutral" className="text-sm">
+                  😐 Neutral
+                </TabsTrigger>
+                <TabsTrigger value="challenging" className="text-sm">
+                  😢 Challenging
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="positive" className="mt-0">
+                <div className="grid grid-cols-4 gap-2">
+                  {presetMoods.positive.map((mood) => (
+                    <Button
+                      key={mood.id}
+                      variant="outline"
+                      onClick={() => handleMoodSelect(mood.id)}
+                      className="h-auto flex flex-col items-center gap-1 p-3 hover:scale-105 transition-transform"
+                    >
+                      <span className="text-3xl">{mood.emoji}</span>
+                      <span className="text-xs">{mood.label}</span>
+                    </Button>
+                  ))}
+                </div>
+              </TabsContent>
+
+              <TabsContent value="neutral" className="mt-0">
+                <div className="grid grid-cols-4 gap-2">
+                  {presetMoods.neutral.map((mood) => (
+                    <Button
+                      key={mood.id}
+                      variant="outline"
+                      onClick={() => handleMoodSelect(mood.id)}
+                      className="h-auto flex flex-col items-center gap-1 p-3 hover:scale-105 transition-transform"
+                    >
+                      <span className="text-3xl">{mood.emoji}</span>
+                      <span className="text-xs">{mood.label}</span>
+                    </Button>
+                  ))}
+                </div>
+              </TabsContent>
+
+              <TabsContent value="challenging" className="mt-0">
+                <div className="grid grid-cols-4 gap-2">
+                  {presetMoods.challenging.map((mood) => (
+                    <Button
+                      key={mood.id}
+                      variant="outline"
+                      onClick={() => handleMoodSelect(mood.id)}
+                      className="h-auto flex flex-col items-center gap-1 p-3 hover:scale-105 transition-transform"
+                    >
+                      <span className="text-3xl">{mood.emoji}</span>
+                      <span className="text-xs">{mood.label}</span>
+                    </Button>
+                  ))}
+                </div>
+              </TabsContent>
+            </Tabs>
+
+            <div className="mt-4 pt-4 border-t border-border/50">
+              <Button 
+                variant="outline" 
+                className="w-full"
+                disabled
+              >
+                ✨ + Create Your Own Mood (Coming Soon)
+              </Button>
             </div>
           </Card>
         )}
