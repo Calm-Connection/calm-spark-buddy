@@ -131,12 +131,51 @@ export default function RainbowBreathing() {
         )}
 
         <div className="relative h-[400px] flex items-center justify-center">
+          {isBreathing && (
+            <div className="absolute inset-0 pointer-events-none">
+              {['bg-red-400', 'bg-yellow-400', 'bg-green-400', 'bg-blue-400', 'bg-purple-400'].map((color, i) => (
+                <div
+                  key={i}
+                  className={`absolute w-3 h-3 ${color} rounded-full animate-float opacity-70`}
+                  style={{
+                    left: `${20 + i * 15}%`,
+                    top: `${30 + (i % 2) * 40}%`,
+                    animationDelay: `${i * 0.4}s`
+                  }}
+                />
+              ))}
+            </div>
+          )}
+
           <div
-            className={`absolute inset-0 flex items-center justify-center transition-all duration-2000 ${
-              breathingIn ? 'scale-125 opacity-100' : 'scale-85 opacity-60'
+            className={`absolute w-[300px] h-[300px] rounded-full ${
+              isBreathing && breathingIn
+                ? 'animate-glow-pulse'
+                : ''
+            }`}
+            style={{
+              background: 'radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%)'
+            }}
+          />
+
+          <div
+            className={`absolute inset-0 flex items-center justify-center transition-all ${
+              isBreathing
+                ? breathingIn
+                  ? 'scale-125 duration-[2000ms] animate-shimmer'
+                  : 'scale-85 duration-[2000ms]'
+                : 'scale-100'
             }`}
           >
-            <div className="text-[250px] filter drop-shadow-2xl animate-pulse">
+            <div 
+              className="text-[250px] filter"
+              style={{
+                filter: isBreathing && breathingIn
+                  ? 'drop-shadow(0 0 60px rgba(255, 255, 255, 0.9)) brightness(1.4)'
+                  : 'drop-shadow(0 0 30px rgba(255, 255, 255, 0.5)) brightness(1)',
+                transition: 'filter 2s ease-in-out'
+              }}
+            >
               🌈
             </div>
           </div>

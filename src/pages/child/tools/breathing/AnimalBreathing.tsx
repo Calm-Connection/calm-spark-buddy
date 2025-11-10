@@ -142,10 +142,10 @@ export default function AnimalBreathing() {
               isBreathing
                 ? breathingIn
                   ? animal === 'bunny' 
-                    ? 'w-56 h-56 opacity-60 duration-[2000ms]'
+                    ? 'w-56 h-56 opacity-60 duration-[2000ms] animate-glow-pulse'
                     : animal === 'whale'
-                    ? 'w-96 h-96 opacity-70 duration-[5000ms]'
-                    : 'w-80 h-80 opacity-65 duration-[4000ms]'
+                    ? 'w-96 h-96 opacity-70 duration-[5000ms] animate-glow-pulse'
+                    : 'w-80 h-80 opacity-65 duration-[4000ms] animate-glow-pulse'
                   : animal === 'bunny'
                   ? 'w-32 h-32 opacity-30 duration-[3000ms]'
                   : animal === 'whale'
@@ -153,10 +153,60 @@ export default function AnimalBreathing() {
                   : 'w-40 h-40 opacity-30 duration-[4000ms]'
                 : 'w-64 h-64 opacity-50 duration-1000'
             }`}
-            style={{ boxShadow: '0 0 80px rgba(251, 146, 60, 0.4)' }}
+            style={{ 
+              boxShadow: isBreathing && breathingIn
+                ? '0 0 100px rgba(251, 146, 60, 0.7)'
+                : '0 0 40px rgba(251, 146, 60, 0.4)',
+              transition: 'box-shadow 0.3s ease-out'
+            }}
           />
 
-          <div className="absolute text-8xl z-20 animate-scale-in">
+          {isBreathing && (
+            <div className="absolute inset-0 pointer-events-none">
+              {animal === 'lion' && (
+                <>
+                  <div className="absolute top-20 left-20 text-3xl animate-float">🍂</div>
+                  <div className="absolute top-40 right-30 text-2xl animate-float" style={{ animationDelay: '1s' }}>🍃</div>
+                </>
+              )}
+              
+              {animal === 'bunny' && (
+                <>
+                  <div className="absolute bottom-20 left-10 text-2xl animate-pulse">🌸</div>
+                  <div className="absolute bottom-24 right-20 text-2xl animate-pulse" style={{ animationDelay: '0.5s' }}>🌼</div>
+                </>
+              )}
+              
+              {animal === 'whale' && (
+                <>
+                  {[...Array(6)].map((_, i) => (
+                    <div
+                      key={i}
+                      className="absolute w-2 h-2 bg-blue-200/60 rounded-full animate-float"
+                      style={{
+                        left: `${20 + i * 10}%`,
+                        bottom: `${10 + (i % 3) * 20}%`,
+                        animationDelay: `${i * 0.3}s`
+                      }}
+                    />
+                  ))}
+                </>
+              )}
+            </div>
+          )}
+
+          <div 
+            className={`absolute text-8xl z-20 ${
+              isBreathing
+                ? breathingIn
+                  ? 'animate-breathe-in'
+                  : 'animate-breathe-out'
+                : 'animate-scale-in'
+            }`}
+            style={{
+              transition: 'transform 0.3s ease-out'
+            }}
+          >
             {currentAnimal.emoji}
           </div>
           

@@ -127,28 +127,51 @@ export default function GardenBreathing() {
         )}
 
         <div className="relative h-[400px] flex items-center justify-center">
-          <div className="absolute inset-0">
-            {['🦋', '🐝', '🌼', '🌺', '🌻'].map((emoji, i) => (
+          <div className="absolute inset-0 overflow-hidden">
+            {[
+              { emoji: '🦋', animation: 'animate-float', delay: '0s', top: '20%', left: '10%' },
+              { emoji: '🦋', animation: 'animate-float', delay: '1s', top: '60%', left: '80%' },
+              { emoji: '🐝', animation: 'animate-float', delay: '0.5s', top: '40%', left: '70%' },
+              { emoji: '🌼', animation: 'animate-pulse', delay: '0s', top: '15%', left: '75%' },
+              { emoji: '🌺', animation: 'animate-pulse', delay: '1.5s', top: '70%', left: '25%' },
+              { emoji: '🌻', animation: 'animate-pulse', delay: '2s', top: '35%', left: '85%' }
+            ].map((item, i) => (
               <div
                 key={i}
-                className="absolute text-3xl animate-pulse"
+                className={`absolute text-3xl ${item.animation}`}
                 style={{
-                  left: `${20 + i * 15}%`,
-                  top: `${30 + (i % 2) * 30}%`,
-                  animationDelay: `${i * 0.3}s`,
+                  top: item.top,
+                  left: item.left,
+                  animationDelay: item.delay
                 }}
               >
-                {emoji}
+                {item.emoji}
               </div>
             ))}
           </div>
+
+          {isBreathing && breathingIn && (
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div 
+                className="absolute bottom-0 w-2 bg-green-500/40 rounded-t-full animate-grow"
+                style={{
+                  transformOrigin: 'bottom'
+                }}
+              />
+            </div>
+          )}
           
-          <div
-            className={`absolute inset-0 flex items-center justify-center transition-all duration-4000 ${
-              breathingIn ? 'scale-120 rotate-0 opacity-100' : 'scale-80 rotate-12 opacity-70'
-            }`}
-          >
-            <div className="text-[200px] filter drop-shadow-lg">
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div 
+              key={breathingIn ? 'bloom' : 'close'}
+              className={`text-[200px] filter drop-shadow-lg ${
+                isBreathing 
+                  ? breathingIn 
+                    ? 'animate-bloom' 
+                    : 'animate-bloom-close'
+                  : ''
+              }`}
+            >
               🌸
             </div>
           </div>
