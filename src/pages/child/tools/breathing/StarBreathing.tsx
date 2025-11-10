@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Play, Pause, Volume2, VolumeX } from 'lucide-react';
+import { ArrowLeft, Play, Pause } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { BottomNav } from '@/components/BottomNav';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
+import { VolumeControl } from '@/components/VolumeControl';
+import { useBreathingAudio } from '@/hooks/useBreathingAudio';
 
 export default function StarBreathing() {
   const navigate = useNavigate();
@@ -13,11 +15,18 @@ export default function StarBreathing() {
   const [isBreathing, setIsBreathing] = useState(false);
   const [breathingIn, setBreathingIn] = useState(true);
   const [soundEnabled, setSoundEnabled] = useState(true);
+  const [volume, setVolume] = useState(70);
   const [cyclesComplete, setCyclesComplete] = useState(0);
   const [duration, setDuration] = useState(3);
   const [showAffirmation, setShowAffirmation] = useState(false);
 
   const totalCycles = duration * 7.5;
+
+  useBreathingAudio({ 
+    theme: 'chimes', 
+    enabled: soundEnabled && isBreathing, 
+    volume 
+  });
 
   useEffect(() => {
     if (!isBreathing) return;
@@ -165,21 +174,21 @@ export default function StarBreathing() {
           </Card>
         )}
 
-        <div className="flex gap-4 justify-center">
+        <div className="space-y-3">
           <Button
             size="lg"
             onClick={() => (isBreathing ? setIsBreathing(false) : startBreathing())}
-            className="px-8"
+            className="w-full px-8"
           >
             {isBreathing ? <><Pause className="mr-2" /> Pause</> : <><Play className="mr-2" /> Start</>}
           </Button>
-          <Button
-            size="lg"
-            variant="outline"
-            onClick={() => setSoundEnabled(!soundEnabled)}
-          >
-            {soundEnabled ? <Volume2 /> : <VolumeX />}
-          </Button>
+          
+          <VolumeControl
+            volume={volume}
+            onVolumeChange={setVolume}
+            soundEnabled={soundEnabled}
+            onToggleSound={() => setSoundEnabled(!soundEnabled)}
+          />
         </div>
 
         <Card className="p-6 bg-indigo-950/50 backdrop-blur border-indigo-700/50">

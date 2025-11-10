@@ -2,10 +2,12 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { ArrowLeft, Volume2, VolumeX } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
+import { VolumeControl } from '@/components/VolumeControl';
+import { useBreathingAudio } from '@/hooks/useBreathingAudio';
 
 type AnimalType = 'lion' | 'bunny' | 'whale';
 
@@ -46,11 +48,24 @@ export default function AnimalBreathing() {
   const [isBreathing, setIsBreathing] = useState(false);
   const [breathingIn, setBreathingIn] = useState(true);
   const [soundEnabled, setSoundEnabled] = useState(true);
+  const [volume, setVolume] = useState(70);
   const [cyclesComplete, setCyclesComplete] = useState(0);
   const [showAffirmation, setShowAffirmation] = useState(false);
 
   const currentAnimal = animals[animal];
   const totalCycles = 6;
+
+  const animalSoundThemes: Record<AnimalType, string> = {
+    lion: 'nature',
+    bunny: 'forest',
+    whale: 'waves'
+  };
+
+  useBreathingAudio({ 
+    theme: animalSoundThemes[animal], 
+    enabled: soundEnabled && isBreathing, 
+    volume 
+  });
 
   useEffect(() => {
     if (!isBreathing) return;
@@ -180,10 +195,12 @@ export default function AnimalBreathing() {
             </Button>
           ) : null}
 
-          <Button variant="ghost" onClick={() => setSoundEnabled(!soundEnabled)} className="w-full">
-            {soundEnabled ? <Volume2 className="mr-2" /> : <VolumeX className="mr-2" />}
-            Animal Sounds {soundEnabled ? 'On' : 'Off'}
-          </Button>
+          <VolumeControl
+            volume={volume}
+            onVolumeChange={setVolume}
+            soundEnabled={soundEnabled}
+            onToggleSound={() => setSoundEnabled(!soundEnabled)}
+          />
         </div>
 
         {showAffirmation && (
