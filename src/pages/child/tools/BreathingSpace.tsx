@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { ArrowLeft, Waves, Cloud, Trees, Star, Flower, Rainbow, Heart, Plus, Trash2 } from 'lucide-react';
+import { ArrowLeft, Waves, Cloud, Trees, Star, Flower, Rainbow, Heart, Plus, Trash2, StarOff } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
@@ -107,6 +107,7 @@ export default function BreathingSpace() {
         .from('custom_breathing_spaces')
         .select('*')
         .eq('child_id', profile.id)
+        .order('is_favorite', { ascending: false })
         .order('last_used_at', { ascending: false, nullsFirst: false });
 
       if (error) throw error;
@@ -115,6 +116,30 @@ export default function BreathingSpace() {
       console.error('Error loading custom spaces:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const toggleFavorite = async (id: string, currentFavorite: boolean) => {
+    try {
+      const { error } = await supabase
+        .from('custom_breathing_spaces')
+        .update({ is_favorite: !currentFavorite })
+        .eq('id', id);
+
+      if (error) throw error;
+
+      toast({
+        title: currentFavorite ? "Removed from favorites" : "Added to favorites",
+        description: currentFavorite ? "Space unfavorited" : "Space favorited ⭐"
+      });
+
+      loadCustomSpaces();
+    } catch (error: any) {
+      toast({
+        title: "Couldn't update favorite",
+        description: error.message,
+        variant: "destructive"
+      });
     }
   };
 
@@ -196,7 +221,9 @@ export default function BreathingSpace() {
               {customSpaces.map((space) => (
                 <Card 
                   key={space.id}
-                  className="p-4 hover:scale-105 transition-transform cursor-pointer bg-background/60 backdrop-blur"
+                  className={`p-4 hover:scale-105 transition-transform cursor-pointer bg-background/60 backdrop-blur ${
+                    space.is_favorite ? 'border-2 border-primary/40' : ''
+                  }`}
                 >
                   <div className="flex items-center gap-4">
                     <div 
@@ -209,11 +236,29 @@ export default function BreathingSpace() {
                       className="flex-1"
                       onClick={() => navigate(`/child/tools/breathing/custom/${space.id}`)}
                     >
-                      <h4 className="font-semibold">{space.name}</h4>
+                      <h4 className="font-semibold flex items-center gap-2">
+                        {space.name}
+                        {space.is_favorite && <span className="text-xs">⭐</span>}
+                      </h4>
                       <p className="text-xs text-muted-foreground">
                         {space.visual_theme} • {space.sound_theme}
                       </p>
                     </div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleFavorite(space.id, space.is_favorite);
+                      }}
+                      title={space.is_favorite ? "Remove from favorites" : "Add to favorites"}
+                    >
+                      {space.is_favorite ? (
+                        <Star className="h-5 w-5 fill-primary text-primary" />
+                      ) : (
+                        <StarOff className="h-5 w-5 text-muted-foreground" />
+                      )}
+                    </Button>
                     <Button
                       variant="ghost"
                       size="icon"
