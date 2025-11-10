@@ -34,6 +34,8 @@ import ForestBreathing from "./pages/child/tools/breathing/ForestBreathing";
 import StarBreathing from "./pages/child/tools/breathing/StarBreathing";
 import GardenBreathing from "./pages/child/tools/breathing/GardenBreathing";
 import RainbowBreathing from "./pages/child/tools/breathing/RainbowBreathing";
+import CreateCustom from "./pages/child/tools/breathing/CreateCustom";
+import CustomSpace from "./pages/child/tools/breathing/CustomSpace";
 import GroundingGame from "./pages/child/tools/GroundingGame";
 import ThoughtClouds from "./pages/child/tools/ThoughtClouds";
 import ColourCalm from "./pages/child/tools/ColourCalm";
@@ -127,6 +129,8 @@ function AppRoutes() {
       <Route path="/child/tools/breathing/star" element={<ProtectedRoute role="child"><StarBreathing /></ProtectedRoute>} />
       <Route path="/child/tools/breathing/garden" element={<ProtectedRoute role="child"><GardenBreathing /></ProtectedRoute>} />
       <Route path="/child/tools/breathing/rainbow" element={<ProtectedRoute role="child"><RainbowBreathing /></ProtectedRoute>} />
+      <Route path="/child/tools/breathing/create" element={<ProtectedRoute role="child"><CreateCustom /></ProtectedRoute>} />
+      <Route path="/child/tools/breathing/custom/:id" element={<ProtectedRoute role="child"><CustomSpace /></ProtectedRoute>} />
       <Route path="/child/tools/grounding-game" element={<ProtectedRoute role="child"><GroundingGame /></ProtectedRoute>} />
       <Route path="/child/tools/thought-clouds" element={<ProtectedRoute role="child"><ThoughtClouds /></ProtectedRoute>} />
       <Route path="/child/tools/colour-calm" element={<ProtectedRoute role="child"><ColourCalm /></ProtectedRoute>} />

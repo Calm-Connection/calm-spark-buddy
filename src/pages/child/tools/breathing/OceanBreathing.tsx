@@ -2,10 +2,12 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { ArrowLeft, Volume2, VolumeX } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
+import { VolumeControl } from '@/components/VolumeControl';
+import { useBreathingAudio } from '@/hooks/useBreathingAudio';
 
 export default function OceanBreathing() {
   const navigate = useNavigate();
@@ -13,11 +15,18 @@ export default function OceanBreathing() {
   const [isBreathing, setIsBreathing] = useState(false);
   const [breathingIn, setBreathingIn] = useState(true);
   const [soundEnabled, setSoundEnabled] = useState(true);
+  const [volume, setVolume] = useState(70);
   const [cyclesComplete, setCyclesComplete] = useState(0);
   const [showAffirmation, setShowAffirmation] = useState(false);
   const [duration, setDuration] = useState<1 | 3 | 5>(3);
 
-  const totalCycles = duration * 60 / 8; // 8 seconds per cycle (4 in, 4 out)
+  const totalCycles = duration * 60 / 8;
+
+  useBreathingAudio({ 
+    theme: 'waves', 
+    enabled: soundEnabled && isBreathing, 
+    volume 
+  });
 
   useEffect(() => {
     if (!isBreathing) return;
@@ -167,14 +176,12 @@ export default function OceanBreathing() {
             </Button>
           ) : null}
 
-          <Button
-            variant="ghost"
-            onClick={() => setSoundEnabled(!soundEnabled)}
-            className="w-full"
-          >
-            {soundEnabled ? <Volume2 className="mr-2" /> : <VolumeX className="mr-2" />}
-            Ocean Sounds {soundEnabled ? 'On' : 'Off'}
-          </Button>
+          <VolumeControl
+            volume={volume}
+            onVolumeChange={setVolume}
+            soundEnabled={soundEnabled}
+            onToggleSound={() => setSoundEnabled(!soundEnabled)}
+          />
         </div>
 
         {/* Affirmation */}

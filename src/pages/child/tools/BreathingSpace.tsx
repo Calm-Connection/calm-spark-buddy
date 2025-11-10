@@ -1,8 +1,12 @@
 import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { ArrowLeft, Waves, Cloud, Trees, Star, Flower, Rainbow, Heart } from 'lucide-react';
+import { ArrowLeft, Waves, Cloud, Trees, Star, Flower, Rainbow, Heart, Plus, Trash2 } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
+import { useToast } from '@/hooks/use-toast';
 
 const breathingExercises = [
   {
@@ -72,6 +76,82 @@ const breathingExercises = [
 
 export default function BreathingSpace() {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const [customSpaces, setCustomSpaces] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadCustomSpaces();
+  }, [user]);
+
+  const loadCustomSpaces = async () => {
+    if (!user) {
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const { data: profile } = await supabase
+        .from('children_profiles')
+        .select('id')
+        .eq('user_id', user.id)
+        .single();
+
+      if (!profile) {
+        setLoading(false);
+        return;
+      }
+
+      const { data, error} = await supabase
+        .from('custom_breathing_spaces')
+        .select('*')
+        .eq('child_id', profile.id)
+        .order('last_used_at', { ascending: false, nullsFirst: false });
+
+      if (error) throw error;
+      setCustomSpaces(data || []);
+    } catch (error) {
+      console.error('Error loading custom spaces:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteCustomSpace = async (id: string, name: string) => {
+    try {
+      const { error } = await supabase
+        .from('custom_breathing_spaces')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Space deleted",
+        description: `"${name}" has been removed`
+      });
+
+      loadCustomSpaces();
+    } catch (error: any) {
+      toast({
+        title: "Couldn't delete space",
+        description: error.message,
+        variant: "destructive"
+      });
+    }
+  };
+
+  const themeEmojis: Record<string, string> = {
+    ocean: '🌊',
+    cloud: '☁️',
+    forest: '🌲',
+    star: '⭐',
+    garden: '🌼',
+    rainbow: '🌈',
+    sunset: '🌅',
+    space: '🌌',
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-primary/10 to-background pb-20">
@@ -89,6 +169,71 @@ export default function BreathingSpace() {
             Pick a breathing world that feels good to you right now. Each one will help you feel calmer and more peaceful.
           </p>
         </Card>
+
+        {/* Create Your Own Section */}
+        <Card 
+          className="p-6 bg-gradient-to-r from-purple-400/20 to-pink-400/20 border-2 border-dashed border-primary cursor-pointer hover:scale-105 transition-transform"
+          onClick={() => navigate('/child/tools/breathing/create')}
+        >
+          <div className="flex items-center gap-4">
+            <div className="h-16 w-16 rounded-full bg-primary/20 flex items-center justify-center">
+              <Plus className="h-8 w-8 text-primary" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-bold text-lg mb-1">Create Your Own ✨</h3>
+              <p className="text-sm text-muted-foreground">
+                Mix and match scenes and sounds to make your perfect calm space
+              </p>
+            </div>
+          </div>
+        </Card>
+
+        {/* Custom Spaces Section */}
+        {!loading && customSpaces.length > 0 && (
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold">My Custom Spaces 💫</h3>
+            <div className="grid gap-3">
+              {customSpaces.map((space) => (
+                <Card 
+                  key={space.id}
+                  className="p-4 hover:scale-105 transition-transform cursor-pointer bg-background/60 backdrop-blur"
+                >
+                  <div className="flex items-center gap-4">
+                    <div 
+                      className="h-12 w-12 rounded-full flex items-center justify-center text-2xl bg-primary/10"
+                      onClick={() => navigate(`/child/tools/breathing/custom/${space.id}`)}
+                    >
+                      {themeEmojis[space.visual_theme] || '✨'}
+                    </div>
+                    <div 
+                      className="flex-1"
+                      onClick={() => navigate(`/child/tools/breathing/custom/${space.id}`)}
+                    >
+                      <h4 className="font-semibold">{space.name}</h4>
+                      <p className="text-xs text-muted-foreground">
+                        {space.visual_theme} • {space.sound_theme}
+                      </p>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (confirm(`Delete "${space.name}"?`)) {
+                          deleteCustomSpace(space.id, space.name);
+                        }
+                      }}
+                    >
+                      <Trash2 className="h-4 w-4 text-destructive" />
+                    </Button>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <h3 className="text-lg font-semibold">Preset Breathing Worlds 🌍</h3>
 
         <div className="grid gap-4">
           {breathingExercises.map((exercise, index) => {

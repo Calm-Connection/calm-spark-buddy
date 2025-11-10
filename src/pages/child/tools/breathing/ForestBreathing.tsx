@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Play, Pause, Volume2, VolumeX } from 'lucide-react';
+import { ArrowLeft, Play, Pause } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { BottomNav } from '@/components/BottomNav';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
+import { VolumeControl } from '@/components/VolumeControl';
+import { useBreathingAudio } from '@/hooks/useBreathingAudio';
 
 export default function ForestBreathing() {
   const navigate = useNavigate();
@@ -13,11 +15,18 @@ export default function ForestBreathing() {
   const [isBreathing, setIsBreathing] = useState(false);
   const [breathingIn, setBreathingIn] = useState(true);
   const [soundEnabled, setSoundEnabled] = useState(true);
+  const [volume, setVolume] = useState(70);
   const [cyclesComplete, setCyclesComplete] = useState(0);
   const [duration, setDuration] = useState(3);
   const [showAffirmation, setShowAffirmation] = useState(false);
 
-  const totalCycles = duration * 7.5; // ~7.5 cycles per minute
+  const totalCycles = duration * 7.5;
+
+  useBreathingAudio({ 
+    theme: 'forest', 
+    enabled: soundEnabled && isBreathing, 
+    volume 
+  });
 
   useEffect(() => {
     if (!isBreathing) return;
@@ -157,13 +166,12 @@ export default function ForestBreathing() {
           >
             {isBreathing ? <><Pause className="mr-2" /> Pause</> : <><Play className="mr-2" /> Start</>}
           </Button>
-          <Button
-            size="lg"
-            variant="outline"
-            onClick={() => setSoundEnabled(!soundEnabled)}
-          >
-            {soundEnabled ? <Volume2 /> : <VolumeX />}
-          </Button>
+          <VolumeControl
+            volume={volume}
+            onVolumeChange={setVolume}
+            soundEnabled={soundEnabled}
+            onToggleSound={() => setSoundEnabled(!soundEnabled)}
+          />
         </div>
 
         <Card className="p-6 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border-green-200">

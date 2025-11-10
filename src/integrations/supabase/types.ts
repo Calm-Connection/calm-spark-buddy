@@ -211,6 +211,39 @@ export type Database = {
         }
         Relationships: []
       }
+      custom_breathing_spaces: {
+        Row: {
+          child_id: string
+          created_at: string
+          id: string
+          is_favorite: boolean | null
+          last_used_at: string | null
+          name: string
+          sound_theme: string
+          visual_theme: string
+        }
+        Insert: {
+          child_id: string
+          created_at?: string
+          id?: string
+          is_favorite?: boolean | null
+          last_used_at?: string | null
+          name: string
+          sound_theme: string
+          visual_theme: string
+        }
+        Update: {
+          child_id?: string
+          created_at?: string
+          id?: string
+          is_favorite?: boolean | null
+          last_used_at?: string | null
+          name?: string
+          sound_theme?: string
+          visual_theme?: string
+        }
+        Relationships: []
+      }
       custom_moods: {
         Row: {
           child_id: string
