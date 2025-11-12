@@ -119,6 +119,12 @@ serve(async (req) => {
 Analyze this text for ANY inappropriate content including profanity, sexual content, violence, 
 hate speech, drug references, or personal information.
 
+SPELLING CONSIDERATIONS:
+- Be forgiving of innocent spelling mistakes and typos (e.g., "freind" → friend is safe)
+- BUT catch intentional misspellings used to bypass filters (e.g., "f*ck", "sh1t", "a$$")
+- Use context to determine intent - is this an innocent typo or deliberate bypass?
+- Phonetic spellings of normal words are safe (e.g., "skared" for "scared")
+
 Text to analyze: "${text}"
 
 Respond with ONLY valid JSON in this exact format:
@@ -130,7 +136,8 @@ Respond with ONLY valid JSON in this exact format:
 }
 
 Categories: "profanity", "sexual", "violence", "hate_speech", "drugs", "personal_info", or "safe"
-Be STRICT. If there's any doubt, mark as unsafe with the appropriate category.`;
+Be STRICT about inappropriate content. If there's any doubt, mark as unsafe with the appropriate category.
+However, be FORGIVING of innocent spelling mistakes - focus on detecting actual inappropriate intent.`;
 
     const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
