@@ -7,6 +7,105 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// PHASE 2: 4-Tier Escalation System
+interface EscalationDecision {
+  tier: 1 | 2 | 3 | 4;
+  reason: string;
+  childMessage: string;
+  carerMessage: string | null;
+  suggestedAction: string;
+  bypassQuietHours: boolean;
+}
+
+function determineEscalationTier(
+  hasHighRiskKeywords: boolean,
+  detectedKeywords: string[],
+  analysis: any,
+  historicalContext: any
+): EscalationDecision {
+  
+  // TIER 4: Critical - Immediate escalation
+  if (hasHighRiskKeywords || (analysis.escalate && analysis.mood_score <= 3)) {
+    return {
+      tier: 4,
+      reason: hasHighRiskKeywords 
+        ? `High-risk keywords detected: ${detectedKeywords.join(', ')}`
+        : `Severe distress with very low mood (${analysis.mood_score}/10)`,
+      childMessage: "You're not alone. Let's make sure you have support right now.",
+      carerMessage: "Immediate attention needed. Please review the safeguarding dashboard.",
+      suggestedAction: "Review immediately and consider reaching out to child",
+      bypassQuietHours: true
+    };
+  }
+
+  // Check for declining trajectory
+  const hasActiveDecliningPattern = historicalContext.activePatterns?.some(
+    (p: any) => p.severity_trend === 'declining'
+  );
+  
+  const recentMoodScores = historicalContext.recentMoods
+    ?.map((m: any) => m.intensity)
+    .filter((i: any) => i !== null) || [];
+  
+  const averageRecentMood = recentMoodScores.length > 0
+    ? recentMoodScores.reduce((a: number, b: number) => a + b, 0) / recentMoodScores.length
+    : null;
+
+  // TIER 3: Check-in prompt - Declining pattern or moderate distress
+  if (
+    (hasActiveDecliningPattern && analysis.mood_score < 5) ||
+    (analysis.escalate && analysis.mood_score <= 5) ||
+    (averageRecentMood && averageRecentMood < 5 && analysis.mood_score < 5) ||
+    (historicalContext.recentEntries.length >= 3 && analysis.themes?.some((t: string) => 
+      ['sadness', 'worry-general', 'overwhelm', 'sleep'].includes(t)
+    ))
+  ) {
+    return {
+      tier: 3,
+      reason: hasActiveDecliningPattern
+        ? "Declining emotional pattern detected over time"
+        : `Moderate distress: mood ${analysis.mood_score}/10, recurring concerns`,
+      childMessage: "It sounds like things have been tough lately. Would you like to share this with your grown-up?",
+      carerMessage: "A gentle check-in with your child might be helpful.",
+      suggestedAction: "Schedule a casual conversation with your child",
+      bypassQuietHours: false
+    };
+  }
+
+  // Check if child is actively using tools and has protective factors
+  const hasProtectiveFactors = (historicalContext.protectiveFactors?.length || 0) > 0;
+  const hasRecentToolUsage = (historicalContext.toolUsage?.length || 0) > 0;
+
+  // TIER 2: Tool suggestion - Moderate concern, suggest coping tools
+  if (
+    analysis.mood_score < 6 ||
+    analysis.themes?.some((t: string) => 
+      ['anger', 'frustration', 'loneliness', 'fear'].includes(t)
+    )
+  ) {
+    return {
+      tier: 2,
+      reason: `Moderate emotional concern: mood ${analysis.mood_score}/10`,
+      childMessage: analysis.summary,
+      carerMessage: null, // No carer notification for tier 2
+      suggestedAction: hasProtectiveFactors && hasRecentToolUsage
+        ? "Child is engaging with support, continue monitoring"
+        : "Encourage use of coping tools",
+      bypassQuietHours: false
+    };
+  }
+
+  // TIER 1: Supportive monitoring - Normal emotional expression
+  return {
+    tier: 1,
+    reason: "Normal emotional expression with positive or neutral mood",
+    childMessage: analysis.summary,
+    carerMessage: null,
+    suggestedAction: "Continue supportive monitoring",
+    bypassQuietHours: false
+  };
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -107,14 +206,89 @@ serve(async (req) => {
       activePatternsCount: historicalContext.activePatterns.length
     });
 
-    // Build system prompt with context
-    let contextSection = '';
-    if (historicalContext.hasHistory) {
-      contextSection = `\n\nHISTORICAL CONTEXT:\nRecent entries: ${historicalContext.recentEntries.length}\nRecent moods: ${historicalContext.recentMoods.length}\nProtective factors: ${historicalContext.protectiveFactors.length}\nTool usage: ${historicalContext.toolUsage.length}\nActive patterns: ${historicalContext.activePatterns.length}\n\nConsider whether this is a new or recurring concern, if mood is improving/stable/declining, and if support systems are present.`;
-    }
+    // PHASE 2: Build enhanced system prompt with contextual analysis
+    const systemPrompt = `You are Wendy, an AI trained to analyze children's journal entries (ages 7-16) with trauma-informed care principles.
 
-    const systemPrompt = `You are Wendy, analyzing children's journal entries (ages 7-16). Age-appropriate, non-diagnostic, evidence-based.${contextSection}\n\nDetect themes, score mood 0-10, recommend tools, determine if escalation needed. Respond with valid JSON: {"summary":"...", "themes":[], "mood_score":0-10, "recommended_tools":[], "escalate":true/false, "escalation_reason":"..."}`;
+${historicalContext.hasHistory ? `
+HISTORICAL CONTEXT FOR THIS CHILD:
+- Recent journal entries: ${historicalContext.recentEntries.length} in last 7 days
+- Recent mood check-ins: ${historicalContext.recentMoods.length} recorded
+- Protective factors identified: ${historicalContext.protectiveFactors.length}
+- Coping tools used: ${historicalContext.toolUsage.length} sessions
+- Active patterns: ${historicalContext.activePatterns.length} being monitored
 
+${historicalContext.activePatterns.length > 0 ? `
+Active Patterns Detected:
+${historicalContext.activePatterns.map((p: any) => 
+  `- ${p.pattern_type}: ${JSON.stringify(p.detected_themes)} (${p.severity_trend} trend, ${p.entry_count} entries)`
+).join('\n')}
+` : ''}
+
+${historicalContext.recentMoods.length > 0 ? `
+Recent Mood Trajectory:
+${historicalContext.recentMoods.slice(0, 5).map((m: any) => 
+  `${m.mood_emoji} ${m.mood_type} (${m.intensity}/10) - ${new Date(m.created_at).toLocaleDateString()}`
+).join('\n')}
+` : ''}
+
+${historicalContext.protectiveFactors.length > 0 ? `
+Support Systems Present:
+${historicalContext.protectiveFactors.slice(0, 3).map((f: any) => 
+  `- ${f.factor_type}: ${f.description}`
+).join('\n')}
+` : ''}
+
+CONTEXTUAL ANALYSIS INSTRUCTIONS:
+Based on this history, determine:
+1. Is this a NEW concern or RECURRING pattern?
+2. Is emotional state IMPROVING, STABLE, or DECLINING?
+3. Are SUPPORT SYSTEMS active and helpful?
+4. Is child ENGAGING with coping tools?
+5. What is the TRAJECTORY over time?
+
+Escalation Guidelines with Context:
+- First mention + stable mood + support = NO escalation
+- Recurring concern + declining mood = ESCALATE
+- High-risk keywords + no support = IMMEDIATE escalation
+- Moderate distress + active coping + support = Tool recommendation only
+` : 'No historical context available - this may be their first entry or recent sign-up.'}
+
+CORE PRINCIPLES:
+- Age-appropriate for 7-16 year olds
+- NON-DIAGNOSTIC: Use "worry" not "anxiety", "sad" not "depressed"
+- Evidence-based: NHS, Childline, validated research
+- Trauma-informed: Validate feelings, never judge
+- Spelling tolerant: Focus on intended meaning
+
+SPELLING & LANGUAGE:
+- Accept phonetic spellings: "skarred"→"scared", "angre"→"angry"
+- Accept informal text: "im sad", "cant sleep", "ur mean"
+- Detect themes despite misspellings
+- Use correct spelling in your responses (gentle modeling)
+
+YOUR TASK:
+1. Provide warm, validating 2-3 sentence summary
+2. Detect ALL relevant themes from: school, friends, family, body, sleep, bullying, change, identity, loss, hobbies, worry-general, anger, sadness, fear, excitement, pride, confusion, overwhelm
+3. Score mood 0-10 based on:
+   - 0-2: Severe distress, crisis
+   - 3-4: Low mood, struggling
+   - 5-6: Mixed/neutral
+   - 7-8: Positive, coping
+   - 9-10: Thriving, happy
+4. Recommend 2-3 specific coping tools
+5. Determine if escalation needed (high-risk keywords, persistent distress, declining pattern)
+
+RESPOND WITH VALID JSON ONLY:
+{
+  "summary": "Warm validating summary here",
+  "themes": ["theme1", "theme2"],
+  "mood_score": 7,
+  "recommended_tools": ["Tool Name 1", "Tool Name 2"],
+  "escalate": false,
+  "escalation_reason": "Brief reason if true, null if false"
+}`;
+
+    console.log('Calling Wendy AI with enhanced contextual prompt');
     const wendyResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${LOVABLE_API_KEY}`, 'Content-Type': 'application/json' },
@@ -122,10 +296,10 @@ serve(async (req) => {
         model: 'google/gemini-2.5-flash',
         messages: [
           { role: 'system', content: systemPrompt },
-          { role: 'user', content: `Analyze: "${entryText}"` }
+          { role: 'user', content: `Analyze this journal entry: "${entryText}"` }
         ],
         temperature: 0.7,
-        max_tokens: 800
+        max_tokens: 1000
       }),
     });
 
@@ -137,20 +311,32 @@ serve(async (req) => {
       const jsonMatch = wendyContent.match(/```json\n?([\s\S]*?)\n?```/) || wendyContent.match(/({[\s\S]*})/);
       analysis = JSON.parse((jsonMatch ? jsonMatch[1] : wendyContent).trim());
     } catch {
+      console.warn('Failed to parse AI response, using fallback');
       analysis = {
-        summary: "Thank you for sharing.",
+        summary: "Thank you for sharing your feelings with me.",
         themes: ["general"],
         mood_score: 5,
-        recommended_tools: ["Breathing Space"],
+        recommended_tools: ["Breathing Space", "Gentle Reflections"],
         escalate: hasHighRiskContent,
         escalation_reason: hasHighRiskContent ? "High-risk keywords detected" : null
       };
     }
 
-    const shouldEscalate = hasHighRiskContent || analysis.escalate;
-    const escalationReason = hasHighRiskContent 
-      ? `Keywords: ${detectedKeywords.join(', ')}. ${analysis.escalation_reason || ''}`
-      : analysis.escalation_reason;
+    // PHASE 2: Determine escalation tier using new graduated system
+    const escalationDecision = determineEscalationTier(
+      hasHighRiskContent,
+      detectedKeywords,
+      analysis,
+      historicalContext
+    );
+
+    console.log('Escalation decision:', {
+      tier: escalationDecision.tier,
+      reason: escalationDecision.reason,
+      bypassQuietHours: escalationDecision.bypassQuietHours
+    });
+
+    const shouldEscalate = escalationDecision.tier >= 3; // Tier 3 and 4 notify carer
 
     const { data: copingTools } = await supabase
       .from('coping_tools')
@@ -162,38 +348,52 @@ serve(async (req) => {
       .insert({
         child_id: childId,
         journal_entry_id: journalEntryId,
-        summary: analysis.summary,
+        summary: escalationDecision.childMessage,
         themes: analysis.themes,
         mood_score: analysis.mood_score,
         recommended_tools: analysis.recommended_tools,
         recommended_tool_ids: copingTools?.map(t => t.id) || [],
         escalate: shouldEscalate,
-        parent_summary: shouldEscalate ? `Concerning content detected. ${escalationReason}` : null
+        parent_summary: escalationDecision.carerMessage
       })
       .select()
       .single();
 
+    // Create safeguarding log for Tier 3 and 4
     if (shouldEscalate) {
+      console.log(`Creating tier ${escalationDecision.tier} safeguarding log`);
+      
       await supabase.from('safeguarding_logs').insert({
         child_id: childId,
         journal_entry_id: journalEntryId,
         detected_keywords: detectedKeywords,
         severity_score: 10 - (analysis.mood_score || 5),
-        action_taken: 'Carer notified',
-        escalation_tier: 4,
+        action_taken: escalationDecision.suggestedAction,
+        escalation_tier: escalationDecision.tier,
         protective_factors_present: historicalContext.protectiveFactors,
         historical_context: {
           recentEntriesCount: historicalContext.recentEntries.length,
           recentMoodsCount: historicalContext.recentMoods.length,
-          toolUsageCount: historicalContext.toolUsage.length
+          toolUsageCount: historicalContext.toolUsage.length,
+          activePatternsCount: historicalContext.activePatterns.length,
+          hasProtectiveFactors: historicalContext.protectiveFactors.length > 0,
+          trajectory: historicalContext.activePatterns?.[0]?.severity_trend || 'unknown'
         }
       });
 
-      await supabase.from('journal_entries').update({ 
-        flagged: true,
-        flag_reasons: { keywords: detectedKeywords, ai_reason: escalationReason }
-      }).eq('id', journalEntryId);
+      // Flag journal entry for Tier 4
+      if (escalationDecision.tier === 4) {
+        await supabase.from('journal_entries').update({ 
+          flagged: true,
+          flag_reasons: {
+            keywords: detectedKeywords,
+            ai_reason: escalationDecision.reason,
+            tier: 4
+          }
+        }).eq('id', journalEntryId);
+      }
 
+      // Send carer notification
       const { data: childProfile } = await supabase
         .from('children_profiles')
         .select('linked_carer_id')
@@ -201,12 +401,14 @@ serve(async (req) => {
         .single();
 
       if (childProfile?.linked_carer_id) {
+        console.log('Sending tier', escalationDecision.tier, 'notification to carer');
+        
         await supabase.from('notification_history').insert({
           user_id: childProfile.linked_carer_id,
-          notification_type: 'safeguarding_alert',
+          notification_type: escalationDecision.tier === 4 ? 'safeguarding_alert' : 'wellbeing_insight',
           notification_content: JSON.stringify({
-            title: 'Wellbeing Alert',
-            body: 'Your child\'s recent journal entry may need your attention.'
+            title: escalationDecision.tier === 4 ? 'Wellbeing Alert' : 'Gentle Check-in Suggested',
+            body: escalationDecision.carerMessage
           })
         });
       }
@@ -215,12 +417,13 @@ serve(async (req) => {
     return new Response(JSON.stringify({
       success: true,
       analysis: {
-        summary: analysis.summary,
+        summary: escalationDecision.childMessage,
         themes: analysis.themes,
         mood_score: analysis.mood_score,
         recommended_tools: analysis.recommended_tools,
         recommended_tool_ids: copingTools?.map(t => t.id) || [],
-        escalated: shouldEscalate
+        escalated: shouldEscalate,
+        escalation_tier: escalationDecision.tier
       },
       insight_id: insertedInsight?.id
     }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 });
