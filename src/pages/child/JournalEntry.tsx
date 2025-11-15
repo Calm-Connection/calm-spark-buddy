@@ -10,6 +10,7 @@ import { INeedHelpButton } from '@/components/INeedHelpButton';
 import { HelplineModal } from '@/components/HelplineModal';
 import { CheckInPromptModal } from '@/components/CheckInPromptModal';
 import { ToolSuggestionCard } from '@/components/ToolSuggestionCard';
+import { DecorativeIcon } from '@/components/DecorativeIcon';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';

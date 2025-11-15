@@ -14,6 +14,7 @@ import { BottomNav } from '@/components/BottomNav';
 import { NotificationBell } from '@/components/NotificationBell';
 import { WendyTipCard } from '@/components/WendyTipCard';
 import { WendyAvatar } from '@/components/WendyAvatar';
+import { DecorativeIcon } from '@/components/DecorativeIcon';
 import { toast } from 'sonner';
 
 const affirmations = [
