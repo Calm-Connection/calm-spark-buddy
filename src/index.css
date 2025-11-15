@@ -11,98 +11,106 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Calm Connection Brand Colors - Classic Theme Default (Light Purple) */
-    --background: 248 60% 94%; /* Lighter purple - Brand color / Classic theme */
-    --foreground: 0 0% 0%; /* Pure black for text */
+    /* Calm Connection Brand Colors - Enhanced Contrast Light Mode */
+    --background: 248 60% 92%; /* 5% darker for depth */
+    --foreground: 0 0% 10%; /* Softer black, easier on eyes */
 
-    --card: 0 0% 100%; /* Pure white cards */
-    --card-foreground: 0 0% 0%;
+    --card: 0 0% 98%; /* Subtle shadow effect from background */
+    --card-foreground: 0 0% 10%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 0%;
+    --popover: 0 0% 98%;
+    --popover-foreground: 0 0% 10%;
 
-    --primary: 248 63% 76%; /* Deeper lilac for contrast */
-    --primary-foreground: 0 0% 0%;
+    --primary: 248 63% 72%; /* 5% deeper for contrast */
+    --primary-foreground: 0 0% 10%;
 
-    --secondary: 163 40% 70%; /* Soft Mint #90D1BC */
-    --secondary-foreground: 0 0% 0%;
+    --secondary: 163 40% 65%; /* 7% deeper */
+    --secondary-foreground: 0 0% 10%;
 
-    --muted: 249 27% 74%; /* Lavender Gray #BEB8D1 */
-    --muted-foreground: 0 0% 40%;
+    --muted: 249 27% 85%; /* Lighter background */
+    --muted-foreground: 0 0% 35%; /* Darker text */
 
-    --accent: 31 100% 88%; /* Peachy Cream #FEE0C2 */
-    --accent-foreground: 0 0% 0%;
+    --accent: 31 100% 85%; /* 3% deeper for definition */
+    --accent-foreground: 0 0% 10%;
 
-    --warm: 45 100% 90%; /* Warm Yellow #FCF0CC */
-    --dusty-rose: 342 79% 89%; /* #F7CDDE */
+    --warm: 45 100% 88%;
+    --dusty-rose: 342 79% 86%;
+
+    /* NEW: Seafoam accent for interactive elements */
+    --interactive-accent: 175 45% 65%;
+    --interactive-accent-hover: 175 45% 55%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 0 0% 0%; /* Black borders */
-    --input: 0 0% 0%;
-    --ring: 248 63% 86%;
+    --border: 249 20% 75%; /* Soft lavender-gray */
+    --input: 249 20% 70%;
+    --ring: 248 63% 82%;
 
-    --radius: 2rem; /* Much more rounded corners */
+    --radius: 2rem;
     
     /* Gradient for buttons */
-    --gradient-button: linear-gradient(135deg, hsl(342 79% 89%), hsl(31 100% 88%), hsl(45 100% 90%));
+    --gradient-button: linear-gradient(135deg, hsl(342 79% 86%), hsl(31 100% 85%), hsl(45 100% 88%));
     
     /* Organic blob colors */
-    --blob-peachy: 31 100% 88%;
+    --blob-peachy: 31 100% 85%;
     --blob-cream: 45 100% 95%;
 
     --sidebar-background: 249 246 252%;
     --sidebar-foreground: 0 0% 29%;
-    --sidebar-primary: 248 63% 86%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 163 40% 70%;
+    --sidebar-primary: 248 63% 82%;
+    --sidebar-primary-foreground: 0 0% 10%;
+    --sidebar-accent: 163 40% 65%;
     --sidebar-accent-foreground: 0 0% 29%;
     --sidebar-border: 249 27% 85%;
-    --sidebar-ring: 248 63% 86%;
+    --sidebar-ring: 248 63% 82%;
   }
 
   .dark {
-    /* Keep light mode design for consistency */
-    --background: 248 60% 94%; /* Lighter purple - Brand color */
-    --foreground: 0 0% 0%;
+    /* True Dark Mode - Gentle Charcoal Palette */
+    --background: 240 10% 12%; /* Deep charcoal with slight blue */
+    --foreground: 0 0% 95%; /* Off-white, not pure white */
 
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 0%;
+    --card: 240 8% 16%; /* Lighter charcoal for cards */
+    --card-foreground: 0 0% 95%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 0%;
+    --popover: 240 8% 16%;
+    --popover-foreground: 0 0% 95%;
 
-    --primary: 248 63% 76%;
-    --primary-foreground: 0 0% 0%;
+    --primary: 248 40% 60%; /* Muted pastel lilac */
+    --primary-foreground: 0 0% 95%;
 
-    --secondary: 163 40% 70%;
-    --secondary-foreground: 0 0% 0%;
+    --secondary: 163 25% 50%; /* Muted mint */
+    --secondary-foreground: 0 0% 95%;
 
-    --muted: 249 27% 74%;
-    --muted-foreground: 0 0% 40%;
+    --muted: 240 8% 20%; /* Slightly lighter charcoal */
+    --muted-foreground: 0 0% 70%; /* Mid-gray text */
 
-    --accent: 31 100% 88%;
-    --accent-foreground: 0 0% 0%;
+    --accent: 31 50% 50%; /* Muted peach */
+    --accent-foreground: 0 0% 95%;
 
-    --warm: 45 100% 90%;
-    --dusty-rose: 342 79% 89%;
+    --warm: 45 60% 50%;
+    --dusty-rose: 342 50% 60%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
+    /* INTERACTIVE ACCENT - muted seafoam */
+    --interactive-accent: 175 30% 50%;
+    --interactive-accent-hover: 175 35% 60%;
 
-    --border: 0 0% 0%;
-    --input: 0 0% 0%;
-    --ring: 248 63% 86%;
+    --destructive: 0 62.8% 50.6%;
+    --destructive-foreground: 0 0% 95%;
 
-    --sidebar-background: 249 20% 15%;
+    --border: 240 8% 25%; /* Lighter than background, visible but soft */
+    --input: 240 8% 22%;
+    --ring: 248 40% 60%;
+
+    --sidebar-background: 240 10% 15%;
     --sidebar-foreground: 0 0% 95%;
-    --sidebar-primary: 248 63% 76%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 163 30% 50%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 249 15% 25%;
-    --sidebar-ring: 248 63% 76%;
+    --sidebar-primary: 248 40% 60%;
+    --sidebar-primary-foreground: 0 0% 95%;
+    --sidebar-accent: 163 25% 50%;
+    --sidebar-accent-foreground: 0 0% 95%;
+    --sidebar-border: 240 8% 25%;
+    --sidebar-ring: 248 40% 60%;
   }
 }
 
@@ -115,11 +123,28 @@ All colors MUST be HSL.
     @apply bg-background text-foreground font-body;
     font-family: var(--font-family, 'Bobby Jones Soft', 'Balsamiq Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
     font-size: var(--base-font-size, 16px);
+    font-weight: 400; /* Regular weight */
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Bobby Jones Soft', 'Balsamiq Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     @apply font-black;
+  }
+
+  p {
+    @apply font-normal;
+  }
+
+  strong, b {
+    @apply font-semibold;
+  }
+
+  button {
+    font-weight: 600; /* Semibold */
+  }
+
+  label, .text-sm {
+    font-weight: 500; /* Medium */
   }
   
   h1 {
