@@ -282,6 +282,41 @@ export type Database = {
           },
         ]
       }
+      escalation_responses: {
+        Row: {
+          id: string
+          notes: string | null
+          outcome: string | null
+          response_date: string
+          response_type: string
+          safeguarding_log_id: string
+        }
+        Insert: {
+          id?: string
+          notes?: string | null
+          outcome?: string | null
+          response_date?: string
+          response_type: string
+          safeguarding_log_id: string
+        }
+        Update: {
+          id?: string
+          notes?: string | null
+          outcome?: string | null
+          response_date?: string
+          response_type?: string
+          safeguarding_log_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "escalation_responses_safeguarding_log_id_fkey"
+            columns: ["safeguarding_log_id"]
+            isOneToOne: false
+            referencedRelation: "safeguarding_logs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       invite_codes: {
         Row: {
           carer_user_id: string
@@ -476,6 +511,44 @@ export type Database = {
         }
         Relationships: []
       }
+      mood_check_ins: {
+        Row: {
+          child_id: string
+          context: string | null
+          created_at: string
+          id: string
+          intensity: number | null
+          mood_emoji: string | null
+          mood_type: string
+        }
+        Insert: {
+          child_id: string
+          context?: string | null
+          created_at?: string
+          id?: string
+          intensity?: number | null
+          mood_emoji?: string | null
+          mood_type: string
+        }
+        Update: {
+          child_id?: string
+          context?: string | null
+          created_at?: string
+          id?: string
+          intensity?: number | null
+          mood_emoji?: string | null
+          mood_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mood_check_ins_child_id_fkey"
+            columns: ["child_id"]
+            isOneToOne: false
+            referencedRelation: "children_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notification_history: {
         Row: {
           created_at: string
@@ -587,6 +660,51 @@ export type Database = {
         }
         Relationships: []
       }
+      protective_factors: {
+        Row: {
+          child_id: string
+          created_at: string
+          description: string | null
+          effectiveness_score: number | null
+          factor_type: string
+          id: string
+          mentioned_in_entry: string | null
+        }
+        Insert: {
+          child_id: string
+          created_at?: string
+          description?: string | null
+          effectiveness_score?: number | null
+          factor_type: string
+          id?: string
+          mentioned_in_entry?: string | null
+        }
+        Update: {
+          child_id?: string
+          created_at?: string
+          description?: string | null
+          effectiveness_score?: number | null
+          factor_type?: string
+          id?: string
+          mentioned_in_entry?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "protective_factors_child_id_fkey"
+            columns: ["child_id"]
+            isOneToOne: false
+            referencedRelation: "children_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "protective_factors_mentioned_in_entry_fkey"
+            columns: ["mentioned_in_entry"]
+            isOneToOne: false
+            referencedRelation: "journal_entries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       safeguarding_alerts: {
         Row: {
           alert_type: string
@@ -629,8 +747,11 @@ export type Database = {
           child_id: string
           created_at: string
           detected_keywords: Json | null
+          escalation_tier: number | null
+          historical_context: Json | null
           id: string
           journal_entry_id: string | null
+          protective_factors_present: Json | null
           severity_score: number | null
         }
         Insert: {
@@ -638,8 +759,11 @@ export type Database = {
           child_id: string
           created_at?: string
           detected_keywords?: Json | null
+          escalation_tier?: number | null
+          historical_context?: Json | null
           id?: string
           journal_entry_id?: string | null
+          protective_factors_present?: Json | null
           severity_score?: number | null
         }
         Update: {
@@ -647,8 +771,11 @@ export type Database = {
           child_id?: string
           created_at?: string
           detected_keywords?: Json | null
+          escalation_tier?: number | null
+          historical_context?: Json | null
           id?: string
           journal_entry_id?: string | null
+          protective_factors_present?: Json | null
           severity_score?: number | null
         }
         Relationships: [
@@ -664,6 +791,56 @@ export type Database = {
             columns: ["journal_entry_id"]
             isOneToOne: false
             referencedRelation: "journal_entries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      safeguarding_patterns: {
+        Row: {
+          child_id: string
+          created_at: string
+          detected_themes: Json | null
+          entry_count: number
+          first_detected_at: string
+          id: string
+          last_updated_at: string
+          pattern_type: string
+          recommended_action: string | null
+          severity_trend: string | null
+          status: string
+        }
+        Insert: {
+          child_id: string
+          created_at?: string
+          detected_themes?: Json | null
+          entry_count?: number
+          first_detected_at?: string
+          id?: string
+          last_updated_at?: string
+          pattern_type: string
+          recommended_action?: string | null
+          severity_trend?: string | null
+          status?: string
+        }
+        Update: {
+          child_id?: string
+          created_at?: string
+          detected_themes?: Json | null
+          entry_count?: number
+          first_detected_at?: string
+          id?: string
+          last_updated_at?: string
+          pattern_type?: string
+          recommended_action?: string | null
+          severity_trend?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "safeguarding_patterns_child_id_fkey"
+            columns: ["child_id"]
+            isOneToOne: false
+            referencedRelation: "children_profiles"
             referencedColumns: ["id"]
           },
         ]
