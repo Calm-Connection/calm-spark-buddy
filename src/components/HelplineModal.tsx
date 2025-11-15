@@ -1,20 +1,61 @@
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { Phone, MessageCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Phone, MessageCircle, Heart } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
+import { useState } from 'react';
 
 interface HelplineModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  childProfileId?: string;
+  triggeredBy?: 'journal_entry' | 'manual' | 'tool_usage';
 }
 
-export function HelplineModal({ open, onOpenChange }: HelplineModalProps) {
+export function HelplineModal({ open, onOpenChange, childProfileId, triggeredBy = 'manual' }: HelplineModalProps) {
+  const [engagementType, setEngagementType] = useState<'none' | 'called' | 'chatted' | 'trusted_adult' | 'dismissed'>('none');
+
+  const handleEngagement = async (type: 'called' | 'chatted' | 'trusted_adult' | 'dismissed') => {
+    setEngagementType(type);
+    
+    // Log engagement to database if childProfileId is provided
+    if (childProfileId) {
+      try {
+        await supabase.from('helpline_engagements').insert([{
+          child_id: childProfileId,
+          engagement_type: type,
+          triggered_by: triggeredBy,
+        }]);
+      } catch (error) {
+        console.error('Error logging helpline engagement:', error);
+      }
+    }
+    
+    // Show appropriate feedback
+    if (type === 'called') {
+      toast.success('That\'s really brave 💜', {
+        description: 'Talking to someone when you need help is a sign of strength.',
+      });
+    } else if (type === 'chatted') {
+      toast.success('Great choice 💙', {
+        description: 'Online chat can be a comfortable way to open up.',
+      });
+    } else if (type === 'trusted_adult') {
+      toast.success('Well done 🌟', {
+        description: 'Having someone you trust to talk to is wonderful.',
+      });
+    }
+    
+    onOpenChange(false);
+  };
+
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent className="max-w-md">
@@ -62,10 +103,40 @@ export function HelplineModal({ open, onOpenChange }: HelplineModalProps) {
             </div>
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogAction className="bg-primary hover:bg-primary/90">
-            I understand
-          </AlertDialogAction>
+        <AlertDialogFooter className="flex-col sm:flex-row gap-2">
+          <Button 
+            onClick={() => handleEngagement('called')}
+            className="bg-primary hover:bg-primary/90 w-full sm:w-auto"
+          >
+            <Phone className="mr-2 h-4 w-4" />
+            I called Childline
+          </Button>
+          
+          <Button 
+            onClick={() => handleEngagement('chatted')}
+            variant="outline"
+            className="w-full sm:w-auto"
+          >
+            <MessageCircle className="mr-2 h-4 w-4" />
+            I used online chat
+          </Button>
+          
+          <Button 
+            onClick={() => handleEngagement('trusted_adult')}
+            variant="outline"
+            className="w-full sm:w-auto"
+          >
+            <Heart className="mr-2 h-4 w-4" />
+            I talked to someone I trust
+          </Button>
+          
+          <Button 
+            onClick={() => handleEngagement('dismissed')}
+            variant="ghost"
+            className="text-muted-foreground w-full sm:w-auto"
+          >
+            Not right now
+          </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

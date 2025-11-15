@@ -8,6 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox';
 import { INeedHelpButton } from '@/components/INeedHelpButton';
 import { HelplineModal } from '@/components/HelplineModal';
+import { CheckInPromptModal } from '@/components/CheckInPromptModal';
+import { ToolSuggestionCard } from '@/components/ToolSuggestionCard';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -40,6 +42,12 @@ export default function JournalEntry() {
   const [loading, setLoading] = useState(false);
   const [childProfile, setChildProfile] = useState<any>(null);
   const [showSafeguardingModal, setShowSafeguardingModal] = useState(false);
+  const [showCheckInPrompt, setShowCheckInPrompt] = useState(false);
+  const [checkInMessage, setCheckInMessage] = useState('');
+  const [showToolSuggestion, setShowToolSuggestion] = useState(false);
+  const [toolMessage, setToolMessage] = useState('');
+  const [suggestedTools, setSuggestedTools] = useState<string[]>([]);
+  const [savedEntryId, setSavedEntryId] = useState<string | null>(null);
   const [inputMode, setInputMode] = useState<'write' | 'voice' | 'draw'>('write');
   
   // Voice recording state
@@ -244,11 +252,36 @@ export default function JournalEntry() {
         console.error('Wendy analysis error:', analysisError);
       }
 
-      // Check if safeguarding was triggered
-      if (analysisData?.escalate) {
-        setShowSafeguardingModal(true);
-        setLoading(false);
-        return;
+      // Store entry ID for later use
+      setSavedEntryId(entry.id);
+
+      // Handle tier-based escalation
+      const escalationTier = analysisData?.escalationTier || 1;
+      const childMessage = analysisData?.childMessage || analysisData?.summary;
+
+      // Handle different tiers
+      switch (escalationTier) {
+        case 4: // Critical - show helpline modal immediately
+          setShowSafeguardingModal(true);
+          setLoading(false);
+          return;
+          
+        case 3: // Check-in prompt - ask if they want to share
+          setShowCheckInPrompt(true);
+          setCheckInMessage(childMessage || "I've noticed you might be going through something tough. Would you like to share this with your grown-up so they can support you?");
+          setLoading(false);
+          return;
+          
+        case 2: // Tool suggestion - show Wendy's tool recommendation
+          setShowToolSuggestion(true);
+          setToolMessage(childMessage || "I have some tools that might help you feel better.");
+          setSuggestedTools(analysisData?.recommendedTools || []);
+          break;
+          
+        case 1: // Supportive monitoring - continue normal flow
+        default:
+          // Continue with normal flow below
+          break;
       }
 
       // Trigger notification if shared with carer
@@ -274,12 +307,75 @@ export default function JournalEntry() {
       });
     } catch (error: any) {
       console.error('Error saving entry:', error);
+      setLoading(false);
       toast({
         title: 'Error',
         description: 'Failed to save entry. Please try again.',
         variant: 'destructive',
       });
-      setLoading(false);
+    }
+  };
+
+  const handleShareFromCheckIn = async () => {
+    if (!savedEntryId || !childProfile) return;
+    
+    try {
+      // Update journal entry to share with carer
+      await supabase
+        .from('journal_entries')
+        .update({ share_with_carer: true })
+        .eq('id', savedEntryId);
+      
+      // Trigger carer notification if they have a linked carer
+      if (childProfile.linked_carer_id) {
+        try {
+          await supabase.functions.invoke('send-notifications', {
+            body: {
+              type: 'shared_journal',
+              userId: childProfile.linked_carer_id,
+              data: {
+                childNickname: childProfile.nickname,
+                entryId: savedEntryId
+              }
+            }
+          });
+        } catch (notifError) {
+          console.error('Error sending notification:', notifError);
+          // Continue anyway - sharing is more important than notification
+        }
+      }
+      
+      toast({
+        title: 'Shared 💜',
+        description: 'Your grown-up will be notified',
+      });
+      
+      navigate('/child/home');
+    } catch (error) {
+      console.error('Error sharing entry:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to share entry. Please try again.',
+        variant: 'destructive'
+      });
+    }
+  };
+
+  const handleToolSelection = (toolName: string) => {
+    // Map tool names to routes
+    const toolRoutes: Record<string, string> = {
+      'Breathing Space': '/child/tools/breathing-space',
+      'Colour Calm': '/child/tools/colour-calm',
+      'Grounding Game': '/child/tools/grounding-game',
+      'Thought Clouds': '/child/tools/thought-clouds',
+      'Gentle Reflections': '/child/tools/gentle-reflections',
+    };
+    
+    const route = toolRoutes[toolName];
+    if (route) {
+      navigate(route, { state: { fromJournal: true } });
+    } else {
+      navigate('/child/tools');
     }
   };
 
@@ -462,7 +558,33 @@ export default function JournalEntry() {
       </div>
 
       <INeedHelpButton />
-      <HelplineModal open={showSafeguardingModal} onOpenChange={setShowSafeguardingModal} />
+      <HelplineModal 
+        open={showSafeguardingModal} 
+        onOpenChange={setShowSafeguardingModal}
+        childProfileId={childProfile?.id}
+        triggeredBy="journal_entry"
+      />
+
+      <CheckInPromptModal
+        open={showCheckInPrompt}
+        onOpenChange={setShowCheckInPrompt}
+        message={checkInMessage}
+        onShare={handleShareFromCheckIn}
+      />
+
+      {showToolSuggestion && (
+        <div className="fixed bottom-24 left-0 right-0 px-4 z-50 animate-fade-in">
+          <ToolSuggestionCard
+            message={toolMessage}
+            suggestedTools={suggestedTools}
+            onDismiss={() => {
+              setShowToolSuggestion(false);
+              navigate('/child/home');
+            }}
+            onSelectTool={handleToolSelection}
+          />
+        </div>
+      )}
     </div>
   );
 }
