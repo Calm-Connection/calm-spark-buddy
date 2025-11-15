@@ -7,6 +7,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { BottomNav } from '@/components/BottomNav';
 import { toast } from 'sonner';
+import { DecorativeIcon } from '@/components/DecorativeIcon';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -92,27 +93,30 @@ export default function ChildJournal() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-primary/10 to-background pb-20">
+    <div className="min-h-screen bg-gradient-to-b from-primary/5 via-accent/10 to-background pb-20 relative">
+      <DecorativeIcon icon="leaf" position="top-right" opacity={0.08} />
       <div className="max-w-2xl mx-auto p-6 space-y-6">
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={() => navigate('/child/home')}>
+          <Button variant="ghost" size="icon" onClick={() => navigate('/child/home')} className="hover:bg-interactive-accent/10 transition-colors">
             <ArrowLeft className="h-5 w-5" />
           </Button>
-          <h1 className="text-2xl font-bold">My Journal</h1>
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+            My Journal 📝
+          </h1>
         </div>
 
-        <Button onClick={() => navigate('/child/journal-entry')} className="w-full">
+        <Button onClick={() => navigate('/child/journal-entry')} className="w-full hover:scale-[1.02] transition-all duration-200">
           Write New Entry
         </Button>
 
         <div className="space-y-4">
           {entries.length === 0 ? (
-            <Card className="p-8 text-center">
-              <p className="text-muted-foreground">No journal entries yet. Start writing!</p>
+            <Card className="p-8 text-center shadow-soft-lg border-interactive-accent/20">
+              <p className="text-muted-foreground font-medium">No journal entries yet. Start writing!</p>
             </Card>
           ) : (
             entries.map((entry) => (
-              <Card key={entry.id} className="p-4">
+              <Card key={entry.id} className="p-4 shadow-soft hover:shadow-soft-lg transition-all duration-200 border-interactive-accent/20">
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex items-center gap-2">
                     <span className="text-2xl">{moodEmojis[entry.mood_tag] || '😊'}</span>

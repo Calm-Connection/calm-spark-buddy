@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { PageLayout } from '@/components/PageLayout';
 import { useEffect } from 'react';
 import { applyTheme } from '@/hooks/useTheme';
+import { DecorativeIcon } from '@/components/DecorativeIcon';
 
 export default function RoleSelection() {
   const navigate = useNavigate();
@@ -15,15 +16,18 @@ export default function RoleSelection() {
 
   return (
     <PageLayout>
-      <div className="space-y-8 md:space-y-12">
+      <div className="space-y-8 md:space-y-12 relative">
+        <DecorativeIcon icon="sparkles" position="top-right" opacity={0.08} />
         <div className="text-center space-y-3 md:space-y-4">
-          <h1 className="text-foreground text-3xl md:text-5xl font-bold">WHO'S LOGGING IN?</h1>
-          <p className="text-base md:text-xl text-foreground/80">Choose your role to get started</p>
+          <h1 className="text-foreground text-3xl md:text-5xl font-bold bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+            WHO'S LOGGING IN?
+          </h1>
+          <p className="text-base md:text-xl text-foreground/80 font-medium">Choose your role to get started</p>
         </div>
 
         <div className="grid grid-cols-2 gap-4 md:gap-8 max-w-4xl mx-auto">
           <Card 
-            className="cursor-pointer hover:shadow-2xl transition-all hover:scale-105 border-0"
+            className="cursor-pointer hover:shadow-soft-lg transition-all duration-200 hover:scale-[1.02] border-interactive-accent/20 shadow-soft"
             onClick={() => navigate('/child/signup')}
           >
             <CardContent className="text-center space-y-4 md:space-y-6 py-6 md:py-8">
@@ -38,7 +42,7 @@ export default function RoleSelection() {
           </Card>
 
           <Card 
-            className="cursor-pointer hover:shadow-2xl transition-all hover:scale-105 border-0"
+            className="cursor-pointer hover:shadow-soft-lg transition-all duration-200 hover:scale-[1.02] border-interactive-accent/20 shadow-soft"
             onClick={() => navigate('/carer/signup')}
           >
             <CardContent className="text-center space-y-4 md:space-y-6 py-6 md:py-8">

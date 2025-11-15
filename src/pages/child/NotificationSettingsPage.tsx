@@ -8,6 +8,7 @@ import { ArrowLeft, Bell, Clock, Volume2, Heart, Sparkles } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { useNotificationPreferences } from '@/hooks/useNotificationPreferences';
 import { Skeleton } from '@/components/ui/skeleton';
+import { DecorativeIcon } from '@/components/DecorativeIcon';
 
 export default function ChildNotificationSettingsPage() {
   const navigate = useNavigate();
@@ -28,20 +29,23 @@ export default function ChildNotificationSettingsPage() {
   if (!preferences) return null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-primary/10 to-background pb-20">
+    <div className="min-h-screen bg-gradient-to-b from-primary/5 via-accent/10 to-background pb-20 relative">
+      <DecorativeIcon icon="sparkles" position="top-right" opacity={0.08} />
       <div className="max-w-2xl mx-auto p-6 space-y-6">
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
+          <Button variant="ghost" size="icon" onClick={() => navigate('/settings')} className="hover:bg-interactive-accent/10 transition-colors">
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <div>
-            <h1 className="text-2xl font-bold">Notification Settings</h1>
-            <p className="text-sm text-muted-foreground">Choose when you want reminders</p>
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+              Notification Settings 🔔
+            </h1>
+            <p className="text-sm text-muted-foreground font-medium">Choose when you want reminders</p>
           </div>
         </div>
 
         {/* Journal Reminders */}
-        <Card className="p-6 space-y-4">
+        <Card className="p-6 space-y-4 shadow-soft hover:shadow-soft-lg transition-all duration-200 border-interactive-accent/20">
           <div className="flex items-start gap-3">
             <div className="p-2 rounded-full bg-primary/10">
               <Bell className="h-5 w-5 text-primary" />

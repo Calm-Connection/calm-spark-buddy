@@ -9,6 +9,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { format } from 'date-fns';
 import { BookOpen, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { DecorativeIcon } from '@/components/DecorativeIcon';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -91,32 +92,35 @@ export default function ViewEntries() {
   }
 
   return (
-    <div className="min-h-screen bg-background p-6 pb-24">
+    <div className="min-h-screen bg-gradient-to-b from-primary/5 via-accent/10 to-background p-6 pb-24 relative">
+      <DecorativeIcon icon="sparkles" position="top-right" opacity={0.08} />
       <div className="max-w-2xl mx-auto space-y-6">
         <div>
-          <Button variant="ghost" onClick={() => navigate(-1)}>
+          <Button variant="ghost" onClick={() => navigate(-1)} className="hover:bg-interactive-accent/10 transition-colors">
             ← Back
           </Button>
-          <h1 className="text-3xl font-bold mt-2">My Journal Entries</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-3xl font-bold mt-2 bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+            My Journal Entries 📖
+          </h1>
+          <p className="text-muted-foreground font-medium">
             All your thoughts and feelings in one place
           </p>
         </div>
 
         {entries.length === 0 ? (
-          <Card className="p-12 text-center">
-            <BookOpen className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-            <p className="text-muted-foreground mb-4">
+          <Card className="p-12 text-center shadow-soft-lg border-interactive-accent/20">
+            <BookOpen className="h-12 w-12 mx-auto mb-4 text-interactive-accent" />
+            <p className="text-muted-foreground mb-4 font-medium">
               You haven't written any entries yet
             </p>
-            <Button onClick={() => navigate('/child/journal-entry')} className="bg-secondary hover:bg-secondary/90">
+            <Button onClick={() => navigate('/child/journal-entry')} className="hover:scale-[1.02] transition-all duration-200">
               Write Your First Entry
             </Button>
           </Card>
         ) : (
           <div className="space-y-4">
             {entries.map((entry) => (
-              <Card key={entry.id} className="p-6">
+              <Card key={entry.id} className="p-6 shadow-soft hover:shadow-soft-lg transition-all duration-200 border-interactive-accent/20">
                 <div className="flex justify-between items-start mb-3">
                   <div className="flex gap-2">
                     {entry.mood_tag && (

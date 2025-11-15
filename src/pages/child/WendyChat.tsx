@@ -9,6 +9,7 @@ import { WendyAvatar } from '@/components/WendyAvatar';
 import { Sparkles, Send, Loader2, Lightbulb } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { DecorativeIcon } from '@/components/DecorativeIcon';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -177,17 +178,19 @@ export default function WendyChat() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-gradient-to-b from-primary/5 via-accent/10 to-background flex flex-col relative">
+      <DecorativeIcon icon="sparkles" position="top-right" opacity={0.08} />
+      <DecorativeIcon icon="star" position="bottom-left" opacity={0.06} />
       {/* Header */}
-      <div className="bg-accent/20 border-b p-4">
-        <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
+      <div className="bg-gradient-to-br from-interactive-accent/10 to-primary/10 border-b border-interactive-accent/20 p-4 shadow-soft">
+        <Button variant="ghost" size="sm" onClick={() => navigate(-1)} className="hover:bg-interactive-accent/10 transition-colors">
           ← Back
         </Button>
         <div className="flex items-center gap-3 mt-2">
           <WendyAvatar size="md" />
           <div>
-            <h2 className="font-bold text-lg">Wendy</h2>
-            <p className="text-sm text-muted-foreground">Your AI friend</p>
+            <h2 className="font-bold text-lg bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">Wendy 💜</h2>
+            <p className="text-sm text-muted-foreground font-medium">Your AI friend</p>
           </div>
         </div>
       </div>
