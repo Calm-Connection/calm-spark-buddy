@@ -6,6 +6,7 @@ import { AchievementBadge } from '@/components/AchievementBadge';
 import { Button } from '@/components/ui/button';
 import { Loader2, ArrowLeft } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
+import { DecorativeIcon } from '@/components/DecorativeIcon';
 
 interface Achievement {
   id: string;
@@ -70,13 +71,16 @@ export function ChildAchievements() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-primary/10 to-background pb-20">
+    <div className="min-h-screen bg-gradient-to-b from-primary/5 via-accent/10 to-background pb-20 relative">
+      <DecorativeIcon icon="star" position="top-right" opacity={0.08} />
       <div className="max-w-2xl mx-auto p-6 space-y-6">
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={() => navigate('/child/home')}>
+          <Button variant="ghost" size="icon" onClick={() => navigate('/child/home')} className="hover:bg-interactive-accent/10 transition-colors">
             <ArrowLeft className="h-5 w-5" />
           </Button>
-          <h1 className="text-2xl font-bold">Your Achievements</h1>
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+            Your Achievements 🏆
+          </h1>
         </div>
 
         <div className="grid gap-3">

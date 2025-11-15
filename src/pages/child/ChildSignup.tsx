@@ -8,6 +8,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { applyTheme } from '@/hooks/useTheme';
+import { DecorativeIcon } from '@/components/DecorativeIcon';
 
 export default function ChildSignup() {
   const [email, setEmail] = useState('');
@@ -60,8 +61,9 @@ export default function ChildSignup() {
 
   if (linkParent === null) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-6 bg-background">
-        <Card className="max-w-md w-full p-8 space-y-6">
+      <div className="min-h-screen flex items-center justify-center p-6 bg-gradient-to-b from-primary/5 via-accent/5 to-background">
+        <Card className="max-w-md w-full p-8 space-y-6 shadow-soft-lg border-interactive-accent/20 relative overflow-hidden">
+          <DecorativeIcon icon="sparkles" position="top-right" opacity={0.1} />
           <Button 
             variant="ghost" 
             onClick={() => navigate(-1)}
@@ -70,8 +72,8 @@ export default function ChildSignup() {
             ← Back
           </Button>
           <div className="text-center space-y-2">
-            <h1 className="text-3xl font-bold">Hello! 👋</h1>
-            <p className="text-muted-foreground">Do you have a parent or carer who will use this app with you?</p>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">Hello! 👋</h1>
+            <p className="text-muted-foreground font-medium">Do you have a parent or carer who will use this app with you?</p>
           </div>
 
           <div className="space-y-3">
@@ -99,11 +101,13 @@ export default function ChildSignup() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-background">
-      <Card className="max-w-md w-full p-8 space-y-6">
+    <div className="min-h-screen flex items-center justify-center p-6 bg-gradient-to-b from-primary/5 via-accent/5 to-background">
+      <Card className="max-w-md w-full p-8 space-y-6 shadow-soft-lg border-interactive-accent/20 relative overflow-hidden">
+        <DecorativeIcon icon="star" position="top-right" opacity={0.1} />
+        <DecorativeIcon icon="flower" position="bottom-left" opacity={0.08} />
         <div className="text-center space-y-2">
-          <h1 className="text-3xl font-bold">Create Your Account</h1>
-          <p className="text-muted-foreground">Let's get you set up!</p>
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">Create Your Account</h1>
+          <p className="text-muted-foreground font-medium">Let's get you set up!</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">

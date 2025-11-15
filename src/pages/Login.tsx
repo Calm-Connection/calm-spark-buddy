@@ -8,6 +8,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { applyTheme } from '@/hooks/useTheme';
+import { DecorativeIcon } from '@/components/DecorativeIcon';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -45,18 +46,22 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-background relative">
+    <div className="min-h-screen flex items-center justify-center p-6 bg-gradient-to-b from-primary/5 via-accent/5 to-background relative">
       <Button 
         variant="ghost" 
         onClick={() => navigate('/')}
-        className="absolute top-6 left-6"
+        className="absolute top-6 left-6 hover:bg-interactive-accent/10 transition-colors"
       >
         ← Back
       </Button>
-      <Card className="max-w-md w-full p-8 space-y-6">
+      <Card className="max-w-md w-full p-8 space-y-6 shadow-soft-lg border-interactive-accent/20 relative overflow-hidden">
+        <DecorativeIcon icon="star" position="top-right" opacity={0.1} />
+        <DecorativeIcon icon="sparkles" position="bottom-left" opacity={0.08} />
         <div className="text-center space-y-2">
-          <h1 className="text-3xl font-bold">Welcome Back</h1>
-          <p className="text-muted-foreground">Log in to continue</p>
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+            Welcome Back
+          </h1>
+          <p className="text-muted-foreground font-medium">Log in to continue</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">

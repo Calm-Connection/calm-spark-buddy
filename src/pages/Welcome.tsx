@@ -5,6 +5,7 @@ import { PageLayout } from '@/components/PageLayout';
 import { Card, CardContent } from '@/components/ui/card';
 import { useEffect } from 'react';
 import { applyTheme } from '@/hooks/useTheme';
+import { DecorativeIcon } from '@/components/DecorativeIcon';
 
 export default function Welcome() {
   const navigate = useNavigate();
@@ -21,10 +22,12 @@ export default function Welcome() {
           <Logo size="lg" />
         </div>
         
-        <Card>
+        <Card className="shadow-soft-lg border-interactive-accent/20 relative overflow-hidden">
+          <DecorativeIcon icon="sparkles" position="top-right" opacity={0.1} />
+          <DecorativeIcon icon="leaf" position="bottom-left" opacity={0.08} />
           <CardContent className="space-y-8">
             <div className="space-y-4">
-              <h1 className="text-foreground text-3xl md:text-5xl">
+              <h1 className="text-foreground text-3xl md:text-5xl bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
                 WELCOME!
               </h1>
               
@@ -37,7 +40,7 @@ export default function Welcome() {
               onClick={() => navigate('/role-selection')}
               variant="gradient"
               size="lg"
-              className="w-full"
+              className="w-full hover:scale-[1.02] transition-all duration-200"
             >
               GET STARTED
             </Button>

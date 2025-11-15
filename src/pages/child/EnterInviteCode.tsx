@@ -8,6 +8,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Loader2 } from 'lucide-react';
 import { PageLayout } from '@/components/PageLayout';
+import { DecorativeIcon } from '@/components/DecorativeIcon';
 
 interface ClaimInviteCodeResult {
   success: boolean;
@@ -100,14 +101,18 @@ export default function EnterInviteCode() {
 
   return (
     <PageLayout>
-      <Card className="border-0">
+      <Card className="border-0 shadow-soft-lg relative overflow-hidden">
+        <DecorativeIcon icon="star" position="top-right" opacity={0.1} />
+        <DecorativeIcon icon="cloud" position="bottom-left" opacity={0.08} />
         <CardContent className="space-y-8">
           <div className="text-center space-y-4">
-            <div className="h-24 w-24 mx-auto rounded-full bg-secondary flex items-center justify-center">
+            <div className="h-24 w-24 mx-auto rounded-full bg-gradient-to-br from-interactive-accent/10 to-primary/10 flex items-center justify-center shadow-soft">
               <span className="text-5xl">🔐</span>
             </div>
-            <h1 className="text-foreground">ENTER INVITE CODE</h1>
-            <p className="text-lg text-foreground/70">
+            <h1 className="text-foreground bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+              ENTER INVITE CODE
+            </h1>
+            <p className="text-lg text-foreground/70 font-medium">
               Your parent or carer should have shared a 6-character code with you
             </p>
           </div>

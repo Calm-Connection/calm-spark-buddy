@@ -7,6 +7,7 @@ import { PageLayout } from '@/components/PageLayout';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
+import { DecorativeIcon } from '@/components/DecorativeIcon';
 
 const themes = [
   { 
@@ -120,11 +121,15 @@ export default function PickTheme() {
 
   return (
     <PageLayout>
-      <Card className="border-0">
+      <Card className="border-0 shadow-soft-lg relative overflow-hidden">
+        <DecorativeIcon icon="sparkles" position="top-right" opacity={0.1} />
+        <DecorativeIcon icon="leaf" position="bottom-left" opacity={0.08} />
         <CardContent className="space-y-8">
           <div className="text-center space-y-3">
-            <h1 className="text-foreground">PICK YOUR THEME 🎨</h1>
-            <p className="text-lg text-foreground/70">
+            <h1 className="text-foreground bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+              PICK YOUR THEME 🎨
+            </h1>
+            <p className="text-lg text-foreground/70 font-medium">
               Choose colors that make you feel happy and calm
             </p>
           </div>
@@ -133,8 +138,8 @@ export default function PickTheme() {
             {themes.map((theme) => (
               <Card
                 key={theme.id}
-                className={`cursor-pointer transition-all hover:scale-105 hover:shadow-xl border-2 ${
-                  selectedTheme === theme.id ? 'ring-4 ring-foreground border-foreground' : 'border-foreground/20'
+                className={`cursor-pointer transition-all duration-200 hover:scale-[1.02] hover:shadow-soft-lg border-interactive-accent/20 ${
+                  selectedTheme === theme.id ? 'ring-2 ring-interactive-accent shadow-soft-lg scale-[1.02]' : 'shadow-soft'
                 }`}
                 onClick={() => setSelectedTheme(theme.id)}
               >

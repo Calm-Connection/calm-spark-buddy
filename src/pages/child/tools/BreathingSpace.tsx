@@ -7,6 +7,7 @@ import { BottomNav } from '@/components/BottomNav';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
+import { DecorativeIcon } from '@/components/DecorativeIcon';
 
 const breathingExercises = [
   {
@@ -179,25 +180,29 @@ export default function BreathingSpace() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-primary/10 to-background pb-20">
+    <div className="min-h-screen bg-gradient-to-b from-primary/5 via-accent/10 to-background pb-20 relative">
+      <DecorativeIcon icon="cloud" position="top-right" opacity={0.08} />
+      <DecorativeIcon icon="sparkles" position="bottom-left" opacity={0.06} />
       <div className="max-w-2xl mx-auto p-6 space-y-6">
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={() => navigate('/child/tools')}>
+          <Button variant="ghost" size="icon" onClick={() => navigate('/child/tools')} className="hover:bg-interactive-accent/10 transition-colors">
             <ArrowLeft className="h-5 w-5" />
           </Button>
-          <h1 className="text-2xl font-bold">Breathing Space 🌬️</h1>
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+            Breathing Space 🌬️
+          </h1>
         </div>
 
-        <Card className="p-6 bg-gradient-to-br from-accent/20 to-warm/20 animate-fade-in">
+        <Card className="p-6 bg-gradient-to-br from-primary/5 via-accent/10 to-secondary/5 animate-fade-in shadow-soft-lg border-interactive-accent/20">
           <h2 className="text-lg font-bold mb-2">Welcome to Your Breathing Space</h2>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-muted-foreground font-medium">
             Pick a breathing world that feels good to you right now. Each one will help you feel calmer and more peaceful.
           </p>
         </Card>
 
         {/* Create Your Own Section */}
         <Card 
-          className="p-6 bg-gradient-to-r from-purple-400/20 to-pink-400/20 border-2 border-dashed border-primary cursor-pointer hover:scale-105 transition-transform"
+          className="p-6 bg-gradient-to-r from-purple-400/20 to-pink-400/20 border-2 border-dashed border-interactive-accent cursor-pointer hover:scale-[1.02] transition-all duration-200 shadow-soft hover:shadow-soft-lg"
           onClick={() => navigate('/child/tools/breathing/create')}
         >
           <div className="flex items-center gap-4">
