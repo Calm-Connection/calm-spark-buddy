@@ -126,6 +126,10 @@ export default function ChildHome() {
         // Load Wendy's tip
         await loadWendyTip(data.id);
         
+        // Check for recent escalations and dismissals
+        await checkRecentEscalations(data.id);
+        await checkHelplineDismissals(data.id);
+        
         // Prompt for avatar if missing
         if (!data.avatar_json) {
           setTimeout(() => {
@@ -139,6 +143,48 @@ export default function ChildHome() {
 
     loadProfile();
   }, [user, navigate]);
+
+  const checkRecentEscalations = async (profileId: string) => {
+    const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    
+    try {
+      const { data } = await supabase
+        .from('safeguarding_logs')
+        .select('*, wendy_insight:wendy_insights(*)')
+        .eq('child_id', profileId)
+        .gte('escalation_tier', 3)
+        .gte('created_at', yesterday.toISOString())
+        .order('created_at', { ascending: false })
+        .limit(1);
+      
+      if (data && data.length > 0) {
+        setWendyTip("How are you feeling today? Did you get a chance to talk to someone? 💜");
+      }
+    } catch (error) {
+      console.error('Error checking escalations:', error);
+    }
+  };
+
+  const checkHelplineDismissals = async (profileId: string) => {
+    const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    
+    try {
+      const { data } = await supabase
+        .from('helpline_engagements')
+        .select('*')
+        .eq('child_id', profileId)
+        .eq('engagement_type', 'dismissed')
+        .gte('created_at', yesterday.toISOString())
+        .order('created_at', { ascending: false })
+        .limit(1);
+      
+      if (data && data.length > 0) {
+        setWendyTip("Remember, you can always talk to someone you trust. Your feelings matter 💜");
+      }
+    } catch (error) {
+      console.error('Error checking dismissals:', error);
+    }
+  };
 
   const loadAchievementsPreview = async () => {
     // Load top 4 achievements

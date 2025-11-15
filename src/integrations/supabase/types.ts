@@ -317,6 +317,38 @@ export type Database = {
           },
         ]
       }
+      helpline_engagements: {
+        Row: {
+          child_id: string
+          created_at: string
+          engagement_type: string
+          id: string
+          triggered_by: string
+        }
+        Insert: {
+          child_id: string
+          created_at?: string
+          engagement_type: string
+          id?: string
+          triggered_by?: string
+        }
+        Update: {
+          child_id?: string
+          created_at?: string
+          engagement_type?: string
+          id?: string
+          triggered_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "helpline_engagements_child_id_fkey"
+            columns: ["child_id"]
+            isOneToOne: false
+            referencedRelation: "children_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       invite_codes: {
         Row: {
           carer_user_id: string
