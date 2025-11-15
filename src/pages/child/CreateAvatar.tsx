@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { PageLayout } from '@/components/PageLayout';
+import { DecorativeIcon } from '@/components/DecorativeIcon';
 
 const skinTones = ['#FFE5D9', '#F7D5BE', '#E3B392', '#C68E65', '#8D5524', '#4A2F1E'];
 
@@ -18,11 +19,12 @@ export default function CreateAvatar() {
 
   return (
     <PageLayout>
-      <Card className="border-0">
+      <Card className="relative border-interactive-accent/20 shadow-soft-lg bg-gradient-to-br from-primary/5 via-accent/10 to-secondary/5">
+        <DecorativeIcon icon="star" position="top-right" opacity={0.1} />
         <CardContent className="space-y-10">
           <div className="text-center space-y-3">
-            <h1 className="text-foreground">CREATE YOUR AVATAR</h1>
-            <p className="text-lg text-foreground/70">
+            <h1 className="bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">CREATE YOUR AVATAR</h1>
+            <p className="text-lg font-medium text-foreground/70">
               Pick your avatar look!
             </p>
           </div>
@@ -50,8 +52,8 @@ export default function CreateAvatar() {
                 <button
                   key={tone}
                   onClick={() => setSkinTone(tone)}
-                  className={`w-16 h-16 rounded-full border-4 transition-all hover:scale-110 ${
-                    skinTone === tone ? 'border-primary scale-125 shadow-lg' : 'border-foreground/20'
+                  className={`w-16 h-16 rounded-full border-4 transition-all duration-200 hover:scale-110 ${
+                    skinTone === tone ? 'border-interactive-accent scale-125 shadow-soft-md' : 'border-foreground/20 hover:border-interactive-accent/50'
                   }`}
                   style={{ backgroundColor: tone }}
                 />
