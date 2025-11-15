@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/card';
 import { ArrowLeft, Sparkles, Smile, Frown, Heart } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { toast } from 'sonner';
+import { DecorativeIcon } from '@/components/DecorativeIcon';
 
 const reflectionPrompts = [
   { prompt: "What made you smile today?", emoji: "😊", type: "positive" },
@@ -105,7 +106,8 @@ export default function GentleReflections() {
             </div>
 
             {/* Current Prompt */}
-            <Card className="p-8 bg-gradient-to-br from-primary/20 to-secondary/20 text-center">
+            <Card className="relative p-8 bg-gradient-to-br from-primary/5 via-accent/10 to-secondary/5 border-interactive-accent/20 shadow-soft text-center">
+              <DecorativeIcon icon="sparkles" position="top-right" opacity={0.12} />
               <div 
                 className="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-br from-accent/30 to-warm/30 flex items-center justify-center animate-gentle-pulse"
               >

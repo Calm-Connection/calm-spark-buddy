@@ -12,6 +12,7 @@ import { applyTheme } from '@/hooks/useTheme';
 import { BottomNav } from '@/components/BottomNav';
 import { format, subDays, startOfDay, endOfDay } from 'date-fns';
 import { NotificationBell } from '@/components/NotificationBell';
+import { DecorativeIcon } from '@/components/DecorativeIcon';
 interface MoodData {
   date: string;
   mood_score: number;

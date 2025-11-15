@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { BookOpen, Sparkles, Shield, Heart, BarChart2, FileText, Users } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { DecorativeIcon } from '@/components/DecorativeIcon';
 
 const childSlides = [
   {
@@ -100,14 +101,15 @@ export default function QuickTour() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-6 bg-background">
-      <Card className="max-w-md w-full p-8 space-y-6">
+      <Card className="relative max-w-md w-full p-8 space-y-6 bg-gradient-to-br from-primary/5 via-accent/10 to-secondary/5 border-interactive-accent/20 shadow-soft-lg">
+        <DecorativeIcon icon="sparkles" position="top-right" opacity={0.12} />
         <div className="space-y-4">
           <div className={`h-24 w-24 mx-auto rounded-full ${slide.color} flex items-center justify-center`}>
             <Icon className={`h-12 w-12 ${slide.iconColor}`} />
           </div>
 
           <div className="text-center space-y-2">
-            <h1 className="text-3xl font-bold">{slide.title}</h1>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-interactive-accent bg-clip-text text-transparent">{slide.title}</h1>
             <p className="text-muted-foreground text-lg">
               {slide.description}
             </p>
