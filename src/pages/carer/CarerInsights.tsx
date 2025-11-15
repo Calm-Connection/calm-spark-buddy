@@ -13,6 +13,7 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/h
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { TechniqueGuideModal } from '@/components/TechniqueGuideModal';
 import { Checkbox } from '@/components/ui/checkbox';
+import { DecorativeIcon } from '@/components/DecorativeIcon';
 
 interface Insight {
   id: string;

@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/card';
 import { ArrowLeft, Cloud, Sun, Sparkles } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { toast } from 'sonner';
+import { DecorativeIcon } from '@/components/DecorativeIcon';
 
 interface ThoughtCloud {
   id: number;
@@ -91,7 +92,8 @@ export default function ThoughtClouds() {
 
         {!allCleared ? (
           <>
-            <Card className="p-6 bg-gradient-to-br from-accent/20 to-warm/20">
+            <Card className="relative p-6 bg-gradient-to-br from-primary/5 via-accent/10 to-secondary/5 border-interactive-accent/20 shadow-soft">
+              <DecorativeIcon icon="cloud" position="top-right" opacity={0.12} />
               <p className="text-center">
                 Tap a thought cloud to work through that feeling. 
                 Answer the questions to clear the clouds! ☁️→☀️

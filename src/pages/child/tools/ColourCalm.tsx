@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ArrowLeft, Heart, Sparkles } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
+import { DecorativeIcon } from '@/components/DecorativeIcon';
 
 const calmColors = [
   { name: 'Ocean Blue', hsl: 'hsl(200, 70%, 75%)', emoji: '🌊' },
@@ -61,8 +62,9 @@ export default function ColourCalm() {
 
         {step === 'intro' && (
           <div className="space-y-6">
-            <Card className="p-6 bg-gradient-to-br from-primary/20 to-secondary/20">
-              <h2 className="text-xl font-bold mb-3">Imagine Your Calm Color</h2>
+            <Card className="relative p-6 bg-gradient-to-br from-primary/5 via-accent/10 to-secondary/5 border-interactive-accent/20 shadow-soft">
+              <DecorativeIcon icon="sparkles" position="top-right" opacity={0.12} />
+              <h2 className="text-xl font-bold mb-3 bg-gradient-to-r from-primary to-interactive-accent bg-clip-text text-transparent">Imagine Your Calm Color</h2>
               <p className="text-muted-foreground mb-4">
                 This gentle exercise uses the power of your imagination to help you feel calm and safe.
               </p>
@@ -74,7 +76,7 @@ export default function ColourCalm() {
               </ul>
             </Card>
 
-            <Button onClick={() => setStep('choose')} className="w-full text-lg py-6" size="lg">
+            <Button onClick={() => setStep('choose')} className="w-full text-lg py-6 transition-all duration-200 hover:scale-[1.02] hover:shadow-soft" size="lg">
               Let's Begin ✨
             </Button>
           </div>
@@ -82,8 +84,9 @@ export default function ColourCalm() {
 
         {step === 'choose' && (
           <div className="space-y-6">
-            <Card className="p-6 bg-gradient-to-br from-accent/20 to-warm/20">
-              <h2 className="text-xl font-bold mb-2">Pick Your Calm Color</h2>
+            <Card className="relative p-6 bg-gradient-to-br from-primary/5 via-accent/10 to-secondary/5 border-interactive-accent/20 shadow-soft">
+              <DecorativeIcon icon="sparkles" position="top-right" opacity={0.12} />
+              <h2 className="text-xl font-bold mb-2 bg-gradient-to-r from-primary to-interactive-accent bg-clip-text text-transparent">Pick Your Calm Color</h2>
               <p className="text-muted-foreground">Which color makes you feel peaceful?</p>
             </Card>
 

@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Loader2, ArrowLeft } from 'lucide-react';
 import { applyTheme } from '@/hooks/useTheme';
+import { DecorativeIcon } from '@/components/DecorativeIcon';
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('');
@@ -47,7 +48,8 @@ export default function ForgotPassword() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-6 bg-background">
-      <Card className="max-w-md w-full p-8 space-y-6">
+      <Card className="relative max-w-md w-full p-8 space-y-6 bg-gradient-to-br from-primary/5 via-accent/10 to-secondary/5 border-interactive-accent/20 shadow-soft-lg">
+        <DecorativeIcon icon="sparkles" position="top-right" opacity={0.12} />
         <Button 
           variant="ghost" 
           onClick={() => navigate('/login')}
@@ -58,7 +60,7 @@ export default function ForgotPassword() {
         </Button>
 
         <div className="text-center space-y-2">
-          <h1 className="text-3xl font-bold">Reset Password</h1>
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-interactive-accent bg-clip-text text-transparent">Reset Password</h1>
           <p className="text-muted-foreground">
             {sent 
               ? "We've sent you an email with instructions to reset your password"
@@ -83,7 +85,7 @@ export default function ForgotPassword() {
 
             <Button 
               type="submit" 
-              className="w-full bg-primary hover:bg-primary/90" 
+              className="w-full bg-primary hover:bg-primary/90 transition-all duration-200 hover:scale-[1.02] hover:shadow-soft" 
               disabled={loading}
             >
               {loading ? (

@@ -15,6 +15,7 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
+import { DecorativeIcon } from '@/components/DecorativeIcon';
 
 interface Module {
   id: string;

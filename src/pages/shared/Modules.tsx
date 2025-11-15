@@ -7,6 +7,7 @@ import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { BottomNav } from '@/components/BottomNav';
+import { DecorativeIcon } from '@/components/DecorativeIcon';
 
 interface Module {
   id: string;
@@ -112,9 +113,10 @@ export default function Modules() {
             return (
               <Card
                 key={module.id}
-                className="p-6 cursor-pointer transition-all hover:scale-102 hover:shadow-lg"
+                className="relative p-6 cursor-pointer transition-all duration-200 hover:scale-[1.02] hover:shadow-soft-lg bg-gradient-to-br from-primary/5 to-accent/5 border-interactive-accent/20 shadow-soft"
                 onClick={() => navigate(`/${userRole}/modules/${module.id}`)}
               >
+                <DecorativeIcon icon="sparkles" position="top-right" opacity={0.08} />
                 <div className="flex items-start gap-4">
                   <div className="text-4xl">{module.icon}</div>
                   <div className="flex-1">

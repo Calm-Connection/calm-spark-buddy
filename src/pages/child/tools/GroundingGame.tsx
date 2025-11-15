@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ArrowLeft, Eye, Hand, Ear, Droplet, Apple, Sparkles } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
+import { DecorativeIcon } from '@/components/DecorativeIcon';
 
 type Step = 'intro' | 'see' | 'touch' | 'hear' | 'smell' | 'taste' | 'complete';
 
@@ -73,8 +74,9 @@ export default function GroundingGame() {
 
         {currentStep === 'intro' && (
           <div className="space-y-6">
-            <Card className="p-6 bg-gradient-to-br from-primary/20 to-secondary/20">
-              <h2 className="text-xl font-bold mb-3">Let's play a calming game!</h2>
+            <Card className="relative p-6 bg-gradient-to-br from-primary/5 via-accent/10 to-secondary/5 border-interactive-accent/20 shadow-soft">
+              <DecorativeIcon icon="sparkles" position="top-right" opacity={0.12} />
+              <h2 className="text-xl font-bold mb-3 bg-gradient-to-r from-primary to-interactive-accent bg-clip-text text-transparent">Let's play a calming game!</h2>
               <p className="text-muted-foreground mb-4">
                 This game helps you feel calm by noticing the world around you. 
                 We'll use all your senses — seeing, touching, hearing, smelling, and tasting.
