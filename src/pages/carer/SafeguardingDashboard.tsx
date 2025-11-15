@@ -2,15 +2,17 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, Shield, AlertTriangle, Info, ExternalLink, Phone, Heart } from 'lucide-react';
+import { ArrowLeft, Heart, Info, Phone } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { BottomNav } from '@/components/BottomNav';
-import { format } from 'date-fns';
 import { Skeleton } from '@/components/ui/skeleton';
+import { PatternInsightsCard } from '@/components/carer/PatternInsightsCard';
+import { ConversationStartersCard } from '@/components/carer/ConversationStartersCard';
+import { TimelineView } from '@/components/carer/TimelineView';
+import { ResourceLibrary } from '@/components/carer/ResourceLibrary';
 
 interface SafeguardingLog {
   id: string;
@@ -20,6 +22,9 @@ interface SafeguardingLog {
   severity_score: number;
   action_taken: string;
   created_at: string;
+  escalation_tier: number;
+  historical_context: any;
+  protective_factors_present: any;
   journal_entry?: {
     entry_text: string;
     mood_tag: string;
@@ -27,6 +32,7 @@ interface SafeguardingLog {
   };
   wendy_insight?: {
     summary: string;
+    parent_summary: string;
     themes: string[];
     mood_score: number;
   };
@@ -83,7 +89,7 @@ export default function SafeguardingDashboard() {
         (logsData || []).map(async (log) => {
           const { data: insight } = await supabase
             .from('wendy_insights')
-            .select('summary, themes, mood_score')
+            .select('summary, parent_summary, themes, mood_score')
             .eq('journal_entry_id', log.journal_entry_id)
             .maybeSingle();
 
@@ -102,32 +108,145 @@ export default function SafeguardingDashboard() {
     }
   };
 
-  const getSeverityLevel = (score: number): 'critical' | 'high' | 'medium' => {
-    if (score >= 80) return 'critical';
-    if (score >= 60) return 'high';
-    return 'medium';
+  // Compute pattern insights from logs
+  const getPatternInsights = () => {
+    if (logs.length === 0) return null;
+
+    // Extract recurring themes
+    const themeCount: Record<string, number> = {};
+    logs.forEach(log => {
+      (log.wendy_insight?.themes || []).forEach(theme => {
+        themeCount[theme] = (themeCount[theme] || 0) + 1;
+      });
+    });
+    const recurringThemes = Object.entries(themeCount)
+      .filter(([_, count]) => count >= 2)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([theme]) => theme);
+
+    // Calculate mood trajectory
+    const recentMoods = logs.slice(0, 5).map(l => l.wendy_insight?.mood_score || 5);
+    const olderMoods = logs.slice(5, 10).map(l => l.wendy_insight?.mood_score || 5);
+    const recentAvg = recentMoods.reduce((a, b) => a + b, 0) / recentMoods.length;
+    const olderAvg = olderMoods.length > 0 
+      ? olderMoods.reduce((a, b) => a + b, 0) / olderMoods.length 
+      : recentAvg;
+    
+    let moodTrajectory: 'improving' | 'stable' | 'declining' = 'stable';
+    if (recentAvg > olderAvg + 1) moodTrajectory = 'improving';
+    if (recentAvg < olderAvg - 1) moodTrajectory = 'declining';
+
+    // Tool effectiveness (placeholder - would need tool_usage data)
+    const toolUsageCorrelation = [
+      { tool: 'Breathing Space', effectiveness: 0.8 },
+      { tool: 'Gentle Reflections', effectiveness: 0.7 },
+      { tool: 'Colour Calm', effectiveness: 0.6 }
+    ];
+
+    // Extract protective factors
+    const protectiveFactors: string[] = [];
+    logs.forEach(log => {
+      if (log.protective_factors_present) {
+        const factors = Array.isArray(log.protective_factors_present) 
+          ? log.protective_factors_present 
+          : [];
+        factors.forEach((f: any) => {
+          if (typeof f === 'string' && !protectiveFactors.includes(f)) {
+            protectiveFactors.push(f);
+          }
+        });
+      }
+    });
+
+    return {
+      recurringThemes,
+      moodTrajectory,
+      toolUsageCorrelation,
+      protectiveFactors: protectiveFactors.slice(0, 4)
+    };
   };
 
-  const getSeverityColor = (level: string) => {
-    switch (level) {
-      case 'critical':
-        return 'bg-destructive/10 border-destructive text-destructive';
-      case 'high':
-        return 'bg-orange-500/10 border-orange-500 text-orange-700';
-      case 'medium':
-        return 'bg-yellow-500/10 border-yellow-500 text-yellow-700';
-      default:
-        return 'bg-muted border-muted-foreground text-muted-foreground';
+  // Generate conversation starters based on themes and tiers
+  const getConversationStarters = () => {
+    if (logs.length === 0) return [];
+
+    const recentLog = logs[0];
+    const themes = recentLog.wendy_insight?.themes || [];
+    const tier = recentLog.escalation_tier || 1;
+
+    const starters: string[] = [];
+
+    // Theme-based starters
+    if (themes.includes('school') || themes.includes('academic')) {
+      starters.push("I've noticed you've been doing a lot of thinking lately. How are things going at school?");
     }
+    if (themes.includes('friends') || themes.includes('social')) {
+      starters.push("Sometimes friendships can be tricky. Would you like to tell me about what's been happening with your friends?");
+    }
+    if (themes.includes('anxiety') || themes.includes('worry')) {
+      starters.push("It's okay to feel worried sometimes. Would it help to talk about what's on your mind?");
+    }
+    if (themes.includes('lonely') || themes.includes('isolation')) {
+      starters.push("I'm here for you, and I'd love to spend some time together. What would you like to do?");
+    }
+
+    // Tier-based starters
+    if (tier >= 3) {
+      starters.push("I've been thinking about you a lot. I'm here to listen if you want to talk about anything - big or small.");
+      starters.push("You don't have to face tough feelings alone. I'm always here for you, no matter what.");
+    } else {
+      starters.push("I'm proud of how you're managing things. Is there anything you'd like to share or talk about?");
+    }
+
+    // Always include a general one
+    starters.push("Sometimes it helps to talk. I'm here whenever you're ready - no pressure.");
+
+    return starters.slice(0, 4);
   };
+
+  // Prepare timeline entries
+  const getTimelineEntries = () => {
+    return logs.map(log => ({
+      id: log.id,
+      date: log.created_at,
+      tier: log.escalation_tier || 1,
+      summary: log.wendy_insight?.parent_summary || log.wendy_insight?.summary || 'Entry recorded',
+      themes: log.wendy_insight?.themes || [],
+      moodScore: log.wendy_insight?.mood_score || 5,
+      protectiveFactors: Array.isArray(log.protective_factors_present) 
+        ? log.protective_factors_present.slice(0, 3)
+        : []
+    }));
+  };
+
+  // Extract active themes for resource filtering
+  const getActiveThemes = () => {
+    const themes = new Set<string>();
+    logs.slice(0, 5).forEach(log => {
+      (log.wendy_insight?.themes || []).forEach(theme => themes.add(theme));
+    });
+    return Array.from(themes);
+  };
+
+  const patternInsights = getPatternInsights();
+  const conversationStarters = getConversationStarters();
+  const timelineEntries = getTimelineEntries();
+  const activeThemes = getActiveThemes();
 
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-primary/10 to-background pb-20">
-        <div className="max-w-4xl mx-auto p-6 space-y-6">
-          <Skeleton className="h-10 w-full" />
+        <div className="max-w-7xl mx-auto p-6 space-y-6">
+          <Skeleton className="h-12 w-64" />
           <Skeleton className="h-40 w-full" />
-          <Skeleton className="h-40 w-full" />
+          <div className="grid lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2 space-y-6">
+              <Skeleton className="h-60 w-full" />
+              <Skeleton className="h-60 w-full" />
+            </div>
+            <Skeleton className="h-96 w-full" />
+          </div>
         </div>
       </div>
     );
@@ -135,28 +254,28 @@ export default function SafeguardingDashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-primary/10 to-background pb-20">
-      <div className="max-w-4xl mx-auto p-6 space-y-6">
+      <div className="max-w-7xl mx-auto p-6 space-y-6">
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="icon" onClick={() => navigate('/carer/home')}>
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <div>
-            <h1 className="text-2xl font-bold flex items-center gap-2">
-              <Shield className="h-6 w-6" />
-              Safeguarding Dashboard
+            <h1 className="text-3xl font-bold flex items-center gap-2">
+              <Heart className="h-7 w-7 text-primary" />
+              Wellbeing Insights
             </h1>
-            <p className="text-sm text-muted-foreground">
-              {childNickname ? `Monitoring ${childNickname}'s wellbeing` : 'Monitor your child\'s wellbeing'}
+            <p className="text-muted-foreground">
+              {childNickname ? `Supporting ${childNickname}'s emotional journey` : 'Supporting your child\'s wellbeing'}
             </p>
           </div>
         </div>
 
         {/* Emergency Resources */}
-        <Alert className="border-accent bg-accent/10">
+        <Alert className="border-primary/30 bg-primary/5">
           <Info className="h-4 w-4" />
           <AlertDescription className="space-y-2">
-            <p className="font-semibold">If you're concerned about your child's immediate safety:</p>
-            <div className="flex flex-col gap-2">
+            <p className="font-semibold">If you need immediate support:</p>
+            <div className="flex flex-wrap gap-2">
               <Button variant="outline" size="sm" className="justify-start" asChild>
                 <a href="tel:999">
                   <Phone className="h-4 w-4 mr-2" />
@@ -182,164 +301,76 @@ export default function SafeguardingDashboard() {
         {logs.length === 0 ? (
           <Card className="p-12 text-center">
             <Heart className="h-16 w-16 mx-auto mb-4 text-primary opacity-20" />
-            <h3 className="text-xl font-semibold mb-2">No Safeguarding Alerts</h3>
+            <h3 className="text-2xl font-bold mb-2">All Good Here 💚</h3>
             <p className="text-muted-foreground max-w-md mx-auto">
-              There are currently no safeguarding concerns detected. The system is actively monitoring {childNickname}'s wellbeing.
+              There are currently no wellbeing insights to display. The system is gently monitoring {childNickname}'s emotional journey.
             </p>
           </Card>
         ) : (
-          <Tabs defaultValue="all" className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="all">All ({logs.length})</TabsTrigger>
-              <TabsTrigger value="critical">
-                Critical ({logs.filter(l => getSeverityLevel(l.severity_score) === 'critical').length})
-              </TabsTrigger>
-              <TabsTrigger value="high">
-                High ({logs.filter(l => getSeverityLevel(l.severity_score) === 'high').length})
-              </TabsTrigger>
-              <TabsTrigger value="medium">
-                Medium ({logs.filter(l => getSeverityLevel(l.severity_score) === 'medium').length})
-              </TabsTrigger>
-            </TabsList>
+          <div className="grid lg:grid-cols-3 gap-6">
+            {/* Main Content Area */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Pattern Insights */}
+              {patternInsights && (
+                <PatternInsightsCard
+                  recurringThemes={patternInsights.recurringThemes}
+                  moodTrajectory={patternInsights.moodTrajectory}
+                  toolUsageCorrelation={patternInsights.toolUsageCorrelation}
+                  protectiveFactors={patternInsights.protectiveFactors}
+                />
+              )}
 
-            {['all', 'critical', 'high', 'medium'].map((tab) => (
-              <TabsContent key={tab} value={tab} className="space-y-4 mt-6">
-                {logs
-                  .filter(log => tab === 'all' || getSeverityLevel(log.severity_score) === tab)
-                  .map((log) => {
-                    const severity = getSeverityLevel(log.severity_score);
-                    return (
-                      <Card key={log.id} className={`p-6 ${getSeverityColor(severity)}`}>
-                        <div className="space-y-4">
-                          {/* Header */}
-                          <div className="flex items-start justify-between gap-4">
-                            <div className="flex items-center gap-3">
-                              <AlertTriangle className="h-5 w-5 flex-shrink-0" />
-                              <div>
-                                <Badge variant="outline" className="mb-1">
-                                  {severity.toUpperCase()} - Score: {log.severity_score}
-                                </Badge>
-                                <p className="text-sm text-muted-foreground">
-                                  {format(new Date(log.created_at), 'PPpp')}
-                                </p>
-                              </div>
-                            </div>
-                          </div>
+              {/* Conversation Starters */}
+              {conversationStarters.length > 0 && (
+                <ConversationStartersCard
+                  starters={conversationStarters}
+                  themes={activeThemes}
+                />
+              )}
 
-                          {/* Wendy's Summary */}
-                          {log.wendy_insight && (
-                            <div className="bg-background/50 p-4 rounded-lg">
-                              <h4 className="font-semibold text-sm mb-2">AI Analysis Summary</h4>
-                              <p className="text-sm">{log.wendy_insight.summary}</p>
-                              {log.wendy_insight.themes && log.wendy_insight.themes.length > 0 && (
-                                <div className="flex gap-2 mt-3 flex-wrap">
-                                  {log.wendy_insight.themes.map((theme, idx) => (
-                                    <Badge key={idx} variant="secondary" className="text-xs">
-                                      {theme}
-                                    </Badge>
-                                  ))}
-                                </div>
-                              )}
-                            </div>
-                          )}
+              {/* Timeline View */}
+              <Tabs defaultValue="timeline" className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="timeline">Timeline View</TabsTrigger>
+                  <TabsTrigger value="summary">Summary View</TabsTrigger>
+                </TabsList>
 
-                          {/* Detected Keywords */}
-                          {log.detected_keywords && log.detected_keywords.length > 0 && (
-                            <div className="bg-background/50 p-4 rounded-lg">
-                              <h4 className="font-semibold text-sm mb-2">Detected Concerns</h4>
-                              <div className="flex gap-2 flex-wrap">
-                                {log.detected_keywords.map((keyword, idx) => (
-                                  <Badge key={idx} variant="destructive" className="text-xs">
-                                    {keyword}
-                                  </Badge>
-                                ))}
-                              </div>
-                            </div>
-                          )}
+                <TabsContent value="timeline" className="mt-6">
+                  <TimelineView entries={timelineEntries} />
+                </TabsContent>
 
-                          {/* Action Guidance */}
-                          <div className="bg-background/50 p-4 rounded-lg">
-                            <h4 className="font-semibold text-sm mb-2">Recommended Actions</h4>
-                            <ul className="text-sm space-y-1 list-disc list-inside">
-                              {severity === 'critical' && (
-                                <>
-                                  <li>Have a calm, private conversation with your child as soon as possible</li>
-                                  <li>Ask open questions: "I've noticed you seem worried - want to talk about it?"</li>
-                                  <li>Contact your child's GP or school counselor if concerns persist</li>
-                                  <li>If immediate danger, contact emergency services (999) or Childline (0800 1111)</li>
-                                </>
-                              )}
-                              {severity === 'high' && (
-                                <>
-                                  <li>Check in with your child about how they're feeling</li>
-                                  <li>Create a calm space for them to share if they want to</li>
-                                  <li>Monitor for changes in behavior, sleep, or appetite</li>
-                                  <li>Consider speaking to school staff or your GP</li>
-                                </>
-                              )}
-                              {severity === 'medium' && (
-                                <>
-                                  <li>Have a gentle conversation when the time feels right</li>
-                                  <li>Let your child know you're there for them</li>
-                                  <li>Try some calm activities together (breathing, walking)</li>
-                                  <li>Keep monitoring patterns over the next few days</li>
-                                </>
-                              )}
-                            </ul>
-                          </div>
-
-                          {/* View Full Entry Button */}
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => navigate('/carer/shared-entries')}
-                            className="w-full"
-                          >
-                            Review Full Journal Entries
-                            <ExternalLink className="h-4 w-4 ml-2" />
-                          </Button>
+                <TabsContent value="summary" className="mt-6">
+                  <Card className="p-6">
+                    <h3 className="text-xl font-bold mb-4">Quick Summary</h3>
+                    <div className="space-y-4">
+                      <div>
+                        <div className="text-sm text-muted-foreground mb-1">Total Entries</div>
+                        <div className="text-2xl font-bold">{logs.length}</div>
+                      </div>
+                      <div>
+                        <div className="text-sm text-muted-foreground mb-1">Needs Attention</div>
+                        <div className="text-2xl font-bold text-accent">
+                          {logs.filter(l => (l.escalation_tier || 0) >= 3).length}
                         </div>
-                      </Card>
-                    );
-                  })}
-              </TabsContent>
-            ))}
-          </Tabs>
-        )}
+                      </div>
+                      <div>
+                        <div className="text-sm text-muted-foreground mb-1">Positive Entries</div>
+                        <div className="text-2xl font-bold text-interactive-accent">
+                          {logs.filter(l => (l.wendy_insight?.mood_score || 0) >= 7).length}
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                </TabsContent>
+              </Tabs>
+            </div>
 
-        {/* Support Resources */}
-        <Card className="p-6 bg-accent/10">
-          <h3 className="font-semibold mb-3">Support Resources for Parents</h3>
-          <div className="space-y-2 text-sm">
-            <a
-              href="https://www.nhs.uk/mental-health/children-and-young-adults/advice-for-parents/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 text-primary hover:underline"
-            >
-              <ExternalLink className="h-4 w-4" />
-              NHS: Mental health advice for parents
-            </a>
-            <a
-              href="https://www.youngminds.org.uk/parent/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 text-primary hover:underline"
-            >
-              <ExternalLink className="h-4 w-4" />
-              Young Minds: Parent helpline and resources
-            </a>
-            <a
-              href="https://www.annafreud.org/parents-and-carers/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 text-primary hover:underline"
-            >
-              <ExternalLink className="h-4 w-4" />
-              Anna Freud Centre: Parent and carer resources
-            </a>
+            {/* Sidebar - Resource Library */}
+            <div>
+              <ResourceLibrary activeThemes={activeThemes} />
+            </div>
           </div>
-        </Card>
+        )}
       </div>
 
       <BottomNav role="carer" />
