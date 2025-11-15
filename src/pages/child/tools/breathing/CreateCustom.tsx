@@ -11,6 +11,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { VolumeControl } from '@/components/VolumeControl';
 import { useBreathingAudio } from '@/hooks/useBreathingAudio';
+import { DecorativeIcon } from '@/components/DecorativeIcon';
 
 const visualThemes = [
   { id: 'ocean', name: 'Ocean Waves', emoji: '🌊', gradient: 'from-blue-400 to-cyan-300' },

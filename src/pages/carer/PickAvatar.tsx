@@ -6,6 +6,7 @@ import { Loader2, Sparkles } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { DecorativeIcon } from '@/components/DecorativeIcon';
 
 const preMadeAvatars = [
   { id: 'professional', label: 'Professional', prompt: 'A friendly professional adult avatar with warm expression and glasses, clean corporate style with neutral background' },

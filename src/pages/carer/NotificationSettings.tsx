@@ -9,6 +9,7 @@ import { BottomNav } from '@/components/BottomNav';
 import { useNotificationPreferences } from '@/hooks/useNotificationPreferences';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { DecorativeIcon } from '@/components/DecorativeIcon';
 
 export default function CarerNotificationSettings() {
   const navigate = useNavigate();

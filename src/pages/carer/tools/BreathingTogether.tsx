@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Volume2, VolumeX, Repeat } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
+import { DecorativeIcon } from '@/components/DecorativeIcon';
 
 type Theme = 'ocean' | 'forest' | 'sky';
 type LeaderMode = 'parent' | 'child';
@@ -88,7 +89,8 @@ export default function BreathingTogether() {
             </div>
           </div>
 
-          <Card className="p-6 space-y-4">
+          <Card className="relative p-6 space-y-4 bg-gradient-to-br from-primary/5 via-accent/10 to-secondary/5 border-interactive-accent/20 shadow-soft">
+            <DecorativeIcon icon="sparkles" position="top-right" opacity={0.12} />
             <p className="text-sm leading-relaxed">
               <strong>Your calm helps theirs.</strong> When you breathe together, your nervous systems sync — 
               this is called co-regulation. Your child feels safety through your presence.
@@ -101,8 +103,8 @@ export default function BreathingTogether() {
               {(Object.keys(themes) as Theme[]).map((theme) => (
                 <Card
                   key={theme}
-                  className={`p-4 cursor-pointer transition-all ${
-                    selectedTheme === theme ? 'ring-2 ring-primary' : 'hover:bg-accent/10'
+                  className={`p-4 cursor-pointer transition-all duration-200 hover:scale-[1.02] hover:shadow-soft ${
+                    selectedTheme === theme ? 'ring-2 ring-interactive-accent border-interactive-accent/30' : 'hover:bg-accent/10 border-interactive-accent/10'
                   }`}
                   onClick={() => setSelectedTheme(theme)}
                 >

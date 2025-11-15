@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ArrowLeft, Heart, MessageCircle, Music, Smile } from 'lucide-react';
+import { DecorativeIcon } from '@/components/DecorativeIcon';
 
 export default function JointTools() {
   const navigate = useNavigate();
@@ -46,8 +47,9 @@ export default function JointTools() {
           </div>
         </div>
 
-        <Card className="p-6 bg-gradient-to-br from-primary/10 to-secondary/10">
-          <h2 className="text-xl font-bold mb-2">Strengthen Your Bond</h2>
+        <Card className="relative p-6 bg-gradient-to-br from-primary/5 via-accent/10 to-secondary/5 border-interactive-accent/20 shadow-soft">
+          <DecorativeIcon icon="sparkles" position="top-right" opacity={0.12} />
+          <h2 className="text-xl font-bold mb-2 bg-gradient-to-r from-interactive-accent to-primary bg-clip-text text-transparent">Strengthen Your Bond</h2>
           <p className="text-muted-foreground">
             These activities help you connect, communicate, and build emotional resilience together.
           </p>
@@ -59,7 +61,7 @@ export default function JointTools() {
             return (
               <Card
                 key={tool.title}
-                className={`p-6 transition-all hover:scale-[1.02] ${tool.color}`}
+                className={`p-6 transition-all duration-200 hover:scale-[1.02] hover:shadow-soft ${tool.color} border-interactive-accent/10`}
               >
                 <div className="flex items-start gap-4">
                   <Icon className="h-10 w-10 flex-shrink-0 mt-1" />
@@ -73,7 +75,8 @@ export default function JointTools() {
           })}
         </div>
 
-        <Card className="p-6 bg-accent/10">
+        <Card className="relative p-6 bg-gradient-to-br from-primary/5 to-accent/5 border-interactive-accent/10 shadow-soft">
+          <DecorativeIcon icon="sparkles" position="top-left" opacity={0.08} />
           <h3 className="font-bold mb-2">💡 Tip</h3>
           <p className="text-sm text-muted-foreground">
             Set aside 10-15 minutes of uninterrupted time for these activities. Make it a regular routine 

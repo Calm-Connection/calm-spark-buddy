@@ -8,6 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { VolumeControl } from '@/components/VolumeControl';
 import { useBreathingAudio } from '@/hooks/useBreathingAudio';
+import { DecorativeIcon } from '@/components/DecorativeIcon';
 
 export default function ForestBreathing() {
   const navigate = useNavigate();
@@ -109,15 +110,16 @@ export default function ForestBreathing() {
         </div>
 
         {!isBreathing && (
-          <Card className="p-6 space-y-4">
-            <h3 className="font-semibold text-green-800 dark:text-green-300">Choose your duration:</h3>
+          <Card className="relative p-6 space-y-4 bg-gradient-to-br from-primary/5 via-accent/10 to-secondary/5 border-interactive-accent/20 shadow-soft">
+            <DecorativeIcon icon="sparkles" position="top-right" opacity={0.12} />
+            <h3 className="font-semibold bg-gradient-to-r from-interactive-accent to-primary bg-clip-text text-transparent">Choose your duration:</h3>
             <div className="flex gap-3">
               {[1, 3, 5].map((min) => (
                 <Button
                   key={min}
                   variant={duration === min ? "default" : "outline"}
                   onClick={() => setDuration(min)}
-                  className="flex-1"
+                  className="flex-1 transition-all duration-200 hover:scale-[1.02] hover:shadow-soft"
                 >
                   {min} min
                 </Button>
@@ -174,8 +176,9 @@ export default function ForestBreathing() {
           />
         </div>
 
-        <Card className="p-6 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border-green-200">
-          <p className="text-center text-green-800 dark:text-green-300 leading-relaxed">
+        <Card className="relative p-6 bg-gradient-to-br from-primary/5 to-accent/5 border-interactive-accent/10 shadow-soft">
+          <DecorativeIcon icon="sparkles" position="top-left" opacity={0.08} />
+          <p className="text-center text-muted-foreground leading-relaxed">
             🌳 Imagine you're a tall, strong tree with roots deep in the earth. 
             Breathe in the fresh forest air, breathe out your worries like falling leaves.
           </p>

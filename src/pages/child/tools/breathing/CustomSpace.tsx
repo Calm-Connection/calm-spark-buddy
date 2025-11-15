@@ -9,6 +9,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { VolumeControl } from '@/components/VolumeControl';
 import { useBreathingAudio } from '@/hooks/useBreathingAudio';
 import { useToast } from '@/hooks/use-toast';
+import { DecorativeIcon } from '@/components/DecorativeIcon';
 
 const themeGradients: Record<string, string> = {
   ocean: 'from-blue-400 to-cyan-300',

@@ -7,6 +7,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Loader2, Copy, Check, ArrowLeft } from 'lucide-react';
 import { Logo } from '@/components/Logo';
 import { BlobBackground } from '@/components/BlobBackground';
+import { DecorativeIcon } from '@/components/DecorativeIcon';
 
 export default function InviteCode() {
   const [code, setCode] = useState<string>('');
@@ -63,10 +64,11 @@ export default function InviteCode() {
             <ArrowLeft className="mr-2" /> Back
           </Button>
 
-          <Card className="border-0">
+          <Card className="relative border-0 bg-gradient-to-br from-primary/5 via-accent/10 to-secondary/5 border-interactive-accent/20 shadow-soft-lg">
             <CardContent className="space-y-8">
+              <DecorativeIcon icon="sparkles" position="top-right" opacity={0.15} />
               <div className="text-center space-y-3">
-                <h1 className="text-foreground">INVITE CODE</h1>
+                <h1 className="text-foreground bg-gradient-to-r from-interactive-accent to-primary bg-clip-text text-transparent">INVITE CODE</h1>
                 <p className="text-lg text-foreground/70">
                   Generate a code to connect with your child
                 </p>
@@ -83,16 +85,16 @@ export default function InviteCode() {
 
               {code ? (
                 <div className="space-y-6">
-                  <div className="bg-primary/20 p-8 rounded-3xl text-center">
-                    <p className="text-base text-foreground/70 mb-3">Your Invite Code</p>
-                    <p className="text-5xl font-black tracking-widest">{code}</p>
+                  <div className="bg-gradient-to-br from-primary/20 to-interactive-accent/20 p-8 rounded-3xl text-center border-2 border-interactive-accent/30 shadow-soft">
+                    <p className="text-base text-muted-foreground mb-3 font-medium">Your Invite Code</p>
+                    <p className="text-5xl font-black tracking-widest bg-gradient-to-r from-interactive-accent to-primary bg-clip-text text-transparent">{code}</p>
                   </div>
 
                   <Button
                     onClick={copyCode}
                     variant="outline"
                     size="lg"
-                    className="w-full"
+                    className="w-full transition-all duration-200 hover:scale-[1.02] hover:bg-interactive-accent/10"
                   >
                     {copied ? (
                       <>
@@ -111,7 +113,7 @@ export default function InviteCode() {
                     onClick={() => setCode('')}
                     variant="peachy"
                     size="lg"
-                    className="w-full"
+                    className="w-full transition-all duration-200 hover:scale-[1.02] hover:shadow-soft"
                   >
                     Generate New Code
                   </Button>

@@ -8,6 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { VolumeControl } from '@/components/VolumeControl';
 import { useBreathingAudio } from '@/hooks/useBreathingAudio';
+import { DecorativeIcon } from '@/components/DecorativeIcon';
 
 export default function OceanBreathing() {
   const navigate = useNavigate();
@@ -86,15 +87,16 @@ export default function OceanBreathing() {
 
         {/* Duration Selector */}
         {!isBreathing && !showAffirmation && (
-          <Card className="p-6 bg-white/50 backdrop-blur animate-fade-in">
-            <h3 className="font-bold mb-4 text-center">How long would you like to breathe?</h3>
+          <Card className="relative p-6 bg-gradient-to-br from-primary/5 via-accent/10 to-secondary/5 border-interactive-accent/20 shadow-soft animate-fade-in">
+            <DecorativeIcon icon="cloud" position="top-right" opacity={0.12} />
+            <h3 className="font-bold mb-4 text-center bg-gradient-to-r from-interactive-accent to-primary bg-clip-text text-transparent">How long would you like to breathe?</h3>
             <div className="grid grid-cols-3 gap-3">
               {[1, 3, 5].map((min) => (
                 <Button
                   key={min}
                   variant={duration === min ? 'default' : 'outline'}
                   onClick={() => setDuration(min as 1 | 3 | 5)}
-                  className="py-6"
+                  className="py-6 transition-all duration-200 hover:scale-[1.02] hover:shadow-soft"
                 >
                   {min} min
                 </Button>
@@ -186,9 +188,11 @@ export default function OceanBreathing() {
 
         {/* Affirmation */}
         {showAffirmation && (
-          <Card className="p-8 bg-gradient-to-br from-blue-100 to-cyan-100 border-2 border-blue-400 animate-scale-in text-center space-y-4">
+          <Card className="relative p-8 bg-gradient-to-br from-primary/5 via-accent/10 to-secondary/5 border-2 border-interactive-accent/30 shadow-soft-lg animate-scale-in text-center space-y-4">
+            <DecorativeIcon icon="cloud" position="top-left" opacity={0.15} />
+            <DecorativeIcon icon="sparkles" position="bottom-right" opacity={0.15} />
             <div className="text-5xl mb-4">🌊</div>
-            <p className="text-xl font-bold text-blue-900">
+            <p className="text-xl font-bold bg-gradient-to-r from-interactive-accent to-primary bg-clip-text text-transparent">
               You're calm like the sea — peaceful and steady
             </p>
             <p className="text-blue-700">
@@ -198,14 +202,14 @@ export default function OceanBreathing() {
               <Button
                 onClick={() => navigate('/child/journal-entry')}
                 variant="default"
-                className="w-full"
+                className="w-full transition-all duration-200 hover:scale-[1.02] hover:shadow-soft"
               >
                 Write about how you feel 📝
               </Button>
               <Button
-                onClick={() => navigate('/child/tools/breathing-space')}
+                onClick(() => navigate('/child/tools/breathing-space')}
                 variant="outline"
-                className="w-full"
+                className="w-full transition-all duration-200 hover:scale-[1.02] hover:bg-interactive-accent/10"
               >
                 Try another breathing world
               </Button>
@@ -214,8 +218,9 @@ export default function OceanBreathing() {
         )}
 
         {!showAffirmation && (
-          <Card className="p-4 bg-blue-50/50">
-            <p className="text-sm text-blue-900/70 text-center">
+          <Card className="relative p-4 bg-gradient-to-br from-primary/5 to-accent/5 border-interactive-accent/10 shadow-soft">
+            <DecorativeIcon icon="cloud" position="top-left" opacity={0.08} />
+            <p className="text-sm text-muted-foreground text-center">
               💙 Let the rhythm of the ocean guide your breathing. In and out, like waves on the shore.
             </p>
           </Card>
