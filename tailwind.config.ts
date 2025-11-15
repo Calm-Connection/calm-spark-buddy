@@ -45,6 +45,10 @@ export default {
         },
         warm: "hsl(var(--warm))",
         dustyRose: "hsl(var(--dusty-rose))",
+        "interactive-accent": {
+          DEFAULT: "hsl(var(--interactive-accent))",
+          hover: "hsl(var(--interactive-accent-hover))",
+        },
         popover: {
           DEFAULT: "hsl(var(--popover))",
           foreground: "hsl(var(--popover-foreground))",
@@ -63,6 +67,13 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+      },
+      boxShadow: {
+        soft: "0 2px 8px rgba(0, 0, 0, 0.04)",
+        "soft-md": "0 4px 12px rgba(0, 0, 0, 0.05)",
+        "soft-lg": "0 8px 16px rgba(0, 0, 0, 0.06)",
+        "soft-dark": "0 2px 8px rgba(0, 0, 0, 0.3)",
+        "soft-dark-md": "0 4px 12px rgba(0, 0, 0, 0.4)",
       },
       borderRadius: {
         lg: "var(--radius)",

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTheme } from 'next-themes';
 
 export type TextSize = 'small' | 'medium' | 'large' | 'extra-large';
 export type FontFamily = 'default' | 'dyslexia-friendly';
@@ -27,6 +28,7 @@ const textSizeMap: Record<TextSize, string> = {
 };
 
 export function useAccessibility() {
+  const { theme } = useTheme();
   const [settings, setSettings] = useState<AccessibilitySettings>(() => {
     const saved = localStorage.getItem('accessibility-settings');
     return saved ? JSON.parse(saved) : defaultSettings;
@@ -47,9 +49,16 @@ export function useAccessibility() {
     
     // Apply high contrast
     if (settings.highContrast) {
-      root.classList.add('high-contrast');
+      if (theme === 'dark') {
+        root.classList.remove('high-contrast');
+        root.classList.add('high-contrast-dark');
+      } else {
+        root.classList.remove('high-contrast-dark');
+        root.classList.add('high-contrast');
+      }
     } else {
       root.classList.remove('high-contrast');
+      root.classList.remove('high-contrast-dark');
     }
     
     // Apply calm mode (reduces animations)
@@ -68,7 +77,7 @@ export function useAccessibility() {
     
     // Save to localStorage
     localStorage.setItem('accessibility-settings', JSON.stringify(settings));
-  }, [settings]);
+  }, [settings, theme]);
 
   const updateSetting = <K extends keyof AccessibilitySettings>(
     key: K,

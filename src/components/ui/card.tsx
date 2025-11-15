@@ -3,9 +3,33 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn("rounded-3xl bg-card text-card-foreground shadow-xl p-8 md:p-12", className)} {...props} />
+  <div 
+    ref={ref} 
+    className={cn(
+      "rounded-3xl bg-card text-card-foreground p-8 md:p-12",
+      "border border-border/30 dark:border-border/50",
+      "shadow-soft dark:shadow-soft-dark",
+      className
+    )} 
+    {...props} 
+  />
 ));
 Card.displayName = "Card";
+
+const CardSection = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div 
+      ref={ref} 
+      className={cn(
+        "rounded-2xl bg-muted/30 p-6",
+        "border border-border/20",
+        className
+      )} 
+      {...props} 
+    />
+  ),
+);
+CardSection.displayName = "CardSection";
 
 const CardHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
@@ -23,7 +47,7 @@ CardTitle.displayName = "CardTitle";
 
 const CardDescription = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLParagraphElement>>(
   ({ className, ...props }, ref) => (
-    <p ref={ref} className={cn("text-base text-foreground/70", className)} {...props} />
+    <p ref={ref} className={cn("text-base text-foreground/70 font-medium", className)} {...props} />
   ),
 );
 CardDescription.displayName = "CardDescription";
@@ -40,4 +64,4 @@ const CardFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDiv
 );
 CardFooter.displayName = "CardFooter";
 
-export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent };
+export { Card, CardSection, CardHeader, CardFooter, CardTitle, CardDescription, CardContent };

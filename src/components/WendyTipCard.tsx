@@ -1,6 +1,7 @@
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { WendyAvatar } from '@/components/WendyAvatar';
+import { DecorativeIcon } from '@/components/DecorativeIcon';
 import { Sparkles, Heart, Wind, BookOpen } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -26,12 +27,14 @@ export function WendyTipCard({ tip, actionType, actionLink, actionLabel }: Wendy
   };
 
   return (
-    <Card className="p-5 bg-gradient-to-br from-primary/10 to-accent/10 border-primary/20">
+    <Card className="relative p-5 border border-primary/20 bg-gradient-to-br from-primary/5 to-accent/5 dark:from-primary/10 dark:to-accent/10">
+      <DecorativeIcon icon="sparkles" position="top-right" opacity={0.12} />
+      
       <div className="flex items-start gap-3">
         <WendyAvatar size="lg" />
         <div className="flex-1 space-y-3">
           <h3 className="font-bold text-lg">Wendy's Tip for You 💜</h3>
-          <p className="text-sm">{tip}</p>
+          <p className="text-sm font-medium">{tip}</p>
           {actionLink && actionLabel && (
             <Button
               variant="outline"

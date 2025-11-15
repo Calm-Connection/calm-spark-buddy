@@ -12,7 +12,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAccessibility, TextSize, FontFamily } from '@/hooks/useAccessibility';
 import { loadSavedTheme, ThemeName } from '@/hooks/useTheme';
-import { Settings as SettingsIcon, User, Save, Palette, Accessibility, MessageSquareWarning, Link as LinkIcon, Edit, Bell, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { useTheme } from 'next-themes';
+import { Settings as SettingsIcon, User, Save, Palette, Accessibility, MessageSquareWarning, Link as LinkIcon, Edit, Bell, CheckCircle, AlertCircle, Loader2, Sun, Moon } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { AvatarDisplay } from '@/components/AvatarDisplay';
 import { AvatarCustomizer } from '@/components/AvatarCustomizer';
@@ -26,6 +27,7 @@ export default function Settings() {
   const { user, signOut, userRole } = useAuth();
   const { toast } = useToast();
   const { settings, updateSetting } = useAccessibility();
+  const { theme, setTheme } = useTheme();
   
   const [loading, setLoading] = useState(false);
   const [nickname, setNickname] = useState('');
@@ -427,6 +429,38 @@ export default function Settings() {
             currentTheme={currentTheme} 
             onThemeChange={(theme) => setCurrentTheme(theme)}
           />
+        </Card>
+
+        {/* Display Mode - Dark/Light */}
+        <Card className="p-6">
+          <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+            {theme === 'dark' ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
+            Display Mode
+          </h3>
+          
+          <div className="space-y-3">
+            <Button
+              variant={theme === 'light' ? 'primary' : 'outline'}
+              onClick={() => setTheme('light')}
+              className="w-full justify-start"
+            >
+              <Sun className="mr-2 h-5 w-5" />
+              Light Mode (Bright & Cheerful)
+            </Button>
+            
+            <Button
+              variant={theme === 'dark' ? 'primary' : 'outline'}
+              onClick={() => setTheme('dark')}
+              className="w-full justify-start"
+            >
+              <Moon className="mr-2 h-5 w-5" />
+              Dark Mode (Calm & Cozy)
+            </Button>
+          </div>
+          
+          <p className="text-sm text-muted-foreground mt-4">
+            Choose the display mode that feels most comfortable for you. Both modes are designed to be gentle on your eyes.
+          </p>
         </Card>
 
         {/* Notifications */}
