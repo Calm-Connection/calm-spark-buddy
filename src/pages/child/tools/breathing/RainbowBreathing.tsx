@@ -8,6 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { VolumeControl } from '@/components/VolumeControl';
 import { useBreathingAudio } from '@/hooks/useBreathingAudio';
+import { DecorativeIcon } from '@/components/DecorativeIcon';
 
 const rainbowColors = [
   'from-red-400 to-orange-400',

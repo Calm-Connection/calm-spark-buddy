@@ -8,6 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { VolumeControl } from '@/components/VolumeControl';
 import { useBreathingAudio } from '@/hooks/useBreathingAudio';
+import { DecorativeIcon } from '@/components/DecorativeIcon';
 
 export default function StarBreathing() {
   const navigate = useNavigate();

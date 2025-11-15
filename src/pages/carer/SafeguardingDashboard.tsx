@@ -13,6 +13,7 @@ import { PatternInsightsCard } from '@/components/carer/PatternInsightsCard';
 import { ConversationStartersCard } from '@/components/carer/ConversationStartersCard';
 import { TimelineView } from '@/components/carer/TimelineView';
 import { ResourceLibrary } from '@/components/carer/ResourceLibrary';
+import { DecorativeIcon } from '@/components/DecorativeIcon';
 
 interface SafeguardingLog {
   id: string;

@@ -10,6 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { applyTheme } from '@/hooks/useTheme';
 import { supabase } from '@/integrations/supabase/client';
+import { DecorativeIcon } from '@/components/DecorativeIcon';
 
 export default function CarerSignup() {
   const [nickname, setNickname] = useState('');
@@ -111,10 +112,11 @@ export default function CarerSignup() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-background overflow-y-auto">
-      <Card className="max-w-md w-full p-8 space-y-6 my-8">
-        <div className="text-center space-y-2">
-          <h1 className="text-3xl font-bold">Carer Account</h1>
+      <div className="min-h-screen flex items-center justify-center p-6 bg-background overflow-y-auto">
+        <Card className="relative max-w-md w-full p-8 space-y-6 my-8 bg-gradient-to-br from-primary/5 via-accent/10 to-secondary/5 border-interactive-accent/20 shadow-soft-lg">
+          <DecorativeIcon icon="sparkles" position="top-right" opacity={0.12} />
+          <div className="text-center space-y-2">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-interactive-accent to-primary bg-clip-text text-transparent">Carer Account</h1>
           <p className="text-muted-foreground">Support your child's emotional journey</p>
         </div>
 

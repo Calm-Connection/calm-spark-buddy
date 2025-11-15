@@ -21,6 +21,7 @@ import { ThemeSelector } from '@/components/ThemeSelector';
 import { ReportConcernModal } from '@/components/ReportConcernModal';
 import { FloatingElements } from '@/components/FloatingElements';
 import { AddCarerCodeModal } from '@/components/AddCarerCodeModal';
+import { DecorativeIcon } from '@/components/DecorativeIcon';
 
 export default function Settings() {
   const navigate = useNavigate();
