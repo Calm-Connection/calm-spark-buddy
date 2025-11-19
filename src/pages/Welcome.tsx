@@ -21,21 +21,22 @@ export default function Welcome() {
 
   return (
     <PageLayout showLogo={false}>
-      {/* Accessibility Options Button */}
-      <AccessibilityDialog />
-      
-      {/* Dark Mode Toggle */}
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-        className="absolute top-6 right-6 z-20 rounded-full transition-all duration-200 hover:scale-110 hover:bg-interactive-accent/10"
-        aria-label="Toggle dark mode"
-      >
-        {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-      </Button>
+      <div className="relative">
+        {/* Accessibility Options Button */}
+        <AccessibilityDialog />
+        
+        {/* Dark Mode Toggle */}
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+          className="absolute top-6 right-6 z-20 rounded-full transition-all duration-200 hover:scale-110 hover:bg-interactive-accent/10"
+          aria-label="Toggle dark mode"
+        >
+          {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+        </Button>
 
-      <div className="text-center space-y-12">
+        <div className="text-center space-y-12">
         <div className="flex justify-center">
           <Logo size="lg" />
         </div>
@@ -68,6 +69,7 @@ export default function Welcome() {
             </p>
           </CardContent>
         </Card>
+        </div>
       </div>
     </PageLayout>
   );
