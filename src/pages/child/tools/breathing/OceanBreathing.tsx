@@ -8,11 +8,13 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { VolumeControl } from '@/components/VolumeControl';
 import { useBreathingAudio } from '@/hooks/useBreathingAudio';
+import { useReduceMotion } from '@/hooks/useReduceMotion';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
 
 export default function OceanBreathing() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const reduceMotion = useReduceMotion();
   const [isBreathing, setIsBreathing] = useState(false);
   const [breathingIn, setBreathingIn] = useState(true);
   const [soundEnabled, setSoundEnabled] = useState(true);
@@ -107,27 +109,31 @@ export default function OceanBreathing() {
 
         <div className="relative flex items-center justify-center min-h-[450px]">
           <div
-            className={`absolute rounded-full bg-gradient-to-br from-blue-400/40 to-cyan-400/40 transition-all duration-[4000ms] ease-in-out ${
+            className={`absolute rounded-full bg-gradient-to-br from-blue-400/40 to-cyan-400/40 ${
+              reduceMotion ? 'breathing-circle' : 'transition-all duration-[4000ms] ease-in-out'
+            } ${
               isBreathing
                 ? breathingIn
                   ? 'w-80 h-80 opacity-60'
                   : 'w-40 h-40 opacity-20'
                 : 'w-60 h-60 opacity-40'
             }`}
-            style={{ 
+            style={reduceMotion ? {} : { 
               boxShadow: '0 0 80px rgba(59, 130, 246, 0.5)',
               filter: 'blur(2px)'
             }}
           />
           <div
-            className={`absolute rounded-full bg-gradient-to-br from-cyan-300/30 to-blue-300/30 transition-all duration-[4000ms] ease-in-out ${
+            className={`absolute rounded-full bg-gradient-to-br from-cyan-300/30 to-blue-300/30 ${
+              reduceMotion ? 'breathing-circle' : 'transition-all duration-[4000ms] ease-in-out'
+            } ${
               isBreathing
                 ? breathingIn
                   ? 'w-64 h-64 opacity-50'
                   : 'w-32 h-32 opacity-15'
                 : 'w-48 h-48 opacity-30'
             }`}
-            style={{ 
+            style={reduceMotion ? {} : { 
               boxShadow: '0 0 60px rgba(34, 211, 238, 0.4)',
               transitionDelay: '200ms'
             }}

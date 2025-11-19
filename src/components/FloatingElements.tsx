@@ -17,12 +17,26 @@ const generateStablePositions = (count: number) => {
 
 export function FloatingElements({ theme }: FloatingElementsProps) {
   const [mounted, setMounted] = useState(false);
+  const [calmMode, setCalmMode] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+    
+    const checkCalmMode = () => {
+      setCalmMode(document.documentElement.classList.contains('calm-mode'));
+    };
+    checkCalmMode();
+    
+    const observer = new MutationObserver(checkCalmMode);
+    observer.observe(document.documentElement, { 
+      attributes: true, 
+      attributeFilter: ['class'] 
+    });
+    
+    return () => observer.disconnect();
   }, []);
 
-  if (!mounted) return null;
+  if (!mounted || calmMode) return null;
 
   return (
     <div className="floating-container">
