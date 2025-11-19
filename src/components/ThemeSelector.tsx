@@ -132,7 +132,7 @@ export function ThemeSelector({ currentTheme, onThemeChange }: ThemeSelectorProp
             )}
             <div className="flex items-center gap-3 mb-3">
               <span className="text-3xl">{theme.emoji}</span>
-              <h3 className="font-bold text-lg">{theme.name}</h3>
+              <h3 className="font-bold text-lg dark:text-foreground">{theme.name}</h3>
             </div>
             <div className="flex gap-2">
               {theme.colors.map((color, idx) => (

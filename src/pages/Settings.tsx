@@ -282,17 +282,17 @@ export default function Settings() {
                 {linkedCarerInfo ? (
                   <div className="space-y-3">
                     <div 
-                      className="rounded-lg border-2 border-green-500/50 bg-green-50 dark:bg-green-950/20 p-4"
+                      className="rounded-lg border-2 border-green-500/50 bg-green-50 dark:bg-green-900/30 p-4"
                       role="status"
                       aria-label="Connected to carer"
                     >
                       <div className="flex items-center gap-2 mb-1">
-                        <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" aria-hidden="true" />
-                        <span className="font-semibold text-green-900 dark:text-green-100">
+                        <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-300" aria-hidden="true" />
+                        <span className="font-semibold text-green-900 dark:text-green-50">
                           Connected to {linkedCarerInfo.nickname}
                         </span>
                       </div>
-                      <p className="text-sm text-green-700 dark:text-green-300">
+                      <p className="text-sm text-green-700 dark:text-green-200">
                         Your carer can see shared journal entries
                       </p>
                     </div>
@@ -446,7 +446,7 @@ export default function Settings() {
               className="w-full justify-start"
             >
               <Sun className="mr-2 h-5 w-5" />
-              Light Mode (Bright & Cheerful)
+              <span>Light Mode <span className="hidden sm:inline">(Bright & Cheerful)</span></span>
             </Button>
             
             <Button
@@ -455,7 +455,7 @@ export default function Settings() {
               className="w-full justify-start"
             >
               <Moon className="mr-2 h-5 w-5" />
-              Dark Mode (Calm & Cozy)
+              <span>Dark Mode <span className="hidden sm:inline">(Calm & Cozy)</span></span>
             </Button>
           </div>
           

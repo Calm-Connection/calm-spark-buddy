@@ -23,8 +23,8 @@ const defaultSettings: AccessibilitySettings = {
 const textSizeMap: Record<TextSize, string> = {
   'small': '14px',
   'medium': '16px',
-  'large': '18px',
-  'extra-large': '20px',
+  'large': '19px',
+  'extra-large': '22px',
 };
 
 export function useAccessibility() {
