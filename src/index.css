@@ -21,20 +21,20 @@ All colors MUST be HSL.
     --popover: 0 0% 98%;
     --popover-foreground: 0 0% 10%;
 
-    --primary: 248 63% 72%; /* 5% deeper for contrast */
+    --primary: 248 70% 62%; /* Deeper, more saturated lilac for better contrast */
     --primary-foreground: 0 0% 10%;
 
-    --secondary: 163 40% 65%; /* 7% deeper */
+    --secondary: 163 55% 58%; /* More saturated mint */
     --secondary-foreground: 0 0% 10%;
 
     --muted: 249 27% 85%; /* Lighter background */
     --muted-foreground: 0 0% 35%; /* Darker text */
 
-    --accent: 31 100% 85%; /* 3% deeper for definition */
+    --accent: 31 95% 68%; /* Much darker peachy-orange for visibility */
     --accent-foreground: 0 0% 10%;
 
-    --warm: 45 100% 88%;
-    --dusty-rose: 342 79% 86%;
+    --warm: 45 100% 72%; /* Richer golden */
+    --dusty-rose: 342 85% 70%; /* Deeper rose */
 
     /* NEW: Seafoam accent for interactive elements */
     --interactive-accent: 175 45% 65%;
