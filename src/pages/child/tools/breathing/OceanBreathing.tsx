@@ -32,7 +32,7 @@ export default function OceanBreathing() {
   useEffect(() => {
     if (!isBreathing) return;
 
-    const breathCycle = 4000; // 4 seconds
+    const breathCycle = 4000;
     const timer = setTimeout(() => {
       setBreathingIn(!breathingIn);
       if (!breathingIn) {
@@ -53,7 +53,6 @@ export default function OceanBreathing() {
     setIsBreathing(false);
     setShowAffirmation(true);
     
-    // Track usage for carer insights
     if (user) {
       try {
         await supabase.from('tool_usage' as any).insert({
@@ -85,11 +84,12 @@ export default function OceanBreathing() {
           <h1 className="text-2xl font-bold">Ocean Breathing 🌊</h1>
         </div>
 
-        {/* Duration Selector */}
         {!isBreathing && !showAffirmation && (
           <Card className="relative p-6 bg-gradient-to-br from-primary/5 via-accent/10 to-secondary/5 border-interactive-accent/20 shadow-soft animate-fade-in">
             <DecorativeIcon icon="cloud" position="top-right" opacity={0.12} />
-            <h3 className="font-bold mb-4 text-center bg-gradient-to-r from-interactive-accent to-primary bg-clip-text text-transparent">How long would you like to breathe?</h3>
+            <h3 className="font-bold mb-4 text-center bg-gradient-to-r from-interactive-accent to-primary bg-clip-text text-transparent">
+              How long would you like to breathe?
+            </h3>
             <div className="grid grid-cols-3 gap-3">
               {[1, 3, 5].map((min) => (
                 <Button
@@ -105,9 +105,7 @@ export default function OceanBreathing() {
           </Card>
         )}
 
-        {/* Breathing Animation */}
         <div className="relative flex items-center justify-center min-h-[450px]">
-          {/* Wave layers with staggered animations */}
           <div
             className={`absolute rounded-full bg-gradient-to-br from-blue-400/40 to-cyan-400/40 transition-all duration-[4000ms] ease-in-out ${
               isBreathing
@@ -158,7 +156,6 @@ export default function OceanBreathing() {
           )}
         </div>
 
-        {/* Controls */}
         <div className="space-y-3">
           {!isBreathing && !showAffirmation ? (
             <Button
@@ -186,7 +183,6 @@ export default function OceanBreathing() {
           />
         </div>
 
-        {/* Affirmation */}
         {showAffirmation && (
           <Card className="relative p-8 bg-gradient-to-br from-primary/5 via-accent/10 to-secondary/5 border-2 border-interactive-accent/30 shadow-soft-lg animate-scale-in text-center space-y-4">
             <DecorativeIcon icon="cloud" position="top-left" opacity={0.15} />
@@ -207,7 +203,7 @@ export default function OceanBreathing() {
                 Write about how you feel 📝
               </Button>
               <Button
-                onClick(() => navigate('/child/tools/breathing-space')}
+                onClick={() => navigate('/child/tools/breathing-space')}
                 variant="outline"
                 className="w-full transition-all duration-200 hover:scale-[1.02] hover:bg-interactive-accent/10"
               >
