@@ -11,7 +11,7 @@ const buttonVariants = cva(
       variant: {
         default: "bg-primary text-primary-foreground hover:bg-primary/90 rounded-full",
         primary: "bg-interactive-accent text-white hover:bg-interactive-accent-hover rounded-full shadow-md hover:shadow-soft-md transition-all",
-        gradient: "bg-gradient-to-r from-dusty-rose via-accent to-warm text-foreground hover:shadow-lg hover:scale-105 rounded-full shadow-md",
+        gradient: "bg-gradient-to-r from-dusty-rose via-accent to-warm text-foreground hover:shadow-lg hover:scale-105 rounded-full shadow-md dark:from-[hsl(342,65%,45%)] dark:via-[hsl(31,70%,45%)] dark:to-[hsl(45,75%,48%)]",
         destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 rounded-full",
         outline: "border-2 border-border hover:bg-accent rounded-full",
         secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80 rounded-full",
