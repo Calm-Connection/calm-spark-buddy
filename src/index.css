@@ -494,3 +494,11 @@ All colors MUST be HSL.
   animation: none !important;
   transition: none !important;
 }
+
+/* Disable blob animations when reduce motion is enabled */
+.reduce-motion .animate-blob-float,
+.reduce-motion .animate-blob-float-delayed,
+.reduce-motion .animate-blob-float-slow,
+.reduce-motion .animate-blob-pulse {
+  animation: none !important;
+}

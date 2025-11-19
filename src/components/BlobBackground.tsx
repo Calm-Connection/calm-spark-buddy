@@ -8,7 +8,7 @@ export function BlobBackground() {
     <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
       {/* Top right blob */}
       <svg
-        className={theme === 'dark' ? "absolute -top-20 -right-20 w-96 h-96 opacity-30" : "absolute -top-20 -right-20 w-96 h-96 opacity-60"}
+        className={theme === 'dark' ? "absolute -top-20 -right-20 w-96 h-96 opacity-30 animate-blob-float animate-blob-pulse" : "absolute -top-20 -right-20 w-96 h-96 opacity-60 animate-blob-float animate-blob-pulse"}
         viewBox="0 0 400 400"
         xmlns="http://www.w3.org/2000/svg"
       >
@@ -20,7 +20,7 @@ export function BlobBackground() {
 
       {/* Bottom left blob */}
       <svg
-        className={theme === 'dark' ? "absolute -bottom-20 -left-20 w-80 h-80 opacity-20" : "absolute -bottom-20 -left-20 w-80 h-80 opacity-50"}
+        className={theme === 'dark' ? "absolute -bottom-20 -left-20 w-80 h-80 opacity-20 animate-blob-float-delayed animate-blob-pulse" : "absolute -bottom-20 -left-20 w-80 h-80 opacity-50 animate-blob-float-delayed animate-blob-pulse"}
         viewBox="0 0 400 400"
         xmlns="http://www.w3.org/2000/svg"
       >
@@ -32,7 +32,7 @@ export function BlobBackground() {
 
       {/* Middle floating blob */}
       <svg
-        className={theme === 'dark' ? "absolute top-1/2 left-1/4 w-64 h-64 opacity-15" : "absolute top-1/2 left-1/4 w-64 h-64 opacity-40"}
+        className={theme === 'dark' ? "absolute top-1/2 left-1/4 w-64 h-64 opacity-15 animate-blob-float-slow animate-blob-pulse" : "absolute top-1/2 left-1/4 w-64 h-64 opacity-40 animate-blob-float-slow animate-blob-pulse"}
         viewBox="0 0 400 400"
         xmlns="http://www.w3.org/2000/svg"
       >

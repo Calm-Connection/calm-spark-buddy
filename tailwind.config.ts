@@ -119,6 +119,25 @@ export default {
             filter: "brightness(0.8)"
           }
         },
+        "blob-float": {
+          "0%, 100%": { 
+            transform: "translate(0, 0) scale(1)" 
+          },
+          "33%": { 
+            transform: "translate(30px, -30px) scale(1.05)" 
+          },
+          "66%": { 
+            transform: "translate(-20px, 20px) scale(0.95)" 
+          }
+        },
+        "blob-pulse": {
+          "0%, 100%": { 
+            opacity: "0.6" 
+          },
+          "50%": { 
+            opacity: "0.8" 
+          }
+        },
         "bloom": {
           "0%": { 
             transform: "scale(0.3) rotate(-90deg)", 
@@ -211,6 +230,10 @@ export default {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "blob-float": "blob-float 20s ease-in-out infinite",
+        "blob-float-delayed": "blob-float 25s ease-in-out 5s infinite",
+        "blob-float-slow": "blob-float 30s ease-in-out 10s infinite",
+        "blob-pulse": "blob-pulse 8s ease-in-out infinite",
         "twinkle": "twinkle 2s ease-in-out infinite",
         "twinkle-slow": "twinkle 3s ease-in-out infinite",
         "twinkle-fast": "twinkle 1.5s ease-in-out infinite",
