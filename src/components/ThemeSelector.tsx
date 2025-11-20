@@ -62,10 +62,10 @@ const themes: Theme[] = [
     name: 'Classic',
     emoji: '🎨',
     colors: [
-      { hsl: '248 60% 94%', label: 'Background' },
-      { hsl: '248 63% 76%', label: 'Primary' },
-      { hsl: '163 40% 70%', label: 'Secondary' },
-      { hsl: '31 100% 88%', label: 'Accent' },
+      { hsl: '246 70% 85%', label: 'Lilac' },
+      { hsl: '163 40% 69%', label: 'Mint' },
+      { hsl: '31 97% 88%', label: 'Peach' },
+      { hsl: '45 92% 90%', label: 'Yellow' },
     ],
   },
 ];
