@@ -35,8 +35,8 @@ const themeColors: Record<ThemeName, ThemeColors> = {
     accent: '15 70% 65%', // Terracotta
   },
   classic: {
-    background: '246 70% 85%', // Lilac (#C6C9F2)
-    primary: '246 70% 85%', // Lilac (consistent)
+    background: '246 70% 90%', // Lilac (#C6C9F2)
+    primary: '246 70% 90%', // Lilac (consistent)
     secondary: '163 40% 69%', // Soft Mint (#90D1BC)
     accent: '31 97% 88%', // Peachy Cream (#FEE0C2)
   },
