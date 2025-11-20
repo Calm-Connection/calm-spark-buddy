@@ -115,7 +115,7 @@ export default function Login() {
           </Button>
         </form>
 
-        <div className="text-center">
+        <div className="flex justify-center">
           <Button 
             variant="ghost" 
             onClick={() => navigate('/role-selection')}
