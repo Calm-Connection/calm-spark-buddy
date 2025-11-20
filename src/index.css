@@ -11,106 +11,106 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Calm Connection Brand Colors - Enhanced Contrast Light Mode */
-    --background: 248 60% 92%; /* 5% darker for depth */
-    --foreground: 0 0% 10%; /* Softer black, easier on eyes */
+    /* Calm Connection Brand Colors - Light Mode */
+    --background: 246 70% 85%; /* Lilac (#C6C9F2) */
+    --foreground: 0 0% 10%; /* Dark text for contrast */
 
-    --card: 0 0% 98%; /* Subtle shadow effect from background */
+    --card: 0 0% 98%; /* Soft white for cards */
     --card-foreground: 0 0% 10%;
 
     --popover: 0 0% 98%;
     --popover-foreground: 0 0% 10%;
 
-    --primary: 248 70% 62%; /* Deeper, more saturated lilac for better contrast */
+    --primary: 246 70% 85%; /* Lilac (#C6C9F2) */
     --primary-foreground: 0 0% 10%;
 
-    --secondary: 163 55% 58%; /* More saturated mint */
+    --secondary: 163 40% 69%; /* Soft Mint (#90D1BC) */
     --secondary-foreground: 0 0% 10%;
 
-    --muted: 249 27% 85%; /* Lighter background */
-    --muted-foreground: 0 0% 35%; /* Darker text */
+    --muted: 255 25% 77%; /* Lavender Gray (#BEB8D1) */
+    --muted-foreground: 0 0% 71%; /* Charcoal Gray (#B4B4B4) */
 
-    --accent: 31 95% 68%; /* Much darker peachy-orange for visibility */
+    --accent: 31 97% 88%; /* Peachy Cream (#FEE0C2) */
     --accent-foreground: 0 0% 10%;
 
-    --warm: 45 100% 72%; /* Richer golden */
-    --dusty-rose: 342 85% 70%; /* Deeper rose */
+    --warm: 45 92% 90%; /* Warm Yellow (#FCF0CC) */
+    --dusty-rose: 342 71% 88%; /* Dusty Rose (#F7CDDE) */
 
-    /* NEW: Seafoam accent for interactive elements */
-    --interactive-accent: 175 45% 65%;
-    --interactive-accent-hover: 175 45% 55%;
+    /* Interactive elements use soft mint */
+    --interactive-accent: 163 40% 69%;
+    --interactive-accent-hover: 163 40% 59%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 249 20% 75%; /* Soft lavender-gray */
-    --input: 249 20% 70%;
-    --ring: 248 63% 82%;
+    --border: 255 25% 77%; /* Lavender Gray (#BEB8D1) */
+    --input: 255 25% 77%;
+    --ring: 246 70% 85%;
 
     --radius: 2rem;
     
     /* Gradient for buttons */
-    --gradient-button: linear-gradient(135deg, hsl(342 79% 86%), hsl(31 100% 85%), hsl(45 100% 88%));
+    --gradient-button: linear-gradient(135deg, hsl(342 71% 88%), hsl(31 97% 88%), hsl(45 92% 90%));
     
     /* Organic blob colors */
-    --blob-peachy: 31 100% 85%;
-    --blob-cream: 45 100% 95%;
+    --blob-peachy: 31 97% 88%;
+    --blob-cream: 45 92% 90%;
 
-    --sidebar-background: 249 246 252%;
-    --sidebar-foreground: 0 0% 29%;
-    --sidebar-primary: 248 63% 82%;
+    --sidebar-background: 246 70% 85%;
+    --sidebar-foreground: 0 0% 10%;
+    --sidebar-primary: 246 70% 85%;
     --sidebar-primary-foreground: 0 0% 10%;
-    --sidebar-accent: 163 40% 65%;
-    --sidebar-accent-foreground: 0 0% 29%;
-    --sidebar-border: 249 27% 85%;
-    --sidebar-ring: 248 63% 82%;
+    --sidebar-accent: 163 40% 69%;
+    --sidebar-accent-foreground: 0 0% 10%;
+    --sidebar-border: 255 25% 77%;
+    --sidebar-ring: 246 70% 85%;
   }
 
   .dark {
-    /* True Dark Mode - Vibrant Palette with Better Contrast */
-    --background: 240 10% 12%; /* Deep charcoal with slight blue */
-    --foreground: 0 0% 95%; /* Off-white, not pure white */
+    /* Calm Connection Brand Colors - Dark Mode */
+    --background: 252 20% 20%; /* Midnight Lavender (#2C293F) */
+    --foreground: 240 20% 96%; /* Soft White (#F5F5F7) */
 
-    --card: 240 8% 16%; /* Lighter charcoal for cards */
-    --card-foreground: 0 0% 95%;
+    --card: 248 25% 30%; /* Deep Lilac (#3E3A5E) */
+    --card-foreground: 240 20% 96%;
 
-    --popover: 240 8% 16%;
-    --popover-foreground: 0 0% 95%;
+    --popover: 248 25% 30%;
+    --popover-foreground: 240 20% 96%;
 
-    --primary: 248 55% 65%; /* Vibrant lilac */
+    --primary: 246 70% 85%; /* Lilac (consistent) */
     --primary-foreground: 0 0% 10%;
 
-    --secondary: 163 45% 60%; /* Vibrant mint green */
+    --secondary: 163 40% 58%; /* Mint Accent (#6BBCA5) */
     --secondary-foreground: 0 0% 10%;
 
-    --muted: 240 8% 20%; /* Slightly lighter charcoal */
-    --muted-foreground: 0 0% 70%; /* Mid-gray text */
+    --muted: 260 14% 51%; /* Lavender Gray dark (#7B7590) */
+    --muted-foreground: 240 8% 81%; /* Light Gray (#D1D1D6) */
 
-    --accent: 31 70% 60%; /* Warm peachy-orange */
+    --accent: 23 55% 78%; /* Peach Accent (#E8BFA8) */
     --accent-foreground: 0 0% 10%;
 
-    --warm: 45 75% 62%; /* Golden yellow */
-    --dusty-rose: 342 65% 65%; /* Prettier pink */
+    --warm: 45 50% 76%; /* Warm Yellow Accent (#E5D7A8) */
+    --dusty-rose: 342 30% 75%; /* Dusty Rose Accent (#D8A8B8) */
 
-    /* INTERACTIVE ACCENT - clearer seafoam */
-    --interactive-accent: 175 45% 58%;
-    --interactive-accent-hover: 175 50% 52%;
+    /* Interactive elements use mint accent */
+    --interactive-accent: 163 40% 58%;
+    --interactive-accent-hover: 163 40% 48%;
 
     --destructive: 0 62.8% 50.6%;
-    --destructive-foreground: 0 0% 95%;
+    --destructive-foreground: 240 20% 96%;
 
-    --border: 240 8% 25%; /* Lighter than background, visible but soft */
-    --input: 240 8% 22%;
-    --ring: 248 55% 65%;
+    --border: 260 14% 51%; /* Lavender Gray dark */
+    --input: 260 14% 51%;
+    --ring: 246 70% 85%;
 
-    --sidebar-background: 240 10% 15%;
-    --sidebar-foreground: 0 0% 95%;
-    --sidebar-primary: 248 55% 65%;
+    --sidebar-background: 248 25% 30%;
+    --sidebar-foreground: 240 20% 96%;
+    --sidebar-primary: 246 70% 85%;
     --sidebar-primary-foreground: 0 0% 10%;
-    --sidebar-accent: 163 45% 60%;
+    --sidebar-accent: 163 40% 58%;
     --sidebar-accent-foreground: 0 0% 10%;
-    --sidebar-border: 240 8% 25%;
-    --sidebar-ring: 248 55% 65%;
+    --sidebar-border: 260 14% 51%;
+    --sidebar-ring: 246 70% 85%;
   }
 }
 
