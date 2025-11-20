@@ -12,7 +12,7 @@ All colors MUST be HSL.
 @layer base {
   :root {
     /* Calm Connection Brand Colors - Light Mode */
-    --background: 246 70% 85%; /* Lilac (#C6C9F2) */
+    --background: 246 70% 90%; /* Lilac (#C6C9F2) */
     --foreground: 0 0% 10%; /* Dark text for contrast */
 
     --card: 0 0% 98%; /* Soft white for cards */
@@ -21,7 +21,7 @@ All colors MUST be HSL.
     --popover: 0 0% 98%;
     --popover-foreground: 0 0% 10%;
 
-    --primary: 246 70% 85%; /* Lilac (#C6C9F2) */
+    --primary: 246 70% 90%; /* Lilac (#C6C9F2) */
     --primary-foreground: 0 0% 10%;
 
     --secondary: 163 40% 69%; /* Soft Mint (#90D1BC) */
@@ -45,7 +45,7 @@ All colors MUST be HSL.
 
     --border: 255 25% 77%; /* Lavender Gray (#BEB8D1) */
     --input: 255 25% 77%;
-    --ring: 246 70% 85%;
+    --ring: 246 70% 90%;
 
     --radius: 2rem;
     
@@ -56,14 +56,14 @@ All colors MUST be HSL.
     --blob-peachy: 31 97% 88%;
     --blob-cream: 45 92% 90%;
 
-    --sidebar-background: 246 70% 85%;
+    --sidebar-background: 246 70% 90%;
     --sidebar-foreground: 0 0% 10%;
-    --sidebar-primary: 246 70% 85%;
+    --sidebar-primary: 246 70% 90%;
     --sidebar-primary-foreground: 0 0% 10%;
     --sidebar-accent: 163 40% 69%;
     --sidebar-accent-foreground: 0 0% 10%;
     --sidebar-border: 255 25% 77%;
-    --sidebar-ring: 246 70% 85%;
+    --sidebar-ring: 246 70% 90%;
   }
 
   .dark {
