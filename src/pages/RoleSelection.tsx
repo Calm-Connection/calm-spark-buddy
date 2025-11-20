@@ -18,7 +18,7 @@ export default function RoleSelection() {
     <PageLayout>
       <div className="space-y-8 md:space-y-12 relative">
         <DecorativeIcon icon="sparkles" position="top-right" opacity={0.08} />
-        <div className="text-center space-y-3 md:space-y-4">
+        <div className="text-center space-y-3 md:space-y-4 bg-white/60 dark:bg-white/10 backdrop-blur-sm rounded-3xl border border-white/40 dark:border-white/20 shadow-soft px-8 py-6 md:px-12 md:py-8 transition-all duration-200">
           <h1 className="text-foreground text-3xl md:text-5xl font-bold bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
             WHO'S LOGGING IN?
           </h1>
