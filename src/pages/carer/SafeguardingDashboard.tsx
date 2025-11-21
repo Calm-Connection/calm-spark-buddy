@@ -14,6 +14,8 @@ import { ConversationStartersCard } from '@/components/carer/ConversationStarter
 import { TimelineView } from '@/components/carer/TimelineView';
 import { ResourceLibrary } from '@/components/carer/ResourceLibrary';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
+import { CarerActionGuidance } from '@/components/carer/CarerActionGuidance';
+import { SafeguardingPrinciples } from '@/components/carer/SafeguardingPrinciples';
 
 interface SafeguardingLog {
   id: string;
@@ -234,6 +236,12 @@ export default function SafeguardingDashboard() {
   const conversationStarters = getConversationStarters();
   const timelineEntries = getTimelineEntries();
   const activeThemes = getActiveThemes();
+  
+  // Calculate current and highest escalation tier
+  const currentTier = logs.length > 0 ? (logs[0].escalation_tier || 1) : 0;
+  const highestTier = logs.length > 0 
+    ? Math.max(...logs.map(l => l.escalation_tier || 1))
+    : 0;
 
   if (loading) {
     return (
@@ -311,6 +319,12 @@ export default function SafeguardingDashboard() {
           <div className="grid lg:grid-cols-3 gap-6">
             {/* Main Content Area */}
             <div className="lg:col-span-2 space-y-6">
+              {/* Carer Action Guidance */}
+              <CarerActionGuidance 
+                currentTier={currentTier}
+                highestTier={highestTier}
+              />
+
               {/* Pattern Insights */}
               {patternInsights && (
                 <PatternInsightsCard
@@ -366,8 +380,12 @@ export default function SafeguardingDashboard() {
               </Tabs>
             </div>
 
-            {/* Sidebar - Resource Library */}
-            <div>
+            {/* Sidebar */}
+            <div className="space-y-6">
+              {/* Safeguarding Principles */}
+              <SafeguardingPrinciples />
+              
+              {/* Resource Library */}
               <ResourceLibrary activeThemes={activeThemes} />
             </div>
           </div>
