@@ -11,6 +11,7 @@ import { Loader2 } from 'lucide-react';
 import { applyTheme } from '@/hooks/useTheme';
 import { supabase } from '@/integrations/supabase/client';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
+import { logConsent } from '@/lib/consentLogger';
 
 export default function CarerSignup() {
   const [nickname, setNickname] = useState('');
@@ -97,6 +98,17 @@ export default function CarerSignup() {
       toast({
         title: 'Account created! 🎉',
         description: 'Now let\'s pick your avatar',
+      });
+
+      // Log GDPR consent
+      await logConsent('privacy_policy', 'granted', {
+        signup_type: 'carer'
+      });
+      await logConsent('terms_of_use', 'granted', {
+        signup_type: 'carer'
+      });
+      await logConsent('data_processing', 'granted', {
+        signup_type: 'carer'
       });
 
       navigate('/carer/pick-avatar');

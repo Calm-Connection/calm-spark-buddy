@@ -11,6 +11,7 @@ import { applyTheme } from '@/hooks/useTheme';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
 import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
 import { useContentModeration } from '@/hooks/useContentModeration';
+import { logConsent } from '@/lib/consentLogger';
 
 export default function ChildSignup() {
   const [email, setEmail] = useState('');
@@ -62,6 +63,20 @@ export default function ChildSignup() {
       });
       setLoading(false);
     } else {
+      // Log GDPR consent
+      await logConsent('privacy_policy', 'granted', {
+        signup_type: 'child',
+        linked_parent: linkParent
+      });
+      await logConsent('terms_of_use', 'granted', {
+        signup_type: 'child',
+        linked_parent: linkParent
+      });
+      await logConsent('data_processing', 'granted', {
+        signup_type: 'child',
+        linked_parent: linkParent
+      });
+
       // Store nickname for later
       localStorage.setItem('pendingNickname', nickname);
       
