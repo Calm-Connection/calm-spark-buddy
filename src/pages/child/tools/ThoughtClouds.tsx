@@ -6,6 +6,7 @@ import { ArrowLeft, Cloud, Sun, Sparkles } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { toast } from 'sonner';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
+import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
 
 interface ThoughtCloud {
   id: number;
@@ -195,6 +196,10 @@ export default function ThoughtClouds() {
             💡 Working through feelings helps them feel less scary. You're doing great!
           </p>
         </Card>
+        
+        <div className="mt-4">
+          <DisclaimerCard variant="tool-limitation" size="small" />
+        </div>
       </div>
 
       <BottomNav role="child" />

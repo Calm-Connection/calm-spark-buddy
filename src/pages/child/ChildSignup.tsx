@@ -9,6 +9,8 @@ import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { applyTheme } from '@/hooks/useTheme';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
+import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
+import { useContentModeration } from '@/hooks/useContentModeration';
 
 export default function ChildSignup() {
   const [email, setEmail] = useState('');
@@ -19,6 +21,7 @@ export default function ChildSignup() {
   const { signUp } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { moderateContent } = useContentModeration();
 
   useEffect(() => {
     applyTheme('classic');
@@ -31,6 +34,17 @@ export default function ChildSignup() {
       toast({
         title: 'Invalid nickname',
         description: 'Nickname must be between 3 and 20 characters',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    // Validate nickname doesn't contain real names
+    const moderationResult = await moderateContent(nickname, 'child_nickname');
+    if (!moderationResult.safe) {
+      toast({
+        title: 'Nickname not allowed',
+        description: 'Please choose a nickname that doesn\'t include real names. Try something creative like "StarGazer" or "CozyCloud"!',
         variant: 'destructive',
       });
       return;
@@ -167,6 +181,8 @@ export default function ChildSignup() {
             )}
           </Button>
         </form>
+
+        <DisclaimerCard variant="privacy-sharing" size="small" className="mt-4" />
 
         <Button 
           variant="ghost" 

@@ -9,6 +9,7 @@ import { DecorativeIcon } from '@/components/DecorativeIcon';
 import { useTheme } from 'next-themes';
 import { Moon, Sun } from 'lucide-react';
 import { AccessibilityDialog } from '@/components/AccessibilityDialog';
+import { Footer } from '@/components/Footer';
 
 export default function Welcome() {
   const navigate = useNavigate();
@@ -70,6 +71,8 @@ export default function Welcome() {
           </CardContent>
         </Card>
         </div>
+        
+        <Footer />
       </div>
     </PageLayout>
   );

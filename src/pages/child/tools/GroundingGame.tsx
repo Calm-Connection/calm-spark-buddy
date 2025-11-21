@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/card';
 import { ArrowLeft, Eye, Hand, Ear, Droplet, Apple, Sparkles } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
+import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
 
 type Step = 'intro' | 'see' | 'touch' | 'hear' | 'smell' | 'taste' | 'complete';
 
@@ -170,6 +171,10 @@ export default function GroundingGame() {
             </div>
           </div>
         )}
+      </div>
+
+      <div className="mt-4">
+        <DisclaimerCard variant="tool-limitation" size="small" />
       </div>
 
       <BottomNav role="child" />
