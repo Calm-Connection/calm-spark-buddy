@@ -62,6 +62,10 @@ import SafeguardingDashboard from "./pages/carer/SafeguardingDashboard";
 import PrivacyPolicy from "./pages/carer/PrivacyPolicy";
 import TermsOfUse from "./pages/carer/TermsOfUse";
 import PseudonymPolicy from "./pages/carer/PseudonymPolicy";
+import SafeguardingInfo from "./pages/carer/SafeguardingInfo";
+import TrustAndSafetyFAQ from "./pages/carer/TrustAndSafetyFAQ";
+import PolicyHub from "./pages/carer/PolicyHub";
+import SafetyAndPrivacy from "./pages/child/SafetyAndPrivacy";
 
 // Shared pages
 import Modules from "./pages/shared/Modules";
@@ -160,7 +164,11 @@ function AppRoutes() {
       <Route path="/carer/notification-settings" element={<ProtectedRoute role="carer"><CarerNotificationSettings /></ProtectedRoute>} />
             <Route path="/carer/safeguarding" element={<ProtectedRoute role="carer"><SafeguardingDashboard /></ProtectedRoute>} />
             <Route path="/carer/privacy-policy" element={<PrivacyPolicy />} />
-            <Route path="/carer/terms-of-use" element={<TermsOfUse />} />
+          <Route path="/carer/terms-of-use" element={<TermsOfUse />} />
+          <Route path="/carer/safeguarding-info" element={<SafeguardingInfo />} />
+          <Route path="/carer/trust-safety-faq" element={<TrustAndSafetyFAQ />} />
+          <Route path="/carer/policy-hub" element={<PolicyHub />} />
+          <Route path="/child/safety-privacy" element={<SafetyAndPrivacy />} />
             <Route path="/carer/pseudonym-policy" element={<PseudonymPolicy />} />
       <Route path="/carer/modules" element={<ProtectedRoute role="carer"><Modules /></ProtectedRoute>} />
       <Route path="/carer/modules/:moduleId" element={<ProtectedRoute role="carer"><ModuleDetail /></ProtectedRoute>} />
