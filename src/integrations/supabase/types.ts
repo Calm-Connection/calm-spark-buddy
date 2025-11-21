@@ -175,6 +175,39 @@ export type Database = {
         }
         Relationships: []
       }
+      consent_logs: {
+        Row: {
+          action: string
+          consent_type: string
+          created_at: string | null
+          id: string
+          ip_address: string | null
+          metadata: Json | null
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          action: string
+          consent_type: string
+          created_at?: string | null
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          action?: string
+          consent_type?: string
+          created_at?: string | null
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       coping_tools: {
         Row: {
           age_range: string
@@ -1071,6 +1104,7 @@ export type Database = {
     }
     Functions: {
       claim_invite_code: { Args: { _code: string }; Returns: Json }
+      delete_user_data_after_retention: { Args: never; Returns: undefined }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
@@ -13,8 +13,9 @@ import { useToast } from '@/hooks/use-toast';
 import { useAccessibility, TextSize, FontFamily } from '@/hooks/useAccessibility';
 import { loadSavedTheme, ThemeName } from '@/hooks/useTheme';
 import { useTheme } from 'next-themes';
-import { Settings as SettingsIcon, User, Save, Palette, Accessibility, MessageSquareWarning, Link as LinkIcon, Edit, Bell, CheckCircle, AlertCircle, Loader2, Sun, Moon, FileText, Lock, Shield, UserX } from 'lucide-react';
+import { Settings as SettingsIcon, User, Save, Palette, Accessibility, MessageSquareWarning, Link as LinkIcon, Edit, Bell, CheckCircle, AlertCircle, Loader2, Sun, Moon, FileText, Lock, Shield, UserX, Download, AlertTriangle } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { AvatarDisplay } from '@/components/AvatarDisplay';
 import { AvatarCustomizer } from '@/components/AvatarCustomizer';
 import { ThemeSelector } from '@/components/ThemeSelector';
@@ -22,6 +23,7 @@ import { ReportConcernModal } from '@/components/ReportConcernModal';
 import { FloatingElements } from '@/components/FloatingElements';
 import { AddCarerCodeModal } from '@/components/AddCarerCodeModal';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
+import { exportUserData, deleteUserAccount, getConsentHistory } from '@/lib/consentLogger';
 
 export default function Settings() {
   const navigate = useNavigate();
@@ -44,6 +46,11 @@ export default function Settings() {
   const [avatarHistory, setAvatarHistory] = useState<any[]>([]);
   const [disconnectModalOpen, setDisconnectModalOpen] = useState(false);
   const [disconnecting, setDisconnecting] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [consentHistoryOpen, setConsentHistoryOpen] = useState(false);
+  const [consentHistory, setConsentHistory] = useState<any[]>([]);
+  const [isExporting, setIsExporting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -185,6 +192,60 @@ export default function Settings() {
       });
     } finally {
       setDisconnecting(false);
+    }
+  };
+
+  const handleExportData = async () => {
+    setIsExporting(true);
+    const result = await exportUserData();
+    setIsExporting(false);
+    
+    if (result.success) {
+      toast({
+        title: "Data exported",
+        description: "Your data has been downloaded successfully.",
+      });
+    } else {
+      toast({
+        title: "Export failed",
+        description: "Unable to export your data. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    setIsDeleting(true);
+    const result = await deleteUserAccount();
+    setIsDeleting(false);
+    setDeleteDialogOpen(false);
+    
+    if (result.success) {
+      toast({
+        title: "Account deletion requested",
+        description: "Your data will be permanently deleted in 30 days.",
+      });
+      navigate('/');
+    } else {
+      toast({
+        title: "Deletion failed",
+        description: "Unable to delete your account. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleViewConsentHistory = async () => {
+    const result = await getConsentHistory();
+    if (result.data) {
+      setConsentHistory(result.data);
+      setConsentHistoryOpen(true);
+    } else {
+      toast({
+        title: "Error",
+        description: "Unable to load consent history.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -585,6 +646,61 @@ export default function Settings() {
           </div>
         </Card>
 
+        {/* Data & Privacy (GDPR Compliance) */}
+        <Card className="p-6">
+          <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+            <Shield className="h-5 w-5" />
+            Data & Privacy
+          </h2>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="space-y-0.5">
+                <Label>Export My Data</Label>
+                <p className="text-sm text-muted-foreground">Download all your data in JSON format</p>
+              </div>
+              <Button
+                onClick={handleExportData}
+                disabled={isExporting}
+                variant="outline"
+                size="sm"
+              >
+                <Download className="w-4 h-4 mr-2" />
+                {isExporting ? "Exporting..." : "Export"}
+              </Button>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div className="space-y-0.5">
+                <Label>Consent History</Label>
+                <p className="text-sm text-muted-foreground">View your privacy consent records</p>
+              </div>
+              <Button
+                onClick={handleViewConsentHistory}
+                variant="outline"
+                size="sm"
+              >
+                <FileText className="w-4 h-4 mr-2" />
+                View History
+              </Button>
+            </div>
+
+            <div className="flex items-center justify-between pt-4 border-t">
+              <div className="space-y-0.5">
+                <Label className="text-destructive">Delete My Account</Label>
+                <p className="text-sm text-muted-foreground">Permanently delete your account and all data</p>
+              </div>
+              <Button
+                onClick={() => setDeleteDialogOpen(true)}
+                variant="destructive"
+                size="sm"
+              >
+                <AlertTriangle className="w-4 h-4 mr-2" />
+                Delete Account
+              </Button>
+            </div>
+          </div>
+        </Card>
+
         {/* Legal & Privacy */}
         <Card className="p-6">
           <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
@@ -723,6 +839,87 @@ export default function Settings() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Delete Account Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-destructive">Delete Account Permanently?</AlertDialogTitle>
+            <AlertDialogDescription className="space-y-2">
+              <p className="font-semibold">This action cannot be undone.</p>
+              <ul className="list-disc list-inside space-y-1 text-sm">
+                <li>Your account will be immediately deactivated</li>
+                <li>All data will be permanently deleted after 30 days</li>
+                <li>This includes journal entries, moods, and settings</li>
+                <li>You will need to create a new account to use the app again</li>
+              </ul>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteAccount}
+              disabled={isDeleting}
+              className="bg-destructive hover:bg-destructive/90"
+            >
+              {isDeleting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Deleting...
+                </>
+              ) : (
+                'Yes, Delete My Account'
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Consent History Dialog */}
+      <Dialog open={consentHistoryOpen} onOpenChange={setConsentHistoryOpen}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Consent History</DialogTitle>
+            <DialogDescription>
+              Your privacy consent records as required by GDPR
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            {consentHistory.length === 0 ? (
+              <p className="text-muted-foreground text-center py-8">
+                No consent records found
+              </p>
+            ) : (
+              consentHistory.map((record) => (
+                <Card key={record.id} className="p-4">
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    <div>
+                      <p className="text-muted-foreground">Type</p>
+                      <p className="font-medium capitalize">{record.consent_type.replace('_', ' ')}</p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground">Action</p>
+                      <p className="font-medium capitalize">{record.action}</p>
+                    </div>
+                    <div className="col-span-2">
+                      <p className="text-muted-foreground">Date</p>
+                      <p className="font-medium">
+                        {new Date(record.created_at).toLocaleString()}
+                      </p>
+                    </div>
+                    {record.user_agent && (
+                      <div className="col-span-2">
+                        <p className="text-muted-foreground">Device</p>
+                        <p className="font-medium text-xs truncate">{record.user_agent}</p>
+                      </div>
+                    )}
+                  </div>
+                </Card>
+              ))
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
