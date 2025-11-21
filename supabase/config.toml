@@ -20,3 +20,6 @@ verify_jwt = false
 
 [functions.generate-avatar-assets]
 verify_jwt = true
+
+[functions.validate-username]
+verify_jwt = false
