@@ -8,6 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
+import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
 
 const breathingExercises = [
   {
@@ -315,6 +316,10 @@ export default function BreathingSpace() {
             💡 Tip: Try different breathing worlds to find what helps you feel calmest
           </p>
         </Card>
+        
+        <div className="mt-4">
+          <DisclaimerCard variant="tool-limitation" size="small" />
+        </div>
       </div>
 
       <BottomNav role="child" />

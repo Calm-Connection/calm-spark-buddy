@@ -17,6 +17,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Loader2, Sparkles, Pencil, Mic, Palette, StopCircle } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useNotificationTrigger } from '@/hooks/useNotificationTrigger';
+import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
 
 const moods = ['happy', 'sad', 'angry', 'worried', 'calm', 'excited', 'scared'] as const;
 type MoodType = typeof moods[number];
@@ -573,19 +574,25 @@ export default function JournalEntry() {
         onShare={handleShareFromCheckIn}
       />
 
-      {showToolSuggestion && (
-        <div className="fixed bottom-24 left-0 right-0 px-4 z-50 animate-fade-in">
-          <ToolSuggestionCard
-            message={toolMessage}
-            suggestedTools={suggestedTools}
-            onDismiss={() => {
-              setShowToolSuggestion(false);
-              navigate('/child/home');
-            }}
-            onSelectTool={handleToolSelection}
-          />
+          {showToolSuggestion && (
+            <div className="fixed bottom-24 left-0 right-0 px-4 z-50 animate-fade-in">
+              <ToolSuggestionCard
+                message={toolMessage}
+                suggestedTools={suggestedTools}
+                onDismiss={() => {
+                  setShowToolSuggestion(false);
+                  navigate('/child/home');
+                }}
+                onSelectTool={handleToolSelection}
+              />
+            </div>
+          )}
+
+          {/* Disclaimers */}
+          <div className="max-w-2xl mx-auto mt-8 space-y-4">
+            <DisclaimerCard variant="tool-limitation" size="small" />
+            <DisclaimerCard variant="privacy-sharing" size="small" />
+          </div>
         </div>
-      )}
-    </div>
-  );
-}
+      );
+    }

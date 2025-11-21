@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/card';
 import { ArrowLeft, Heart, Sparkles } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
+import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
 
 const calmColors = [
   { name: 'Ocean Blue', hsl: 'hsl(200, 70%, 75%)', emoji: '🌊' },
@@ -193,6 +194,10 @@ export default function ColourCalm() {
                 💡 Your mind is powerful! Visualizing calm colors can help your body relax.
               </p>
             </Card>
+            
+            <div className="mt-4">
+              <DisclaimerCard variant="tool-limitation" size="small" />
+            </div>
           </div>
         )}
       </div>

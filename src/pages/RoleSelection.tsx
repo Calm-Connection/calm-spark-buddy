@@ -5,6 +5,7 @@ import { PageLayout } from '@/components/PageLayout';
 import { useEffect } from 'react';
 import { applyTheme } from '@/hooks/useTheme';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
+import { Footer } from '@/components/Footer';
 
 export default function RoleSelection() {
   const navigate = useNavigate();
@@ -66,6 +67,8 @@ export default function RoleSelection() {
         <p className="text-center text-xs md:text-sm text-foreground/60">
           A safe space to grow emotionally together 💜
         </p>
+        
+        <Footer />
       </div>
     </PageLayout>
   );

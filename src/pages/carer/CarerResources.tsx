@@ -12,7 +12,10 @@ import {
   Wind, 
   Sparkles,
   GraduationCap,
-  CheckCircle2
+  CheckCircle2,
+  Shield,
+  FileText,
+  Lock
 } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
@@ -236,6 +239,57 @@ export default function CarerResources() {
               ))}
             </ul>
           </Card>
+        </div>
+
+        {/* Policies & Trust Section */}
+        <div>
+          <h2 className="text-xl font-bold mb-3">Policies & Trust 🔒</h2>
+          <div className="grid gap-3">
+            <Card 
+              className="p-5 cursor-pointer hover:bg-accent/10 transition-colors" 
+              onClick={() => navigate('/carer/privacy-policy')}
+            >
+              <div className="flex items-center gap-4">
+                <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                  <Lock className="h-6 w-6 text-primary" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold mb-1">Privacy Policy</h3>
+                  <p className="text-sm text-muted-foreground">How we protect and use your data</p>
+                </div>
+              </div>
+            </Card>
+            
+            <Card 
+              className="p-5 cursor-pointer hover:bg-accent/10 transition-colors" 
+              onClick={() => navigate('/carer/terms-of-use')}
+            >
+              <div className="flex items-center gap-4">
+                <div className="h-12 w-12 rounded-full bg-secondary/20 flex items-center justify-center flex-shrink-0">
+                  <FileText className="h-6 w-6 text-secondary" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold mb-1">Terms of Use</h3>
+                  <p className="text-sm text-muted-foreground">Guidelines for using Calm Connection</p>
+                </div>
+              </div>
+            </Card>
+            
+            <Card 
+              className="p-5 cursor-pointer hover:bg-accent/10 transition-colors" 
+              onClick={() => navigate('/carer/safeguarding-info')}
+            >
+              <div className="flex items-center gap-4">
+                <div className="h-12 w-12 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0">
+                  <Shield className="h-6 w-6 text-accent" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold mb-1">Safeguarding & Safety</h3>
+                  <p className="text-sm text-muted-foreground">How we protect children's wellbeing</p>
+                </div>
+              </div>
+            </Card>
+          </div>
         </div>
 
         {/* Encouragement */}

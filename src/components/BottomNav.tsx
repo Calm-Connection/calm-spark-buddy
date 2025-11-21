@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, BookOpen, AlertCircle, Wrench, Brain, Sparkles } from 'lucide-react';
+import { Home, BookOpen, AlertCircle, Wrench, Brain, Sparkles, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { HelplineModal } from './HelplineModal';
 
@@ -23,6 +23,7 @@ export function BottomNav({ role }: BottomNavProps) {
         { icon: BookOpen, label: 'Journal', path: '/carer/journal' },
         { icon: Brain, label: 'Insights', path: '/carer/insights' },
         { icon: Sparkles, label: 'Resources', path: '/carer/resources' },
+        { icon: Info, label: 'Info', path: '/carer/policy-hub' },
       ];
 
   return (

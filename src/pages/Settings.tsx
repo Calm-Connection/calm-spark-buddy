@@ -13,7 +13,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useAccessibility, TextSize, FontFamily } from '@/hooks/useAccessibility';
 import { loadSavedTheme, ThemeName } from '@/hooks/useTheme';
 import { useTheme } from 'next-themes';
-import { Settings as SettingsIcon, User, Save, Palette, Accessibility, MessageSquareWarning, Link as LinkIcon, Edit, Bell, CheckCircle, AlertCircle, Loader2, Sun, Moon } from 'lucide-react';
+import { Settings as SettingsIcon, User, Save, Palette, Accessibility, MessageSquareWarning, Link as LinkIcon, Edit, Bell, CheckCircle, AlertCircle, Loader2, Sun, Moon, FileText, Lock, Shield, UserX } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { AvatarDisplay } from '@/components/AvatarDisplay';
 import { AvatarCustomizer } from '@/components/AvatarCustomizer';
@@ -581,6 +581,48 @@ export default function Settings() {
             >
               <MessageSquareWarning className="h-4 w-4 mr-2" />
               Report a Concern
+            </Button>
+          </div>
+        </Card>
+
+        {/* Legal & Privacy */}
+        <Card className="p-6">
+          <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+            <FileText className="h-5 w-5" />
+            Legal & Privacy
+          </h2>
+          <div className="space-y-2">
+            <Button
+              variant="outline"
+              className="w-full justify-start"
+              onClick={() => navigate('/carer/privacy-policy')}
+            >
+              <Lock className="h-4 w-4 mr-2" />
+              Privacy Policy
+            </Button>
+            <Button
+              variant="outline"
+              className="w-full justify-start"
+              onClick={() => navigate('/carer/terms-of-use')}
+            >
+              <FileText className="h-4 w-4 mr-2" />
+              Terms of Use
+            </Button>
+            <Button
+              variant="outline"
+              className="w-full justify-start"
+              onClick={() => navigate('/carer/safeguarding-info')}
+            >
+              <Shield className="h-4 w-4 mr-2" />
+              Safeguarding Information
+            </Button>
+            <Button
+              variant="outline"
+              className="w-full justify-start"
+              onClick={() => navigate('/carer/pseudonym-policy')}
+            >
+              <UserX className="h-4 w-4 mr-2" />
+              Pseudonym Policy
             </Button>
           </div>
         </Card>

@@ -6,6 +6,7 @@ import { ArrowLeft, Sparkles, Smile, Frown, Heart } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { toast } from 'sonner';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
+import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
 
 const reflectionPrompts = [
   { prompt: "What made you smile today?", emoji: "😊", type: "positive" },
@@ -202,6 +203,10 @@ export default function GentleReflections() {
                 💡 Regular reflection helps you understand your emotions better. You're doing great!
               </p>
             </Card>
+            
+            <div className="mt-4">
+              <DisclaimerCard variant="tool-limitation" size="small" />
+            </div>
           </div>
         )}
       </div>

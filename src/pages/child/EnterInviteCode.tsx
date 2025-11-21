@@ -9,6 +9,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Loader2 } from 'lucide-react';
 import { PageLayout } from '@/components/PageLayout';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
+import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
 
 interface ClaimInviteCodeResult {
   success: boolean;
@@ -159,6 +160,8 @@ export default function EnterInviteCode() {
           >
             Skip for now
           </Button>
+
+          <DisclaimerCard variant="parent-monitoring" size="small" className="mt-4" />
         </CardContent>
       </Card>
     </PageLayout>

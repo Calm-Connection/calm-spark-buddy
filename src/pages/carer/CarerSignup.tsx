@@ -193,7 +193,39 @@ export default function CarerSignup() {
               htmlFor="privacy"
               className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             >
-              I have read and accept the privacy and safeguarding notice
+              I have read and accept the{' '}
+              <Button
+                variant="link"
+                className="h-auto p-0 text-sm underline"
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.open('/carer/privacy-policy', '_blank');
+                }}
+              >
+                Privacy Policy
+              </Button>
+              ,{' '}
+              <Button
+                variant="link"
+                className="h-auto p-0 text-sm underline"
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.open('/carer/terms-of-use', '_blank');
+                }}
+              >
+                Terms of Use
+              </Button>
+              , and{' '}
+              <Button
+                variant="link"
+                className="h-auto p-0 text-sm underline"
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.open('/carer/safeguarding-info', '_blank');
+                }}
+              >
+                Safeguarding Policy
+              </Button>
             </label>
           </div>
 
