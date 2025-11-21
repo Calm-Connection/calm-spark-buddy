@@ -60,7 +60,16 @@ const notificationMessages = {
       { title: "Parenting support", body: "New guide: Supporting your child through difficult emotions." },
     ],
     safeguarding_alert: [
-      { title: "Attention needed", body: "Calm Connection has detected a reflection that may need your attention. Please check your dashboard." },
+      { 
+        title: "Attention needed", 
+        body: "Calm Connection has detected a reflection that may need your attention. Please check your dashboard.\n\n24/7 Support:\nChildLine: 0800 1111\nSamaritans: 116 123\nShout Crisis Text: Text SHOUT to 85258" 
+      },
+    ],
+    crisis_support: [
+      {
+        title: "Support available 24/7",
+        body: "If you or your child need immediate support:\n\nChildLine: 0800 1111\nSamaritans: 116 123\nShout Crisis: Text SHOUT to 85258\nNSPCC: 0808 800 5000"
+      },
     ],
   },
 };
@@ -320,8 +329,8 @@ Deno.serve(async (req) => {
                     user_id: carer.user_id,
                     notification_type: 'engagement_reminder',
                     notification_content: JSON.stringify({
-                      title: 'Gentle check-in reminder',
-                      body: `${child.nickname || 'Your child'} hasn't checked in for ${daysSinceLastEntry} days. It might be a good time to see how they're doing.`,
+                      title: 'Gentle check-in reminder 💙',
+                      body: `${child.nickname || 'Your child'} hasn't checked in for ${daysSinceLastEntry} days. A simple "How are you?" can open the door to connection.\n\nRemember: Their wellbeing matters, and so does giving them space to share when ready.`,
                     }),
                   });
                   notificationsSent++;
@@ -383,8 +392,8 @@ Deno.serve(async (req) => {
                   user_id: carer.user_id,
                   notification_type: 'insights_summary',
                   notification_content: JSON.stringify({
-                    title: `${child.nickname}'s weekly wellbeing summary`,
-                    body: `Mood trend: ${moodTrend}. ${topThemes.length > 0 ? `Recurring themes: ${topThemes.join(', ')}.` : ''} ${weeklyInsights.length} reflections this week.`,
+                    title: `${child.nickname}'s weekly wellbeing summary 🌟`,
+                    body: `Mood trend: ${moodTrend}. ${topThemes.length > 0 ? `Recurring themes: ${topThemes.join(', ')}.` : ''} ${weeklyInsights.length} reflections this week.\n\nRemember: These insights support connection, not surveillance. Use them to understand, not to judge.`,
                   }),
                 });
                 notificationsSent++;

@@ -103,7 +103,8 @@ serve(async (req) => {
         JSON.stringify({ 
           safe: false, 
           category: keywordResult.category,
-          message: "Let's keep it kind and creative! Try describing your character another way."
+          message: "Let's keep it kind and creative! Try describing your character another way.",
+          principle: "We want to keep Calm Connection a safe space for everyone. Your creativity is valued!"
         }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
@@ -116,7 +117,15 @@ serve(async (req) => {
     }
 
     const moderationPrompt = `You are a child safety moderator for a kids' app (ages 7-16). 
-Analyze this text for ANY inappropriate content including profanity, sexual content, violence, 
+
+SAFEGUARDING PRINCIPLES (Doc 13):
+- Transparency: Clear, honest communication about content safety
+- Proportionality: Balance safety with freedom of expression
+- Dignity: Respectful feedback that doesn't shame the child
+- Empowerment: Help children understand safe self-expression
+- Non-discrimination: Fair, unbiased content assessment
+
+Analyze this text for inappropriate content including profanity, sexual content, violence, 
 hate speech, drug references, or personal information.
 
 SPELLING CONSIDERATIONS:
@@ -124,6 +133,11 @@ SPELLING CONSIDERATIONS:
 - BUT catch intentional misspellings used to bypass filters (e.g., "f*ck", "sh1t", "a$$")
 - Use context to determine intent - is this an innocent typo or deliberate bypass?
 - Phonetic spellings of normal words are safe (e.g., "skared" for "scared")
+
+DIGNITY & EMPOWERMENT:
+- Assess content fairly without judgment
+- Consider developmental stage (ages 7-16)
+- Focus on actual harm vs. awkward expression
 
 Text to analyze: "${text}"
 
@@ -136,8 +150,7 @@ Respond with ONLY valid JSON in this exact format:
 }
 
 Categories: "profanity", "sexual", "violence", "hate_speech", "drugs", "personal_info", or "safe"
-Be STRICT about inappropriate content. If there's any doubt, mark as unsafe with the appropriate category.
-However, be FORGIVING of innocent spelling mistakes - focus on detecting actual inappropriate intent.`;
+Be STRICT about inappropriate content while respecting dignity and proportionality.`;
 
     const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
@@ -216,7 +229,10 @@ However, be FORGIVING of innocent spelling mistakes - focus on detecting actual 
         confidence: aiResult.confidence,
         message: aiResult.safe 
           ? "Content is appropriate" 
-          : "Let's keep it kind and creative! Try describing your character another way."
+          : "Let's keep it kind and creative! Try describing your character another way.",
+        principle: aiResult.safe 
+          ? null 
+          : "We want to keep Calm Connection a safe, respectful space. Your creativity matters!"
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
