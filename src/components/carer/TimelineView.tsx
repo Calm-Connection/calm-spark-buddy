@@ -20,17 +20,24 @@ interface TimelineViewProps {
 
 export function TimelineView({ entries }: TimelineViewProps) {
   const getTierColor = (tier: number) => {
-    if (tier === 4) return 'bg-accent/20 border-accent/50';
-    if (tier === 3) return 'bg-primary/20 border-primary/50';
-    if (tier === 2) return 'bg-interactive-accent/20 border-interactive-accent/50';
-    return 'bg-muted/50 border-muted';
+    if (tier === 4) return 'bg-destructive/20 border-destructive/50';
+    if (tier === 3) return 'bg-accent/20 border-accent/50';
+    if (tier === 2) return 'bg-interactive-warning/20 border-interactive-warning/50';
+    return 'bg-interactive-accent/20 border-interactive-accent/50';
   };
 
   const getTierLabel = (tier: number) => {
-    if (tier === 4) return 'Needs Your Attention Soon 💜';
-    if (tier === 3) return 'Keep a Gentle Eye On 🌸';
-    if (tier === 2) return 'Positive Check-In 🌿';
-    return 'All Good 💚';
+    if (tier === 4) return 'High Concern';
+    if (tier === 3) return 'Elevated Concern';
+    if (tier === 2) return 'Moderate Concern';
+    return 'Low Concern';
+  };
+
+  const getTierBadgeVariant = (tier: number): "tier1" | "tier2" | "tier3" | "tier4" => {
+    if (tier === 4) return 'tier4';
+    if (tier === 3) return 'tier3';
+    if (tier === 2) return 'tier2';
+    return 'tier1';
   };
 
   const getTierIcon = (tier: number) => {
@@ -70,9 +77,14 @@ export function TimelineView({ entries }: TimelineViewProps) {
                 <div className="space-y-3">
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <Badge variant="outline" className="mb-2">
-                        {getTierLabel(entry.tier)}
-                      </Badge>
+                      <div className="flex items-center gap-2 mb-2">
+                        <Badge variant={getTierBadgeVariant(entry.tier)}>
+                          Tier {entry.tier}
+                        </Badge>
+                        <span className="text-sm font-medium text-muted-foreground">
+                          {getTierLabel(entry.tier)}
+                        </span>
+                      </div>
                       <p className="text-xs text-muted-foreground">
                         {format(new Date(entry.date), 'EEEE, MMMM d, yyyy')}
                       </p>
