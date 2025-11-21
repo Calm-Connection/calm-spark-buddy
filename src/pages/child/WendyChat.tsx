@@ -10,6 +10,8 @@ import { Sparkles, Send, Loader2, Lightbulb } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
+import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
+import { CrisisSupportModal } from '@/components/CrisisSupportModal';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -36,6 +38,7 @@ export default function WendyChat() {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [expandedTool, setExpandedTool] = useState<string | null>(null);
+  const [showCrisisModal, setShowCrisisModal] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
@@ -54,6 +57,13 @@ export default function WendyChat() {
     setInput('');
     setMessages((prev) => [...prev, { role: 'user', content: userMessage }]);
     setIsLoading(true);
+
+    // Check for crisis keywords
+    const crisisKeywords = ['suicide', 'kill myself', 'want to die', 'hurt myself', 'self harm', 'end my life'];
+    const inputLower = userMessage.toLowerCase();
+    if (crisisKeywords.some(keyword => inputLower.includes(keyword))) {
+      setShowCrisisModal(true);
+    }
 
     try {
       const response = await fetch(
@@ -298,6 +308,11 @@ export default function WendyChat() {
       </div>
 
       <INeedHelpButton />
+      <CrisisSupportModal 
+        open={showCrisisModal} 
+        onOpenChange={setShowCrisisModal}
+        triggerReason="keywords"
+      />
     </div>
   );
 }
