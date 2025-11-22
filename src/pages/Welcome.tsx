@@ -43,14 +43,18 @@ export default function Welcome() {
             <Logo size="lg" />
           </div>
           
-          {/* Welcome & Get Started - No Card Background */}
-          <div className="space-y-8">
+        {/* Welcome & Get Started - WITH Card Background (restored) */}
+        <Card className="relative overflow-hidden backdrop-blur-sm bg-card/80 border border-border shadow-xl max-w-2xl mx-auto">
+          <DecorativeIcon icon="sparkles" position="top-right" opacity={0.05} />
+          <DecorativeIcon icon="leaf" position="bottom-left" opacity={0.05} />
+          
+          <CardContent className="p-8 md:p-12 space-y-8">
             <div className="space-y-4">
               <h1 className="text-foreground text-3xl md:text-5xl bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
                 WELCOME!
               </h1>
               
-              <p className="text-base md:text-xl text-foreground/80 max-w-2xl mx-auto">
+              <p className="text-base md:text-xl text-foreground/80">
                 A gentle, nurturing space where children and carers grow emotionally together
               </p>
             </div>
@@ -60,7 +64,7 @@ export default function Welcome() {
               onClick={() => navigate('/role-selection')}
               variant="gradient"
               size="lg"
-              className="hover:scale-[1.02] transition-all duration-200"
+              className="hover:scale-[1.02] transition-all duration-200 w-full"
             >
               GET STARTED
             </Button>
@@ -69,19 +73,8 @@ export default function Welcome() {
             <p className="text-base text-foreground/60">
               A safe space to share feelings, explore emotions, and connect 💜
             </p>
-          </div>
-
-          {/* Learn More Button - Separate, Below */}
-          <div className="pt-8">
-            <Button 
-              onClick={() => navigate('/learn-more')}
-              variant="outline"
-              size="lg"
-              className="hover:scale-[1.02] transition-all duration-200"
-            >
-              LEARN MORE
-            </Button>
-          </div>
+          </CardContent>
+        </Card>
         </div>
         
         <Footer />
