@@ -56,14 +56,24 @@ export default function Welcome() {
               </p>
             </div>
 
-            <Button 
-              onClick={() => navigate('/role-selection')}
-              variant="gradient"
-              size="lg"
-              className="w-full hover:scale-[1.02] transition-all duration-200"
-            >
-              GET STARTED
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Button 
+                onClick={() => navigate('/role-selection')}
+                variant="gradient"
+                size="lg"
+                className="flex-1 hover:scale-[1.02] transition-all duration-200"
+              >
+                GET STARTED
+              </Button>
+              <Button 
+                onClick={() => navigate('/about')}
+                variant="outline"
+                size="lg"
+                className="flex-1 hover:scale-[1.02] transition-all duration-200"
+              >
+                LEARN MORE
+              </Button>
+            </div>
 
             <p className="text-base text-foreground/60">
               A safe space to share feelings, explore emotions, and connect 💜

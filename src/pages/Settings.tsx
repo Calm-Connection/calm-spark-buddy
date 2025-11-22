@@ -23,7 +23,8 @@ import { ReportConcernModal } from '@/components/ReportConcernModal';
 import { FloatingElements } from '@/components/FloatingElements';
 import { AddCarerCodeModal } from '@/components/AddCarerCodeModal';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
-import { exportUserData, deleteUserAccount, getConsentHistory } from '@/lib/consentLogger';
+import { exportUserData, deleteUserAccount, getConsentHistory, withdrawConsent } from '@/lib/consentLogger';
+import { Badge } from '@/components/ui/badge';
 
 export default function Settings() {
   const navigate = useNavigate();
@@ -51,6 +52,7 @@ export default function Settings() {
   const [consentHistory, setConsentHistory] = useState<any[]>([]);
   const [isExporting, setIsExporting] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [withdrawingConsent, setWithdrawingConsent] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -247,6 +249,42 @@ export default function Settings() {
         variant: "destructive",
       });
     }
+  };
+
+  const handleWithdrawConsent = async (consentType: string) => {
+    setWithdrawingConsent(consentType);
+    const result = await withdrawConsent(consentType as any);
+    setWithdrawingConsent(null);
+
+    if (result.success) {
+      toast({
+        title: "Consent withdrawn",
+        description: "You can re-grant this consent at any time in your settings.",
+      });
+      // Refresh consent history
+      const updatedResult = await getConsentHistory();
+      if (updatedResult.data) {
+        setConsentHistory(updatedResult.data);
+      }
+    } else {
+      toast({
+        title: "Unable to withdraw",
+        description: result.error?.toString() || "This consent cannot be withdrawn.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const getConsentStatus = (consentType: string) => {
+    const latestConsent = consentHistory
+      .filter(c => c.consent_type === consentType)
+      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0];
+    
+    return latestConsent?.action === 'withdrawn' ? 'withdrawn' : 'active';
+  };
+
+  const isMandatoryConsent = (consentType: string) => {
+    return ['privacy_policy', 'terms_of_use', 'data_processing'].includes(consentType);
   };
 
   return (
@@ -877,45 +915,104 @@ export default function Settings() {
 
       {/* Consent History Dialog */}
       <Dialog open={consentHistoryOpen} onOpenChange={setConsentHistoryOpen}>
-        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Consent History</DialogTitle>
+            <DialogTitle>Consent History & Management</DialogTitle>
             <DialogDescription>
-              Your privacy consent records as required by GDPR
+              Your privacy consent records as required by GDPR. You can withdraw optional consents at any time.
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4">
+          <div className="space-y-6">
             {consentHistory.length === 0 ? (
               <p className="text-muted-foreground text-center py-8">
                 No consent records found
               </p>
             ) : (
-              consentHistory.map((record) => (
-                <Card key={record.id} className="p-4">
-                  <div className="grid grid-cols-2 gap-2 text-sm">
-                    <div>
-                      <p className="text-muted-foreground">Type</p>
-                      <p className="font-medium capitalize">{record.consent_type.replace('_', ' ')}</p>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground">Action</p>
-                      <p className="font-medium capitalize">{record.action}</p>
-                    </div>
-                    <div className="col-span-2">
-                      <p className="text-muted-foreground">Date</p>
-                      <p className="font-medium">
-                        {new Date(record.created_at).toLocaleString()}
-                      </p>
-                    </div>
-                    {record.user_agent && (
-                      <div className="col-span-2">
-                        <p className="text-muted-foreground">Device</p>
-                        <p className="font-medium text-xs truncate">{record.user_agent}</p>
+              <>
+                {/* Group by consent type */}
+                {Array.from(new Set(consentHistory.map(c => c.consent_type))).map((consentType) => {
+                  const records = consentHistory.filter(c => c.consent_type === consentType);
+                  const status = getConsentStatus(consentType);
+                  const isMandatory = isMandatoryConsent(consentType);
+                  const latestRecord = records[0];
+
+                  return (
+                    <Card key={consentType} className="p-4">
+                      <div className="space-y-4">
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-2">
+                              <h3 className="font-bold capitalize">
+                                {consentType.replace(/_/g, ' ')}
+                              </h3>
+                              <Badge variant={status === 'active' ? 'default' : 'secondary'}>
+                                {status === 'active' ? '✓ Active' : 'Withdrawn'}
+                              </Badge>
+                              {isMandatory && (
+                                <Badge variant="outline">Required</Badge>
+                              )}
+                            </div>
+                            <p className="text-sm text-muted-foreground">
+                              Last updated: {new Date(latestRecord.created_at).toLocaleDateString()}
+                            </p>
+                          </div>
+                          
+                          {!isMandatory && status === 'active' && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleWithdrawConsent(consentType)}
+                              disabled={withdrawingConsent === consentType}
+                              className="border-amber-200 text-amber-700 hover:bg-amber-50 dark:border-amber-900 dark:text-amber-400"
+                            >
+                              {withdrawingConsent === consentType ? (
+                                <>
+                                  <Loader2 className="mr-2 h-3 w-3 animate-spin" />
+                                  Withdrawing...
+                                </>
+                              ) : (
+                                'Withdraw Consent'
+                              )}
+                            </Button>
+                          )}
+
+                          {!isMandatory && status === 'withdrawn' && (
+                            <p className="text-sm text-muted-foreground">
+                              Contact support to re-grant
+                            </p>
+                          )}
+
+                          {isMandatory && (
+                            <p className="text-xs text-muted-foreground text-right max-w-[200px]">
+                              Required for app functionality
+                            </p>
+                          )}
+                        </div>
+
+                        {/* History of actions */}
+                        {records.length > 1 && (
+                          <details className="text-sm">
+                            <summary className="cursor-pointer text-muted-foreground hover:text-foreground">
+                              View history ({records.length} records)
+                            </summary>
+                            <div className="mt-3 space-y-2 pl-4 border-l-2">
+                              {records.map((record) => (
+                                <div key={record.id} className="text-xs">
+                                  <span className="font-medium capitalize">{record.action}</span>
+                                  {' - '}
+                                  <span className="text-muted-foreground">
+                                    {new Date(record.created_at).toLocaleString()}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          </details>
+                        )}
                       </div>
-                    )}
-                  </div>
-                </Card>
-              ))
+                    </Card>
+                  );
+                })}
+              </>
             )}
           </div>
         </DialogContent>
