@@ -38,48 +38,50 @@ export default function Welcome() {
         </Button>
 
         <div className="text-center space-y-12">
-        <div className="flex justify-center">
-          <Logo size="lg" />
-        </div>
-        
-        <Card className="shadow-soft-lg border-interactive-accent/20 relative overflow-hidden">
-          <DecorativeIcon icon="sparkles" position="top-right" opacity={0.1} />
-          <DecorativeIcon icon="leaf" position="bottom-left" opacity={0.08} />
-          <CardContent className="space-y-8">
+          {/* Logo */}
+          <div className="flex justify-center">
+            <Logo size="lg" />
+          </div>
+          
+          {/* Welcome & Get Started - No Card Background */}
+          <div className="space-y-8">
             <div className="space-y-4">
               <h1 className="text-foreground text-3xl md:text-5xl bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
                 WELCOME!
               </h1>
               
-              <p className="text-base md:text-xl text-foreground/80">
+              <p className="text-base md:text-xl text-foreground/80 max-w-2xl mx-auto">
                 A gentle, nurturing space where children and carers grow emotionally together
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Button 
-                onClick={() => navigate('/role-selection')}
-                variant="gradient"
-                size="lg"
-                className="flex-1 hover:scale-[1.02] transition-all duration-200"
-              >
-                GET STARTED
-              </Button>
-              <Button 
-                onClick={() => navigate('/about')}
-                variant="outline"
-                size="lg"
-                className="flex-1 hover:scale-[1.02] transition-all duration-200"
-              >
-                LEARN MORE
-              </Button>
-            </div>
+            {/* Get Started Button */}
+            <Button 
+              onClick={() => navigate('/role-selection')}
+              variant="gradient"
+              size="lg"
+              className="hover:scale-[1.02] transition-all duration-200"
+            >
+              GET STARTED
+            </Button>
 
+            {/* Tagline */}
             <p className="text-base text-foreground/60">
               A safe space to share feelings, explore emotions, and connect 💜
             </p>
-          </CardContent>
-        </Card>
+          </div>
+
+          {/* Learn More Button - Separate, Below */}
+          <div className="pt-8">
+            <Button 
+              onClick={() => navigate('/learn-more')}
+              variant="outline"
+              size="lg"
+              className="hover:scale-[1.02] transition-all duration-200"
+            >
+              LEARN MORE
+            </Button>
+          </div>
         </div>
         
         <Footer />

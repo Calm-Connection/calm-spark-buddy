@@ -3,11 +3,9 @@ import { Shield, FileText, UserX, Lock, Mail } from 'lucide-react';
 
 export function Footer() {
   const links = [
-    { to: '/about', label: 'About', icon: FileText },
-    { to: '/carer/privacy-policy', label: 'Privacy', icon: Lock },
-    { to: '/carer/terms-of-use', label: 'Terms', icon: FileText },
-    { to: '/carer/safeguarding-info', label: 'Safeguarding', icon: Shield },
-    { to: '/carer/pseudonym-policy', label: 'Pseudonyms', icon: UserX },
+    { to: '/learn-more', label: 'Learn More', icon: FileText },
+    { to: '/learn-more#privacy', label: 'Privacy', icon: Lock },
+    { to: '/learn-more#safeguarding', label: 'Safeguarding', icon: Shield },
   ];
 
   return (
