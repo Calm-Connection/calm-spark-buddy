@@ -67,6 +67,43 @@ export async function getConsentHistory() {
 }
 
 /**
+ * Withdraw a specific consent
+ */
+export async function withdrawConsent(
+  consentType: ConsentType,
+  reason?: string
+) {
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      throw new Error("User not authenticated");
+    }
+
+    // Mandatory consents that cannot be withdrawn
+    const mandatoryConsents = ['privacy_policy', 'terms_of_use', 'data_processing'];
+    
+    if (mandatoryConsents.includes(consentType)) {
+      return { 
+        success: false, 
+        error: 'This consent is required and cannot be withdrawn' 
+      };
+    }
+
+    // Log the withdrawal
+    await logConsent(consentType, 'withdrawn', {
+      reason: reason || 'user_requested',
+      withdrawn_at: new Date().toISOString()
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error('Error withdrawing consent:', error);
+    return { success: false, error };
+  }
+}
+
+/**
  * Export all user data for GDPR compliance (Article 20)
  */
 export async function exportUserData() {

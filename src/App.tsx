@@ -7,6 +7,7 @@ import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import Welcome from "./pages/Welcome";
+import About from "./pages/About";
 import RoleSelection from "./pages/RoleSelection";
 import Login from "./pages/Login";
 import ForgotPassword from "./pages/ForgotPassword";
@@ -112,6 +113,7 @@ function AppRoutes() {
       <Route path="/" element={user && userRole ? <Navigate to={homePath} replace /> : <Welcome />} />
       
       {/* Public routes - redirect to home if already authenticated */}
+      <Route path="/about" element={user && userRole ? <Navigate to={homePath} replace /> : <About />} />
       <Route path="/role-selection" element={user && userRole ? <Navigate to={homePath} replace /> : <RoleSelection />} />
       <Route path="/login" element={user && userRole ? <Navigate to={homePath} replace /> : <Login />} />
       <Route path="/forgot-password" element={user && userRole ? <Navigate to={homePath} replace /> : <ForgotPassword />} />
