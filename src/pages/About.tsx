@@ -112,7 +112,7 @@ export default function About() {
             <div className="grid md:grid-cols-2 gap-8">
               {/* For Children */}
               <Card className="relative overflow-hidden">
-                <DecorativeIcon icon="heart" position="top-right" opacity={0.05} />
+                <DecorativeIcon icon="sparkles" position="top-right" opacity={0.05} />
                 <CardContent className="p-6 space-y-4">
                   <h3 className="text-2xl font-bold text-primary">For Children</h3>
                   <div className="space-y-3">
@@ -158,7 +158,7 @@ export default function About() {
 
           {/* Safety & Privacy */}
           <Card className="relative overflow-hidden">
-            <DecorativeIcon icon="shield" position="bottom-right" opacity={0.05} />
+            <DecorativeIcon icon="star" position="bottom-right" opacity={0.05} />
             <CardContent className="p-8 space-y-4">
               <div className="flex items-center gap-3 mb-4">
                 <Shield className="h-8 w-8 text-primary" />

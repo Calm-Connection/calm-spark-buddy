@@ -70,10 +70,11 @@ Deno.serve(async (req) => {
 
   } catch (error) {
     console.error('Unexpected error in data retention cleanup:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
     return new Response(
       JSON.stringify({ 
         success: false, 
-        error: error.message,
+        error: errorMessage,
         timestamp: new Date().toISOString()
       }),
       { 
