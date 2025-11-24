@@ -58,45 +58,44 @@ serve(async (req) => {
       );
     }
 
-    // Get user
+    // Get user (optional - may be called during signup before auth)
     const authHeader = req.headers.get('authorization');
     const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? '';
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    const token = authHeader?.replace('Bearer ', '');
-    const { data: { user }, error: userError } = await supabase.auth.getUser(token);
-
-    if (userError || !user) {
-      return new Response(
-        JSON.stringify({ safe: false, error: 'Unauthorized' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+    let user = null;
+    if (authHeader) {
+      const token = authHeader?.replace('Bearer ', '');
+      const { data } = await supabase.auth.getUser(token);
+      user = data?.user || null;
     }
 
     // Step 1: Quick keyword-based filtering
     const keywordResult = keywordCheck(text);
     
     if (!keywordResult.safe) {
-      // Log flagged content
-      await supabase.from('moderation_logs').insert({
-        user_id: user.id,
-        input_text: text.substring(0, 500), // Limit stored text
-        is_safe: false,
-        category: keywordResult.category,
-        confidence: keywordResult.confidence,
-        context
-      });
-
-      // Create safeguarding alert for high-risk categories
-      if (['sexual', 'hate_speech', 'violence'].includes(keywordResult.category)) {
-        await supabase.from('safeguarding_alerts').insert({
+      // Log flagged content (only if user is authenticated)
+      if (user) {
+        await supabase.from('moderation_logs').insert({
           user_id: user.id,
-          alert_type: 'inappropriate_content',
-          severity: keywordResult.category === 'sexual' || keywordResult.category === 'hate_speech' ? 'high' : 'medium',
-          details: `User attempted to use inappropriate language in ${context}: "${text.substring(0, 100)}..."`,
-          status: 'pending_review'
+          input_text: text.substring(0, 500), // Limit stored text
+          is_safe: false,
+          category: keywordResult.category,
+          confidence: keywordResult.confidence,
+          context
         });
+
+        // Create safeguarding alert for high-risk categories
+        if (['sexual', 'hate_speech', 'violence'].includes(keywordResult.category)) {
+          await supabase.from('safeguarding_alerts').insert({
+            user_id: user.id,
+            alert_type: 'inappropriate_content',
+            severity: keywordResult.category === 'sexual' || keywordResult.category === 'hate_speech' ? 'high' : 'medium',
+            details: `User attempted to use inappropriate language in ${context}: "${text.substring(0, 100)}..."`,
+            status: 'pending_review'
+          });
+        }
       }
 
       return new Response(
@@ -192,34 +191,36 @@ Be STRICT about inappropriate content while respecting dignity and proportionali
       aiResult = { safe: true, category: 'safe', confidence: 0.5 };
     }
 
-    // Log all moderation attempts
-    await supabase.from('moderation_logs').insert({
-      user_id: user.id,
-      input_text: text.substring(0, 500),
-      is_safe: aiResult.safe,
-      category: aiResult.category,
-      confidence: aiResult.confidence || 0.8,
-      context
-    });
-
-    // Create alert if AI flags content
-    if (!aiResult.safe) {
-      const severityMap: any = {
-        'sexual': 'high',
-        'hate_speech': 'high',
-        'violence': 'medium',
-        'profanity': 'medium',
-        'drugs': 'medium',
-        'personal_info': 'low'
-      };
-
-      await supabase.from('safeguarding_alerts').insert({
+    // Log all moderation attempts (only if user is authenticated)
+    if (user) {
+      await supabase.from('moderation_logs').insert({
         user_id: user.id,
-        alert_type: 'inappropriate_content',
-        severity: severityMap[aiResult.category] || 'medium',
-        details: `AI detected ${aiResult.category} in ${context}: "${text.substring(0, 100)}..." - ${aiResult.reason}`,
-        status: 'pending_review'
+        input_text: text.substring(0, 500),
+        is_safe: aiResult.safe,
+        category: aiResult.category,
+        confidence: aiResult.confidence || 0.8,
+        context
       });
+
+      // Create alert if AI flags content
+      if (!aiResult.safe) {
+        const severityMap: any = {
+          'sexual': 'high',
+          'hate_speech': 'high',
+          'violence': 'medium',
+          'profanity': 'medium',
+          'drugs': 'medium',
+          'personal_info': 'low'
+        };
+
+        await supabase.from('safeguarding_alerts').insert({
+          user_id: user.id,
+          alert_type: 'inappropriate_content',
+          severity: severityMap[aiResult.category] || 'medium',
+          details: `AI detected ${aiResult.category} in ${context}: "${text.substring(0, 100)}..." - ${aiResult.reason}`,
+          status: 'pending_review'
+        });
+      }
     }
 
     return new Response(
