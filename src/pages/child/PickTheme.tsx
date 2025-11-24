@@ -8,57 +8,69 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
+import { ThemePreview } from '@/components/ThemePreview';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const themes = [
   { 
     id: 'classic', 
     name: 'Classic', 
     emoji: '🎨',
-    colors: [
-      { hsl: '248 63% 86%', label: 'Lilac' },
-      { hsl: '163 40% 70%', label: 'Mint' },
-      { hsl: '31 100% 88%', label: 'Peach' }
-    ]
+    description: 'Soft and gentle colors',
+    themeColors: {
+      background: '246 70% 90%',
+      primary: '246 70% 90%',
+      secondary: '163 40% 69%',
+      accent: '31 97% 88%'
+    }
   },
   { 
     id: 'forest', 
     name: 'Forest', 
     emoji: '🌲',
-    colors: [
-      { hsl: '140 40% 92%', label: 'Sage' },
-      { hsl: '142 50% 45%', label: 'Green' },
-      { hsl: '88 50% 55%', label: 'Fresh' }
-    ]
+    description: 'Nature and calm greens',
+    themeColors: {
+      background: '140 40% 92%',
+      primary: '142 50% 45%',
+      secondary: '88 50% 55%',
+      accent: '40 60% 60%'
+    }
   },
   { 
     id: 'sky', 
     name: 'Sky', 
     emoji: '✨',
-    colors: [
-      { hsl: '210 50% 95%', label: 'Light' },
-      { hsl: '210 70% 70%', label: 'Blue' },
-      { hsl: '280 50% 75%', label: 'Purple' }
-    ]
+    description: 'Light and dreamy blues',
+    themeColors: {
+      background: '210 50% 95%',
+      primary: '210 70% 70%',
+      secondary: '200 60% 80%',
+      accent: '280 50% 75%'
+    }
   },
   { 
     id: 'ocean', 
     name: 'Ocean', 
     emoji: '🌊',
-    colors: [
-      { hsl: '195 50% 94%', label: 'Aqua' },
-      { hsl: '195 70% 60%', label: 'Ocean' },
-      { hsl: '180 50% 65%', label: 'Teal' }
-    ]
+    description: 'Cool and peaceful waters',
+    themeColors: {
+      background: '195 50% 94%',
+      primary: '195 70% 60%',
+      secondary: '180 50% 65%',
+      accent: '200 60% 75%'
+    }
   },
   { 
     id: 'cozy', 
     name: 'Cozy', 
     emoji: '🏡',
-    colors: [
-      { hsl: '25 50% 92%', label: 'Cream' },
-      { hsl: '25 60% 70%', label: 'Peach' },
-      { hsl: '15 70% 65%', label: 'Terra' }
-    ]
+    description: 'Warm and comfy tones',
+    themeColors: {
+      background: '25 50% 92%',
+      primary: '25 60% 70%',
+      secondary: '35 50% 75%',
+      accent: '15 70% 65%'
+    }
   },
 ];
 
@@ -68,6 +80,7 @@ export default function PickTheme() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { toast } = useToast();
+  const isMobile = useIsMobile();
 
   const handleContinue = async () => {
     if (!selectedTheme || !user) return;
@@ -125,16 +138,16 @@ export default function PickTheme() {
         <DecorativeIcon icon="sparkles" position="top-right" opacity={0.1} />
         <DecorativeIcon icon="leaf" position="bottom-left" opacity={0.08} />
         <CardContent className="space-y-8">
-          <div className="text-center space-y-3">
-            <h1 className="text-foreground bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+          <div className="text-center space-y-2">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl text-foreground bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
               PICK YOUR THEME 🎨
             </h1>
-            <p className="text-lg text-foreground/70 font-medium">
+            <p className="text-base sm:text-lg text-foreground/70 font-medium">
               Choose colors that make you feel happy and calm
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             {themes.map((theme) => (
               <Card
                 key={theme.id}
@@ -143,26 +156,26 @@ export default function PickTheme() {
                 }`}
                 onClick={() => setSelectedTheme(theme.id)}
               >
-                <CardContent className="space-y-4 p-6">
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className="text-4xl">{theme.emoji}</span>
-                    <span className="font-bold text-xl">{theme.name}</span>
-                    {selectedTheme === theme.id && (
-                      <Check className="h-6 w-6 text-foreground ml-auto" />
-                    )}
-                  </div>
-                  <div className="flex gap-2 h-24 rounded-2xl overflow-hidden border-2 border-foreground/10">
-                    {theme.colors.map((color, idx) => (
-                      <div 
-                        key={idx} 
-                        className="flex-1 flex flex-col items-center justify-center gap-1"
-                        style={{ backgroundColor: `hsl(${color.hsl})` }}
-                      >
-                        <span className="text-xs font-medium text-foreground/70">
-                          {color.label}
-                        </span>
+                <CardContent className="space-y-3 p-3 sm:p-4">
+                  {/* Theme Preview - Visual focal point */}
+                  <ThemePreview 
+                    theme={theme.themeColors}
+                    emoji={theme.emoji}
+                    size={isMobile ? 'sm' : 'md'}
+                  />
+                  
+                  {/* Compact header */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="text-2xl">{theme.emoji}</span>
+                      <div className="flex flex-col">
+                        <span className="font-bold text-base">{theme.name}</span>
+                        <span className="text-xs text-muted-foreground">{theme.description}</span>
                       </div>
-                    ))}
+                    </div>
+                    {selectedTheme === theme.id && (
+                      <Check className="h-5 w-5 text-foreground flex-shrink-0" />
+                    )}
                   </div>
                 </CardContent>
               </Card>
