@@ -54,29 +54,42 @@ serve(async (req) => {
       const { objectType, mainColor, accentColor, eyeStyle, eyeColor, accessory, comfortItem } = objectData;
       
       const objectDescriptions: { [key: string]: string } = {
-        teddyBear: 'cuddly teddy bear',
-        toyCar: 'cute toy car with rounded edges',
-        starCharacter: 'friendly glowing star character with arms',
-        cloudCreature: 'fluffy smiling cloud creature',
-        softAnimal: 'gentle soft animal friend (like a rabbit or fox)',
+        teddyBear: 'soft cuddly teddy bear',
+        toyCar: 'playful toy car',
+        starCharacter: 'friendly glowing star character',
+        cloudCreature: 'fluffy dreamy cloud creature',
+        softAnimal: 'gentle soft animal friend',
       };
       
-      finalPrompt = `IMPORTANT SAFETY RULES: Create a child-safe character (ages 7-16).
-STRICT REQUIREMENTS:
-- NO adult themes, violence, weapons, or scary elements
-- ONLY wholesome, friendly, age-appropriate characters
-- Disney/Pixar animation style ONLY
+      finalPrompt = `Create a young child-friendly Disney/Pixar-style ${objectDescriptions[objectType] || 'cute character'}.
 
-Create a ${ageDescriptor} Disney/Pixar-style ${objectDescriptions[objectType] || 'cute character'}.
-Main body color: ${mainColor}
-Accent details/highlights: ${accentColor}
-Eyes: ${eyeStyle} in ${eyeColor} color
+COLOR INSTRUCTIONS - FOLLOW PRECISELY:
+- The character's primary FUR/BODY/SURFACE should be ${mainColor} color
+- Add ${accentColor} ONLY as small accent details (like belly, inner ears, small highlights, or decorative elements)
+- KEEP the character's basic SHAPE, STRUCTURE, and PROPORTIONS consistent with a typical ${objectDescriptions[objectType]}
+- Eyes MUST be ${eyeColor} in ${eyeStyle} style - DO NOT change eye color based on body colors
+- DO NOT recolor the entire character - only apply colors to the body/surface layer
+- Background should be soft pastel gradient - DO NOT use character colors for background
+
+Features:
 ${accessory !== 'none' ? `Wearing or with: ${accessory}` : ''}
 ${comfortItem !== 'none' ? `Holding or accompanied by: ${comfortItem}` : ''}
 
-Style: Soft, rounded shapes, ${sizeModifier}, warm and friendly expression, child-safe, 
-Pixar/Disney quality animation, on a soft pastel gradient background, 
-square format (1024x1024), centered character, gentle lighting, non-scary, comforting appearance.`;
+Style Requirements:
+- Soft, rounded shapes with no sharp edges
+- Friendly, warm expression
+- High quality cartoon illustration
+- Child-appropriate and comforting aesthetic
+- 1024x1024px with transparent or soft gradient background
+
+MAINTAIN CONSISTENT: Character type, shape, facial structure, eye placement
+CUSTOMIZE ONLY: Body/fur/surface color as ${mainColor}, small accent details as ${accentColor}
+
+IMPORTANT SAFETY RULES:
+- Keep all content child-friendly and age-appropriate
+- No scary, violent, or inappropriate elements
+- Maintain a warm, welcoming, supportive aesthetic
+- Focus on comfort, safety, and emotional wellbeing themes`;
     } else if (customization && type === 'child') {
       // Structured Disney-style prompt for children with gender consideration
       const { skinTone, eyeColor, hairColor, hairStyle, favoriteColor, accessory, comfortItem } = customization;

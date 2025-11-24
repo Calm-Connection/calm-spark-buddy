@@ -11,7 +11,6 @@ import { ObjectAvatarBuilder } from '@/components/children/ObjectAvatarBuilder';
 export default function CreateAvatarEnhanced() {
   const [loading, setLoading] = useState(false);
   const [avatarData, setAvatarData] = useState<any>(null);
-  const [age, setAge] = useState('child');
   const navigate = useNavigate();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -39,7 +38,7 @@ export default function CreateAvatarEnhanced() {
       const [profileUpdate, historyInsert] = await Promise.all([
         supabase
           .from('children_profiles')
-          .update({ avatar_json: avatarData, age })
+          .update({ avatar_json: avatarData })
           .eq('user_id', user.id),
         supabase
           .from('avatar_history')
@@ -84,9 +83,6 @@ export default function CreateAvatarEnhanced() {
 
           <ObjectAvatarBuilder 
             onAvatarGenerated={handleAvatarGenerated}
-            age={age}
-            onAgeChange={setAge}
-            showAgeSelector={true}
           />
           
           {avatarData && (

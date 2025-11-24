@@ -4,8 +4,6 @@ import { Card } from '@/components/ui/card';
 import { Loader2, Sparkles } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { AgeSelector } from './AgeSelector';
-import { ObjectAvatarPreview } from './ObjectAvatarPreview';
 import {
   AVATAR_OBJECTS,
   OBJECT_COLORS,
@@ -17,16 +15,10 @@ import {
 
 interface ObjectAvatarBuilderProps {
   onAvatarGenerated: (avatarData: any) => void;
-  age?: string;
-  onAgeChange?: (age: string) => void;
-  showAgeSelector?: boolean;
 }
 
 export function ObjectAvatarBuilder({
   onAvatarGenerated,
-  age = 'child',
-  onAgeChange,
-  showAgeSelector = true,
 }: ObjectAvatarBuilderProps) {
   const [objectType, setObjectType] = useState('teddyBear');
   const [mainColor, setMainColor] = useState('pink');
@@ -52,7 +44,7 @@ export function ObjectAvatarBuilder({
       };
 
       const { data, error } = await supabase.functions.invoke('generate-avatar', {
-        body: { type: 'child', objectData, age }
+        body: { type: 'child', objectData }
       });
 
       if (error) throw error;
@@ -94,30 +86,27 @@ export function ObjectAvatarBuilder({
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      {showAgeSelector && onAgeChange && (
-        <AgeSelector value={age} onChange={onAgeChange} />
-      )}
-
-      {/* Preview Section - Sticky at top */}
-      <div className="sticky top-0 z-10 bg-background/95 backdrop-blur pb-3 sm:pb-4 border-b">
-        <div className="flex flex-col items-center gap-2">
-          <ObjectAvatarPreview
-            objectType={objectType}
-            mainColor={OBJECT_COLORS.find(c => c.id === mainColor)?.value || 'soft pink'}
-            accentColor={OBJECT_COLORS.find(c => c.id === accentColor)?.value || 'gentle purple'}
-            eyeStyle={EYE_STYLES.find(s => s.id === eyeStyle)?.value || 'round sparkly eyes'}
-            eyeColor={EYE_COLORS.find(c => c.id === eyeColor)?.value || 'brown'}
-            accessory={OBJECT_ACCESSORIES.find(a => a.id === accessory)?.value || 'none'}
-            comfortItem={COMFORT_ITEMS.find(i => i.id === comfortItem)?.value || 'none'}
-            age={age}
-            size="md"
-            className="mx-auto"
-          />
-          <p className="text-center text-xs sm:text-sm text-muted-foreground">
-            Your character updates as you choose!
+      {/* Simple Static Preview */}
+      <Card className="p-4 bg-gradient-to-br from-primary/5 to-secondary/5">
+        <div className="text-center space-y-3">
+          <div className="text-6xl">{AVATAR_OBJECTS[objectType as keyof typeof AVATAR_OBJECTS]?.emoji || '✨'}</div>
+          <div className="flex justify-center gap-2 items-center flex-wrap">
+            <div 
+              className="w-10 h-10 rounded-full border-2 border-border shadow-sm"
+              style={{ backgroundColor: OBJECT_COLORS.find(c => c.id === mainColor)?.hex }}
+              title="Main Color"
+            />
+            <div 
+              className="w-10 h-10 rounded-full border-2 border-border shadow-sm"
+              style={{ backgroundColor: OBJECT_COLORS.find(c => c.id === accentColor)?.hex }}
+              title="Accent Color"
+            />
+          </div>
+          <p className="text-xs sm:text-sm text-muted-foreground">
+            {AVATAR_OBJECTS[objectType as keyof typeof AVATAR_OBJECTS]?.label} • {EYE_STYLES.find(s => s.id === eyeStyle)?.label} Eyes
           </p>
         </div>
-      </div>
+      </Card>
 
       {generatedImage ? (
         <div className="space-y-4">
