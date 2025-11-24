@@ -24,7 +24,6 @@ export function AvatarCustomizer({ open, onOpenChange, currentAvatar, onAvatarUp
   const [loading, setLoading] = useState(false);
   const [newAvatarData, setNewAvatarData] = useState<any>(null);
   const [selectedPreset, setSelectedPreset] = useState<string | null>(null);
-  const [age, setAge] = useState('child');
 
   const carerEmojis = ['👨', '👩', '🧑', '👨‍🦱', '👩‍🦱', '🧑‍🦱', '👨‍🦰', '👩‍🦰', '🧑‍🦰', '👨‍🦲', '👩‍🦲', '🧑‍🦲'];
 
@@ -116,15 +115,9 @@ export function AvatarCustomizer({ open, onOpenChange, currentAvatar, onAvatarUp
         (item) => (item.avatar_json as any)?.imageUrl === newAvatarData.imageUrl
       );
 
-      // Update profile with age if child
-      const updateData: any = { avatar_json: newAvatarData };
-      if (userRole === 'child') {
-        updateData.age = age;
-      }
-
       const { error: profileError } = await supabase
         .from(table)
-        .update(updateData)
+        .update({ avatar_json: newAvatarData })
         .eq('user_id', user.id);
 
       if (profileError) {
@@ -221,12 +214,9 @@ export function AvatarCustomizer({ open, onOpenChange, currentAvatar, onAvatarUp
 
         {userRole === 'child' ? (
           <div className="py-4">
-            <ObjectAvatarBuilder 
-              onAvatarGenerated={handleAvatarGenerated}
-              age={age}
-              onAgeChange={setAge}
-              showAgeSelector={true}
-            />
+                <ObjectAvatarBuilder
+                  onAvatarGenerated={handleAvatarGenerated}
+                />
             
             {newAvatarData && (
               <div className="mt-6">
