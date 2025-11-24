@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { AvatarBuilder } from '@/components/children/AvatarBuilder';
+import { ObjectAvatarBuilder } from '@/components/children/ObjectAvatarBuilder';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Loader2 } from 'lucide-react';
 import { useContentModeration } from '@/hooks/useContentModeration';
@@ -24,7 +24,6 @@ export function AvatarCustomizer({ open, onOpenChange, currentAvatar, onAvatarUp
   const [loading, setLoading] = useState(false);
   const [newAvatarData, setNewAvatarData] = useState<any>(null);
   const [selectedPreset, setSelectedPreset] = useState<string | null>(null);
-  const [gender, setGender] = useState('prefer_not_to_say');
   const [age, setAge] = useState('child');
 
   const carerEmojis = ['👨', '👩', '🧑', '👨‍🦱', '👩‍🦱', '🧑‍🦱', '👨‍🦰', '👩‍🦰', '🧑‍🦰', '👨‍🦲', '👩‍🦲', '🧑‍🦲'];
@@ -117,10 +116,9 @@ export function AvatarCustomizer({ open, onOpenChange, currentAvatar, onAvatarUp
         (item) => (item.avatar_json as any)?.imageUrl === newAvatarData.imageUrl
       );
 
-      // Update profile with gender and age if child
+      // Update profile with age if child
       const updateData: any = { avatar_json: newAvatarData };
       if (userRole === 'child') {
-        updateData.gender = gender;
         updateData.age = age;
       }
 
@@ -223,13 +221,10 @@ export function AvatarCustomizer({ open, onOpenChange, currentAvatar, onAvatarUp
 
         {userRole === 'child' ? (
           <div className="py-4">
-            <AvatarBuilder 
+            <ObjectAvatarBuilder 
               onAvatarGenerated={handleAvatarGenerated}
-              gender={gender}
-              onGenderChange={setGender}
               age={age}
               onAgeChange={setAge}
-              showGenderSelector={true}
               showAgeSelector={true}
             />
             

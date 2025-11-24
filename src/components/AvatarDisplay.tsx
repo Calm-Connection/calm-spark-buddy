@@ -1,5 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { AvatarPreview } from './children/AvatarPreview';
+import { ObjectAvatarPreview } from './children/ObjectAvatarPreview';
 
 interface AvatarData {
   type?: string;
@@ -15,6 +16,15 @@ interface AvatarData {
     hairColor: string;
     hairStyle: string;
     favoriteColor: string;
+    accessory: string;
+    comfortItem: string;
+  };
+  objectData?: {
+    objectType: string;
+    mainColor: string;
+    accentColor: string;
+    eyeStyle: string;
+    eyeColor: string;
     accessory: string;
     comfortItem: string;
   };
@@ -44,6 +54,18 @@ export function AvatarDisplay({ avatarData, size = 'md', className = '' }: Avata
     md: { width: 64, height: 58 },
     lg: { width: 96, height: 86 },
   };
+
+  // Object-based avatar
+  if (avatarData?.type === 'object_avatar' && avatarData?.objectData) {
+    return (
+      <div className={className}>
+        <ObjectAvatarPreview
+          {...avatarData.objectData}
+          size={size}
+        />
+      </div>
+    );
+  }
 
   // Manual custom avatar with preview
   if (avatarData?.type === 'manual_custom' && avatarData?.customization) {
