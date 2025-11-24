@@ -12,6 +12,7 @@ import { applyTheme } from '@/hooks/useTheme';
 import { supabase } from '@/integrations/supabase/client';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
 import { logConsent } from '@/lib/consentLogger';
+import { NicknameExplanation } from '@/components/NicknameExplanation';
 
 export default function CarerSignup() {
   const [nickname, setNickname] = useState('');
@@ -146,6 +147,7 @@ export default function CarerSignup() {
               maxLength={20}
             />
             <p className="text-xs text-muted-foreground">Between 3 and 20 characters</p>
+            <NicknameExplanation variant="compact" className="mt-3" />
           </div>
 
           <div className="space-y-2">
