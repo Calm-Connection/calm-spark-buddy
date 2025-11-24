@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { BookOpen, Sparkles, Shield, Heart, BarChart2, FileText, Users } from 'lucide-react';
+import { BookOpen, Sparkles, Shield, Heart, BarChart2, FileText, Users, UserX } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
 
@@ -13,6 +13,13 @@ const childSlides = [
     description: 'Write about your feelings, what happened today, or anything on your mind. It\'s your safe space.',
     color: 'bg-primary/20',
     iconColor: 'text-primary',
+  },
+  {
+    icon: UserX,
+    title: 'Your Safe Nickname',
+    description: 'You\'ll use a fun nickname (like "StarGazer" or "CozyCloud") instead of your real name. This keeps you safe and lets you be yourself!',
+    color: 'bg-purple-500/20',
+    iconColor: 'text-purple-600 dark:text-purple-400',
   },
   {
     icon: Heart,
@@ -44,6 +51,13 @@ const carerSlides = [
     description: 'Track emotional patterns and understand what your child is experiencing through AI-powered insights.',
     color: 'bg-primary/20',
     iconColor: 'text-primary',
+  },
+  {
+    icon: UserX,
+    title: 'Privacy Through Nicknames',
+    description: 'Both you and your child use nicknames in shared spaces. This protects identity while building trust and open communication.',
+    color: 'bg-purple-500/20',
+    iconColor: 'text-purple-600 dark:text-purple-400',
   },
   {
     icon: FileText,

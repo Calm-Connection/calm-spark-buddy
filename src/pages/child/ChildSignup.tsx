@@ -12,6 +12,7 @@ import { DecorativeIcon } from '@/components/DecorativeIcon';
 import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
 import { useContentModeration } from '@/hooks/useContentModeration';
 import { logConsent } from '@/lib/consentLogger';
+import { NicknameExplanation } from '@/components/NicknameExplanation';
 
 export default function ChildSignup() {
   const [email, setEmail] = useState('');
@@ -153,6 +154,7 @@ export default function ChildSignup() {
               maxLength={20}
             />
             <p className="text-xs text-muted-foreground">3-20 characters</p>
+            <NicknameExplanation variant="compact" className="mt-3" />
           </div>
 
           <div className="space-y-2">
