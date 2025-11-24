@@ -6,12 +6,11 @@ import { PageLayout } from '@/components/PageLayout';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
-import { AvatarBuilder } from '@/components/children/AvatarBuilder';
+import { ObjectAvatarBuilder } from '@/components/children/ObjectAvatarBuilder';
 
 export default function CreateAvatarEnhanced() {
   const [loading, setLoading] = useState(false);
   const [avatarData, setAvatarData] = useState<any>(null);
-  const [gender, setGender] = useState('prefer_not_to_say');
   const [age, setAge] = useState('child');
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -40,7 +39,7 @@ export default function CreateAvatarEnhanced() {
       const [profileUpdate, historyInsert] = await Promise.all([
         supabase
           .from('children_profiles')
-          .update({ avatar_json: avatarData, gender, age })
+          .update({ avatar_json: avatarData, age })
           .eq('user_id', user.id),
         supabase
           .from('avatar_history')
@@ -77,19 +76,16 @@ export default function CreateAvatarEnhanced() {
       <Card className="border-0">
         <CardContent className="space-y-8">
           <div className="text-center space-y-3">
-            <h1 className="text-foreground">CREATE YOUR AVATAR</h1>
+            <h1 className="text-foreground">CREATE YOUR CHARACTER</h1>
             <p className="text-lg text-foreground/70">
               Design a character that represents you!
             </p>
           </div>
 
-          <AvatarBuilder 
+          <ObjectAvatarBuilder 
             onAvatarGenerated={handleAvatarGenerated}
-            gender={gender}
-            onGenderChange={setGender}
             age={age}
             onAgeChange={setAge}
-            showGenderSelector={true}
             showAgeSelector={true}
           />
           

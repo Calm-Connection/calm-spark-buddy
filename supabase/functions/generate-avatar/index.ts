@@ -12,7 +12,7 @@ serve(async (req) => {
   }
 
   try {
-    const { type, customization, prompt, gender = 'prefer_not_to_say', age = 'child' } = await req.json();
+    const { type, customization, prompt, objectData, gender = 'prefer_not_to_say', age = 'child' } = await req.json();
     
     if (!type || (type !== 'child' && type !== 'carer')) {
       return new Response(
@@ -29,7 +29,7 @@ serve(async (req) => {
     // Build prompt based on type and data
     let finalPrompt = '';
     
-    // Gender-based character descriptor
+    // Gender-based character descriptor (for backward compatibility with old human avatars)
     let genderDescriptor = 'child';
     if (gender === 'male') genderDescriptor = 'boy';
     else if (gender === 'female') genderDescriptor = 'girl';
@@ -37,16 +37,47 @@ serve(async (req) => {
     // Age-based character descriptors
     let ageDescriptor = '';
     let featureModifier = '';
+    let sizeModifier = '';
     
     if (age === 'child') {
       ageDescriptor = 'young child (7-11 years old)';
       featureModifier = 'with soft, round facial features, big expressive eyes, chubby cheeks, smaller proportions, very child-like appearance';
+      sizeModifier = 'smaller, cuter proportions';
     } else if (age === 'teen') {
       ageDescriptor = 'young teenager (12-16 years old)';
       featureModifier = 'with slightly more mature facial features, taller proportions, but still youthful and age-appropriate for teens';
+      sizeModifier = 'slightly larger proportions but still youthful';
     }
     
-    if (customization && type === 'child') {
+    // Object-based avatar (NEW SYSTEM)
+    if (objectData && type === 'child') {
+      const { objectType, mainColor, accentColor, eyeStyle, eyeColor, accessory, comfortItem } = objectData;
+      
+      const objectDescriptions: { [key: string]: string } = {
+        teddyBear: 'cuddly teddy bear',
+        toyCar: 'cute toy car with rounded edges',
+        starCharacter: 'friendly glowing star character with arms',
+        cloudCreature: 'fluffy smiling cloud creature',
+        softAnimal: 'gentle soft animal friend (like a rabbit or fox)',
+      };
+      
+      finalPrompt = `IMPORTANT SAFETY RULES: Create a child-safe character (ages 7-16).
+STRICT REQUIREMENTS:
+- NO adult themes, violence, weapons, or scary elements
+- ONLY wholesome, friendly, age-appropriate characters
+- Disney/Pixar animation style ONLY
+
+Create a ${ageDescriptor} Disney/Pixar-style ${objectDescriptions[objectType] || 'cute character'}.
+Main body color: ${mainColor}
+Accent details/highlights: ${accentColor}
+Eyes: ${eyeStyle} in ${eyeColor} color
+${accessory !== 'none' ? `Wearing or with: ${accessory}` : ''}
+${comfortItem !== 'none' ? `Holding or accompanied by: ${comfortItem}` : ''}
+
+Style: Soft, rounded shapes, ${sizeModifier}, warm and friendly expression, child-safe, 
+Pixar/Disney quality animation, on a soft pastel gradient background, 
+square format (1024x1024), centered character, gentle lighting, non-scary, comforting appearance.`;
+    } else if (customization && type === 'child') {
       // Structured Disney-style prompt for children with gender consideration
       const { skinTone, eyeColor, hairColor, hairStyle, favoriteColor, accessory, comfortItem } = customization;
       
