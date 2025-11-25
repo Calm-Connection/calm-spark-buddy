@@ -10,6 +10,8 @@ import { format } from 'date-fns';
 import { BookOpen, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
+import { MoodIcon } from '@/components/MoodIcon';
+import { getEmotionalIcon } from '@/constants/emotionalIcons';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -122,11 +124,14 @@ export default function ViewEntries() {
             {entries.map((entry) => (
               <Card key={entry.id} className="p-6 shadow-soft hover:shadow-soft-lg transition-all duration-200 border-interactive-accent/20">
                 <div className="flex justify-between items-start mb-3">
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 items-center">
                     {entry.mood_tag && (
-                      <Badge variant="secondary" className="capitalize">
-                        {entry.mood_tag}
-                      </Badge>
+                      <>
+                        <MoodIcon moodId={entry.mood_tag} size="sm" />
+                        <Badge variant="secondary" className="capitalize">
+                          {getEmotionalIcon(entry.mood_tag)?.label || entry.mood_tag}
+                        </Badge>
+                      </>
                     )}
                     {entry.share_with_carer && (
                       <Badge variant="outline">Shared with carer</Badge>
