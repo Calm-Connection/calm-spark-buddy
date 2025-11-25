@@ -18,20 +18,10 @@ import { Loader2, Sparkles, Pencil, Mic, Palette, StopCircle } from 'lucide-reac
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useNotificationTrigger } from '@/hooks/useNotificationTrigger';
 import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
+import { emotionalIcons, getEmotionalIcon } from '@/constants/emotionalIcons';
+import { MoodIcon } from '@/components/MoodIcon';
 
-const moods = ['happy', 'sad', 'angry', 'worried', 'calm', 'excited', 'scared'] as const;
-type MoodType = typeof moods[number];
-
-const moodEmojis: Record<string, string> = {
-  happy: '😊',
-  okay: '😐',
-  sad: '😢',
-  angry: '😠',
-  worried: '😰',
-  calm: '😌',
-  excited: '🤩',
-  scared: '😨',
-};
+type MoodType = string;
 
 export default function JournalEntry() {
   const location = useLocation();
@@ -228,7 +218,7 @@ export default function JournalEntry() {
         .insert([{
           child_id: childProfile.id,
           entry_text: entryText || `[${inputMode} entry]`,
-          mood_tag: mood || undefined,
+          mood_tag: mood as any || undefined,
           share_with_carer: shareWithCarer,
           voice_url: voiceUrl,
           drawing_data: drawingData ? { dataURL: drawingData } : null,
@@ -395,31 +385,34 @@ export default function JournalEntry() {
         </div>
 
         <Card className="p-6 space-y-6">
-          {/* Display selected mood emoji prominently */}
+          {/* Display selected mood icon prominently */}
           {mood && (
-            <div className="text-center">
-              <div className="text-6xl mb-2">{moodEmojis[mood]}</div>
-              <p className="text-sm text-muted-foreground">
-                Feeling {mood.charAt(0).toUpperCase() + mood.slice(1)}
+            <div className="text-center space-y-2">
+              <MoodIcon moodId={mood} size="lg" className="mx-auto" />
+              <p className="text-sm text-muted-foreground capitalize">
+                Feeling {getEmotionalIcon(mood)?.label || mood}
               </p>
             </div>
           )}
 
-          <div className="space-y-2">
-            <Label>How are you feeling today?</Label>
-            <Select value={mood} onValueChange={(value) => setMood(value as MoodType)}>
-              <SelectTrigger>
-                <SelectValue placeholder="Pick a mood (optional)" />
-              </SelectTrigger>
-              <SelectContent>
-                {moods.map((m) => (
-                  <SelectItem key={m} value={m}>
-                    {m.charAt(0).toUpperCase() + m.slice(1)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          {/* Only show mood selector if no mood is selected yet */}
+          {!selectedMood && (
+            <div className="space-y-2">
+              <Label>How are you feeling today?</Label>
+              <Select value={mood} onValueChange={(value) => setMood(value as MoodType)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Pick a mood (optional)" />
+                </SelectTrigger>
+                <SelectContent>
+                  {emotionalIcons.map((icon) => (
+                    <SelectItem key={icon.id} value={icon.id}>
+                      {icon.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
 
           <Tabs value={inputMode} onValueChange={(v) => setInputMode(v as any)} className="w-full">
             <TabsList className="grid w-full grid-cols-3">

@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Settings, BookOpen, Wrench, GraduationCap, Sparkles } from 'lucide-react';
+import { Settings, BookOpen, Wrench, GraduationCap, Sparkles, Smile, Meh, Frown } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useAchievementProgress } from '@/hooks/useAchievementProgress';
 import { supabase } from '@/integrations/supabase/client';
@@ -16,6 +16,8 @@ import { WendyTipCard } from '@/components/WendyTipCard';
 import { WendyAvatar } from '@/components/WendyAvatar';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
 import { toast } from 'sonner';
+import { getEmotionalIconsByCategory } from '@/constants/emotionalIcons';
+import { MoodIcon } from '@/components/MoodIcon';
 
 const affirmations = [
   "You are brave and strong 💪",
@@ -70,31 +72,9 @@ export default function ChildHome() {
   };
 
   const presetMoods = {
-    positive: [
-      { id: 'happy', emoji: '😊', label: 'Happy' },
-      { id: 'excited', emoji: '🤩', label: 'Excited' },
-      { id: 'calm', emoji: '😌', label: 'Calm' },
-      { id: 'proud', emoji: '😎', label: 'Proud' },
-      { id: 'hopeful', emoji: '🌟', label: 'Hopeful' },
-      { id: 'grateful', emoji: '🙏', label: 'Grateful' },
-      { id: 'peaceful', emoji: '☮️', label: 'Peaceful' },
-    ],
-    neutral: [
-      { id: 'okay', emoji: '😐', label: 'Okay' },
-      { id: 'tired', emoji: '😴', label: 'Tired' },
-      { id: 'confused', emoji: '😕', label: 'Confused' },
-      { id: 'bored', emoji: '😑', label: 'Bored' },
-    ],
-    challenging: [
-      { id: 'sad', emoji: '😢', label: 'Sad' },
-      { id: 'angry', emoji: '😠', label: 'Angry' },
-      { id: 'anxious', emoji: '😰', label: 'Anxious' },
-      { id: 'worried', emoji: '😟', label: 'Worried' },
-      { id: 'lonely', emoji: '😔', label: 'Lonely' },
-      { id: 'frustrated', emoji: '😤', label: 'Frustrated' },
-      { id: 'embarrassed', emoji: '😳', label: 'Embarrassed' },
-      { id: 'nervous', emoji: '😬', label: 'Nervous' },
-    ],
+    positive: getEmotionalIconsByCategory('positive'),
+    neutral: getEmotionalIconsByCategory('neutral'),
+    challenging: getEmotionalIconsByCategory('challenging'),
   };
 
   useEffect(() => {
@@ -317,14 +297,17 @@ export default function ChildHome() {
             
             <Tabs defaultValue="positive" className="w-full">
               <TabsList className="grid w-full grid-cols-3 mb-4">
-                <TabsTrigger value="positive" className="text-sm">
-                  😊 Positive
+                <TabsTrigger value="positive" className="text-sm flex items-center gap-1">
+                  <Smile className="h-4 w-4" />
+                  Positive
                 </TabsTrigger>
-                <TabsTrigger value="neutral" className="text-sm">
-                  😐 Neutral
+                <TabsTrigger value="neutral" className="text-sm flex items-center gap-1">
+                  <Meh className="h-4 w-4" />
+                  Neutral
                 </TabsTrigger>
-                <TabsTrigger value="challenging" className="text-sm">
-                  😢 Challenging
+                <TabsTrigger value="challenging" className="text-sm flex items-center gap-1">
+                  <Frown className="h-4 w-4" />
+                  Challenging
                 </TabsTrigger>
               </TabsList>
 
@@ -335,9 +318,9 @@ export default function ChildHome() {
                       key={mood.id}
                       variant="outline"
                       onClick={() => handleMoodSelect(mood.id)}
-                      className="h-auto flex flex-col items-center gap-1 p-3 hover:scale-105 transition-transform"
+                      className="h-auto flex flex-col items-center gap-2 p-3 hover:scale-105 transition-transform"
                     >
-                      <span className="text-3xl">{mood.emoji}</span>
+                      <MoodIcon moodId={mood.id} size="sm" />
                       <span className="text-xs">{mood.label}</span>
                     </Button>
                   ))}
@@ -351,9 +334,9 @@ export default function ChildHome() {
                       key={mood.id}
                       variant="outline"
                       onClick={() => handleMoodSelect(mood.id)}
-                      className="h-auto flex flex-col items-center gap-1 p-3 hover:scale-105 transition-transform"
+                      className="h-auto flex flex-col items-center gap-2 p-3 hover:scale-105 transition-transform"
                     >
-                      <span className="text-3xl">{mood.emoji}</span>
+                      <MoodIcon moodId={mood.id} size="sm" />
                       <span className="text-xs">{mood.label}</span>
                     </Button>
                   ))}
@@ -367,9 +350,9 @@ export default function ChildHome() {
                       key={mood.id}
                       variant="outline"
                       onClick={() => handleMoodSelect(mood.id)}
-                      className="h-auto flex flex-col items-center gap-1 p-3 hover:scale-105 transition-transform"
+                      className="h-auto flex flex-col items-center gap-2 p-3 hover:scale-105 transition-transform"
                     >
-                      <span className="text-3xl">{mood.emoji}</span>
+                      <MoodIcon moodId={mood.id} size="sm" />
                       <span className="text-xs">{mood.label}</span>
                     </Button>
                   ))}

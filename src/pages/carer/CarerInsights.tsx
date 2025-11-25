@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { WendyAvatar } from '@/components/WendyAvatar';
-import { Brain, TrendingUp, Heart, ArrowLeft, Lightbulb, AlertTriangle, Info, ChevronDown, ChevronUp, CheckCircle2, ExternalLink } from 'lucide-react';
+import { Brain, TrendingUp, Heart, ArrowLeft, Lightbulb, AlertTriangle, Info, ChevronDown, ChevronUp, CheckCircle2, ExternalLink, Smile, Frown } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { format } from 'date-fns';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
@@ -14,6 +14,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { TechniqueGuideModal } from '@/components/TechniqueGuideModal';
 import { Checkbox } from '@/components/ui/checkbox';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
+import { MoodIcon } from '@/components/MoodIcon';
 
 interface Insight {
   id: string;
@@ -96,12 +97,12 @@ export default function CarerInsights() {
     setLoading(false);
   };
 
-  const getMoodEmoji = (score: number) => {
-    if (score >= 80) return '😊';
-    if (score >= 60) return '😌';
-    if (score >= 40) return '😐';
-    if (score >= 20) return '😔';
-    return '😢';
+  const getMoodIconId = (score: number) => {
+    if (score >= 80) return 'happy';
+    if (score >= 60) return 'calm';
+    if (score >= 40) return 'okay';
+    if (score >= 20) return 'sad';
+    return 'worried';
   };
 
   const getMoodLabel = (score: number) => {
@@ -209,35 +210,35 @@ export default function CarerInsights() {
               </div>
               <div className="space-y-2 text-sm">
                 <div className="flex items-center gap-3 p-2 rounded bg-secondary/10">
-                  <span className="text-xl">😊</span>
+                  <MoodIcon moodId="happy" size="sm" />
                   <div className="flex-1">
                     <p className="font-semibold">80-100: Very Positive</p>
                     <p className="text-xs text-muted-foreground">Thriving emotionally, expressing joy and contentment</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3 p-2 rounded bg-primary/10">
-                  <span className="text-xl">😌</span>
+                  <MoodIcon moodId="calm" size="sm" />
                   <div className="flex-1">
                     <p className="font-semibold">60-79: Positive</p>
                     <p className="text-xs text-muted-foreground">Coping well with some challenges, generally upbeat</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3 p-2 rounded bg-accent/10">
-                  <span className="text-xl">😐</span>
+                  <MoodIcon moodId="okay" size="sm" />
                   <div className="flex-1">
                     <p className="font-semibold">40-59: Neutral</p>
                     <p className="text-xs text-muted-foreground">Mixed feelings, could benefit from extra support</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3 p-2 rounded bg-warm/10">
-                  <span className="text-xl">😔</span>
+                  <MoodIcon moodId="sad" size="sm" />
                   <div className="flex-1">
                     <p className="font-semibold">20-39: Low</p>
                     <p className="text-xs text-muted-foreground">Struggling emotionally, needs active support</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3 p-2 rounded bg-destructive/10">
-                  <span className="text-xl">😢</span>
+                  <MoodIcon moodId="worried" size="sm" />
                   <div className="flex-1">
                     <p className="font-semibold">0-19: Needs Support</p>
                     <p className="text-xs text-muted-foreground">Experiencing significant distress, requires immediate care</p>
@@ -253,7 +254,7 @@ export default function CarerInsights() {
                 insight={insight}
                 childNickname={childNickname}
                 toolDetails={toolDetails}
-                getMoodEmoji={getMoodEmoji}
+                getMoodIconId={getMoodIconId}
                 getMoodLabel={getMoodLabel}
               />
             ))}
@@ -324,11 +325,11 @@ interface InsightCardProps {
   insight: Insight;
   childNickname: string;
   toolDetails: Record<string, CopingTool>;
-  getMoodEmoji: (score: number) => string;
+  getMoodIconId: (score: number) => string;
   getMoodLabel: (score: number) => string;
 }
 
-function InsightCard({ insight, childNickname, toolDetails, getMoodEmoji, getMoodLabel }: InsightCardProps) {
+function InsightCard({ insight, childNickname, toolDetails, getMoodIconId, getMoodLabel }: InsightCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [checkedActions, setCheckedActions] = useState<Record<number, boolean>>({});
 
@@ -339,7 +340,7 @@ function InsightCard({ insight, childNickname, toolDetails, getMoodEmoji, getMoo
         <div className="flex-1 space-y-3">
           {/* Mood Score with Explanation */}
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-2xl">{getMoodEmoji(insight.mood_score)}</span>
+            <MoodIcon moodId={getMoodIconId(insight.mood_score)} size="sm" />
             <HoverCard>
               <HoverCardTrigger asChild>
                 <Badge variant="secondary" className="text-xs cursor-help flex items-center gap-1">
