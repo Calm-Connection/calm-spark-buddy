@@ -39,12 +39,15 @@ export function useAccessibility() {
     
     // Apply text size
     root.style.setProperty('--base-font-size', textSizeMap[settings.textSize]);
+    root.setAttribute('data-text-size', settings.textSize);
     
-    // Apply font family
+    // Apply font family with data attribute for better CSS targeting
     if (settings.fontFamily === 'dyslexia-friendly') {
       root.style.setProperty('--font-family', 'OpenDyslexic, "Comic Sans MS", sans-serif');
+      root.setAttribute('data-font', 'dyslexia-friendly');
     } else {
       root.style.removeProperty('--font-family');
+      root.removeAttribute('data-font');
     }
     
     // Apply high contrast

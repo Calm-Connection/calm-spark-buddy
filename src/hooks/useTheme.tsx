@@ -52,12 +52,26 @@ export function useTheme(themeName?: ThemeName) {
     if (!theme) return;
 
     const root = document.documentElement;
+    const isDarkMode = root.classList.contains('dark');
     
-    // Apply theme colors
-    root.style.setProperty('--background', theme.background);
-    root.style.setProperty('--primary', theme.primary);
-    root.style.setProperty('--secondary', theme.secondary);
-    root.style.setProperty('--accent', theme.accent);
+    // Apply theme colors - darken backgrounds in dark mode for better readability
+    if (isDarkMode) {
+      // In dark mode, make backgrounds slightly darker for better text contrast
+      const darkenBackground = (hsl: string) => {
+        const [h, s, l] = hsl.split(' ').map(v => parseFloat(v));
+        return `${h} ${s}% ${Math.max(l - 15, 20)}%`;
+      };
+      
+      root.style.setProperty('--background', darkenBackground(theme.background));
+      root.style.setProperty('--primary', theme.primary);
+      root.style.setProperty('--secondary', theme.secondary);
+      root.style.setProperty('--accent', theme.accent);
+    } else {
+      root.style.setProperty('--background', theme.background);
+      root.style.setProperty('--primary', theme.primary);
+      root.style.setProperty('--secondary', theme.secondary);
+      root.style.setProperty('--accent', theme.accent);
+    }
     
     // Store in localStorage for persistence
     localStorage.setItem('appliedTheme', themeName);
@@ -77,10 +91,26 @@ export function applyTheme(themeName: ThemeName) {
   if (!theme) return;
 
   const root = document.documentElement;
-  root.style.setProperty('--background', theme.background);
-  root.style.setProperty('--primary', theme.primary);
-  root.style.setProperty('--secondary', theme.secondary);
-  root.style.setProperty('--accent', theme.accent);
+  const isDarkMode = root.classList.contains('dark');
+  
+  // Apply theme colors - darken backgrounds in dark mode for better readability
+  if (isDarkMode) {
+    // In dark mode, make backgrounds slightly darker for better text contrast
+    const darkenBackground = (hsl: string) => {
+      const [h, s, l] = hsl.split(' ').map(v => parseFloat(v));
+      return `${h} ${s}% ${Math.max(l - 15, 20)}%`;
+    };
+    
+    root.style.setProperty('--background', darkenBackground(theme.background));
+    root.style.setProperty('--primary', theme.primary);
+    root.style.setProperty('--secondary', theme.secondary);
+    root.style.setProperty('--accent', theme.accent);
+  } else {
+    root.style.setProperty('--background', theme.background);
+    root.style.setProperty('--primary', theme.primary);
+    root.style.setProperty('--secondary', theme.secondary);
+    root.style.setProperty('--accent', theme.accent);
+  }
   
   localStorage.setItem('appliedTheme', themeName);
 }
