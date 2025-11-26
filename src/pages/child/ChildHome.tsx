@@ -337,7 +337,7 @@ export default function ChildHome() {
                       className="h-auto flex flex-col items-center gap-2 p-3 hover:scale-105 transition-transform"
                     >
                       <MoodIcon moodId={mood.id} size="sm" />
-                      <span className="text-xs">{mood.label}</span>
+                    <span className="text-xs text-foreground">{mood.label}</span>
                     </Button>
                   ))}
                 </div>
@@ -353,7 +353,7 @@ export default function ChildHome() {
                       className="h-auto flex flex-col items-center gap-2 p-3 hover:scale-105 transition-transform"
                     >
                       <MoodIcon moodId={mood.id} size="sm" />
-                      <span className="text-xs">{mood.label}</span>
+                    <span className="text-xs text-foreground">{mood.label}</span>
                     </Button>
                   ))}
                 </div>
@@ -369,7 +369,7 @@ export default function ChildHome() {
                       className="h-auto flex flex-col items-center gap-2 p-3 hover:scale-105 transition-transform"
                     >
                       <MoodIcon moodId={mood.id} size="sm" />
-                      <span className="text-xs">{mood.label}</span>
+                      <span className="text-xs text-foreground">{mood.label}</span>
                     </Button>
                   ))}
                 </div>
@@ -390,7 +390,7 @@ export default function ChildHome() {
 
         {/* Quick Access Cards */}
         <div>
-          <SectionTitle>Quick Activities</SectionTitle>
+          
           <div className="grid grid-cols-2 gap-3">
             <Card
               className="p-4 sm:p-5 cursor-pointer transition-all hover:scale-[1.02] bg-gradient-to-br from-accent/20 to-warm/20"
