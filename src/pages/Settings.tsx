@@ -538,23 +538,29 @@ export default function Settings() {
             Display Mode
           </h3>
           
-          <div className="space-y-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Button
-              variant={theme === 'light' ? 'primary' : 'outline'}
+              variant={theme === 'light' ? 'default' : 'outline'}
               onClick={() => setTheme('light')}
-              className="w-full justify-start"
+              className="w-full justify-start overflow-hidden min-h-[3rem]"
             >
-              <Sun className="mr-2 h-5 w-5" />
-              <span>Light Mode <span className="hidden sm:inline">(Bright & Cheerful)</span></span>
+              <Sun className="mr-2 h-5 w-5 flex-shrink-0" />
+              <span className="text-left truncate">
+                Light Mode
+                <span className="block text-xs opacity-70 mt-0.5">Bright & Cheerful</span>
+              </span>
             </Button>
             
             <Button
-              variant={theme === 'dark' ? 'primary' : 'outline'}
+              variant={theme === 'dark' ? 'default' : 'outline'}
               onClick={() => setTheme('dark')}
-              className="w-full justify-start"
+              className="w-full justify-start overflow-hidden min-h-[3rem]"
             >
-              <Moon className="mr-2 h-5 w-5" />
-              <span>Dark Mode <span className="hidden sm:inline">(Calm & Cozy)</span></span>
+              <Moon className="mr-2 h-5 w-5 flex-shrink-0" />
+              <span className="text-left truncate">
+                Dark Mode
+                <span className="block text-xs opacity-70 mt-0.5">Calm & Cozy</span>
+              </span>
             </Button>
           </div>
           

@@ -506,48 +506,120 @@ All colors MUST be HSL.
 
 /* Accessibility Classes */
 
-/* Dark mode text on colored backgrounds */
+/* Dark mode text on colored backgrounds - Force readable contrast */
+.dark .bg-primary,
+.dark .bg-secondary,
+.dark .bg-accent,
+.dark [class*="bg-primary/"],
+.dark [class*="bg-secondary/"],
+.dark [class*="bg-accent/"] {
+  color: hsl(0 0% 10%) !important;
+}
+
 .dark .text-on-colored-bg {
   color: hsl(0 0% 10%) !important;
 }
 
-/* High Contrast Mode */
+/* Enhanced Text Size Scaling with Layout Protection */
+html {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+button,
+.btn,
+input,
+select,
+textarea {
+  min-height: calc(var(--base-font-size, 16px) * 2.5);
+  padding: calc(var(--base-font-size, 16px) * 0.5) calc(var(--base-font-size, 16px) * 1);
+}
+
+/* Dyslexia-Friendly Font - Apply to all elements */
+[data-font="dyslexia-friendly"],
+[data-font="dyslexia-friendly"] * {
+  font-family: 'OpenDyslexic', 'Comic Sans MS', sans-serif !important;
+  letter-spacing: 0.05em;
+  line-height: 1.5;
+}
+
+/* High Contrast Mode - Enhanced for better visibility */
 .high-contrast {
   --background: 0 0% 100%;
   --foreground: 0 0% 0%;
   --card: 0 0% 100%;
   --card-foreground: 0 0% 0%;
-  --primary: 240 100% 35%;
+  --primary: 220 100% 30%;
   --primary-foreground: 0 0% 100%;
-  --secondary: 240 100% 25%;
+  --secondary: 175 100% 25%;
   --secondary-foreground: 0 0% 100%;
-  --accent: 30 100% 40%;
-  --accent-foreground: 0 0% 0%;
-  --interactive-accent: 175 100% 25%;
-  --interactive-accent-hover: 175 100% 20%;
-  --border: 0 0% 20%;
-  --input: 0 0% 20%;
+  --accent: 30 100% 35%;
+  --accent-foreground: 0 0% 100%;
+  --muted: 0 0% 90%;
+  --muted-foreground: 0 0% 10%;
+  --border: 0 0% 0%;
+  --input: 0 0% 0%;
+  --ring: 220 100% 40%;
 }
 
-/* Dark mode high contrast */
+.high-contrast *,
+.high-contrast button,
+.high-contrast .card,
+.high-contrast input,
+.high-contrast select,
+.high-contrast textarea {
+  border-color: hsl(0 0% 0%) !important;
+  border-width: 2px !important;
+}
+
+.high-contrast button:focus,
+.high-contrast a:focus,
+.high-contrast input:focus,
+.high-contrast select:focus,
+.high-contrast textarea:focus {
+  outline: 4px solid hsl(220 100% 40%) !important;
+  outline-offset: 2px;
+}
+
+/* Dark mode high contrast - Enhanced */
 .high-contrast-dark {
   --background: 0 0% 0%;
   --foreground: 0 0% 100%;
-  --card: 0 0% 8%;
+  --card: 0 0% 5%;
   --card-foreground: 0 0% 100%;
-  --primary: 240 100% 70%;
+  --primary: 220 100% 70%;
   --primary-foreground: 0 0% 0%;
   --secondary: 163 100% 70%;
   --secondary-foreground: 0 0% 0%;
   --accent: 31 100% 70%;
   --accent-foreground: 0 0% 0%;
-  --interactive-accent: 175 100% 60%;
-  --interactive-accent-hover: 175 100% 70%;
-  --border: 0 0% 80%;
-  --input: 0 0% 80%;
+  --muted: 0 0% 20%;
+  --muted-foreground: 0 0% 90%;
+  --border: 0 0% 100%;
+  --input: 0 0% 100%;
+  --ring: 220 100% 60%;
 }
 
-/* Calm mode - reduces animations */
+.high-contrast-dark *,
+.high-contrast-dark button,
+.high-contrast-dark .card,
+.high-contrast-dark input,
+.high-contrast-dark select,
+.high-contrast-dark textarea {
+  border-color: hsl(0 0% 100%) !important;
+  border-width: 2px !important;
+}
+
+.high-contrast-dark button:focus,
+.high-contrast-dark a:focus,
+.high-contrast-dark input:focus,
+.high-contrast-dark select:focus,
+.high-contrast-dark textarea:focus {
+  outline: 4px solid hsl(220 100% 60%) !important;
+  outline-offset: 2px;
+}
+
+/* Calm mode - reduces animations and visual effects */
 .calm-mode .floating-container {
   display: none !important;
 }
@@ -560,7 +632,13 @@ All colors MUST be HSL.
 .calm-mode * {
   animation-duration: 0.01ms !important;
   animation-iteration-count: 1 !important;
-  transition-duration: 0.01ms !important;
+  transition-duration: 150ms !important; /* Keep very short transitions for usability */
+}
+
+.calm-mode .animate-pulse,
+.calm-mode .animate-bounce,
+.calm-mode .animate-spin {
+  animation: none !important;
 }
 
 /* Reduce motion: breathing circles use color pulse instead of scale */
@@ -574,10 +652,22 @@ All colors MUST be HSL.
   50% { opacity: 1; }
 }
 
-/* Reduce motion */
+/* Reduce motion - Complete animation removal */
 @media (prefers-reduced-motion: reduce) {
   .floating-container {
     display: none;
+  }
+  
+  * {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+  
+  /* Keep color transitions for hover feedback */
+  button:hover,
+  a:hover {
+    transition: background-color 0.1s, color 0.1s !important;
   }
 }
 
@@ -585,15 +675,25 @@ All colors MUST be HSL.
   display: none;
 }
 
-.reduce-motion * {
+.reduce-motion *,
+.reduce-motion *::before,
+.reduce-motion *::after {
   animation: none !important;
   transition: none !important;
+  scroll-behavior: auto !important;
 }
 
-/* Disable blob animations when reduce motion is enabled */
+/* Keep minimal color transitions for interactive feedback */
+.reduce-motion button:hover,
+.reduce-motion a:hover {
+  transition: background-color 0.1s, color 0.1s !important;
+}
+
+/* Disable all decorative animations when reduce motion is enabled */
 .reduce-motion .animate-blob-float,
 .reduce-motion .animate-blob-float-delayed,
 .reduce-motion .animate-blob-float-slow,
-.reduce-motion .animate-blob-pulse {
+.reduce-motion .animate-blob-pulse,
+.reduce-motion [class*="animate-"] {
   animation: none !important;
 }
