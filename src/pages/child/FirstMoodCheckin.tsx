@@ -50,7 +50,7 @@ export default function FirstMoodCheckin() {
                   size="md" 
                   selected={selectedMood === mood.id}
                 />
-                <span className="font-semibold">{mood.label}</span>
+                <span className="font-semibold text-foreground">{mood.label}</span>
               </div>
             </Card>
           ))}
