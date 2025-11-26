@@ -27,23 +27,23 @@ export function WendyTipCard({ tip, actionType, actionLink, actionLabel }: Wendy
   };
 
   return (
-    <Card className="relative p-5 border border-primary/20 bg-gradient-to-br from-primary/5 to-accent/5 dark:from-primary/10 dark:to-accent/10">
+    <Card className="relative p-4 sm:p-5 border border-primary/20 bg-gradient-to-br from-primary/5 to-accent/5 dark:from-primary/10 dark:to-accent/10">
       <DecorativeIcon icon="sparkles" position="top-right" opacity={0.12} />
       
-      <div className="flex items-start gap-3">
-        <WendyAvatar size="lg" />
-        <div className="flex-1 space-y-3">
+      <div className="flex flex-col sm:flex-row items-start gap-3">
+        <WendyAvatar size="lg" className="flex-shrink-0" />
+        <div className="flex-1 space-y-3 min-w-0 w-full">
           <h3 className="font-bold text-lg">Wendy's Tip for You 💜</h3>
-          <p className="text-sm font-medium">{tip}</p>
+          <p className="text-sm font-medium break-words">{tip}</p>
           {actionLink && actionLabel && (
             <Button
               variant="outline"
               size="sm"
-              className="w-full"
+              className="w-full flex items-center justify-center gap-2"
               onClick={() => navigate(actionLink)}
             >
               {getIcon()}
-              <span className="ml-2">{actionLabel}</span>
+              <span>{actionLabel}</span>
             </Button>
           )}
         </div>

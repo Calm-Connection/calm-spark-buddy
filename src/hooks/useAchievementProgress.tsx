@@ -54,12 +54,12 @@ export function useAchievementProgress(userId: string | undefined) {
 
         let currentProgress = 0;
 
-        // Determine progress based on achievement category
-        if (achievement.category === 'journaling') {
+        // Determine progress based on achievement category (matches DB categories)
+        if (achievement.category === 'journal') {
           currentProgress = journalCount || 0;
-        } else if (achievement.category === 'learning') {
+        } else if (achievement.category === 'module') {
           currentProgress = moduleCount || 0;
-        } else if (achievement.category === 'mood') {
+        } else if (achievement.category === 'checkin') {
           // Get consecutive days with mood check-ins
           const { data: recentEntries } = await supabase
             .from('journal_entries')

@@ -13,8 +13,7 @@ import { FloatingElements } from '@/components/FloatingElements';
 import { BottomNav } from '@/components/BottomNav';
 import { NotificationBell } from '@/components/NotificationBell';
 import { WendyTipCard } from '@/components/WendyTipCard';
-import { WendyAvatar } from '@/components/WendyAvatar';
-import { DecorativeIcon } from '@/components/DecorativeIcon';
+import { SectionTitle } from '@/components/SectionTitle';
 import { toast } from 'sonner';
 import { getEmotionalIconsByCategory } from '@/constants/emotionalIcons';
 import { MoodIcon } from '@/components/MoodIcon';
@@ -42,16 +41,32 @@ export default function ChildHome() {
   const [childProfileId, setChildProfileId] = useState<string | undefined>();
   const [showPostJournalTip, setShowPostJournalTip] = useState(false);
   const [postJournalAction, setPostJournalAction] = useState<{ type: string; link: string; label: string } | null>(null);
+  const [lastTipDate, setLastTipDate] = useState<string | null>(null);
 
   // Track achievement progress automatically
   useAchievementProgress(childProfileId);
 
-  // Check for post-journal tips from navigation state
+  // Check for daily tip reset and post-journal tips
   useEffect(() => {
+    // Check if we need to reset tip for new day
+    const today = new Date().toISOString().split('T')[0];
+    const storedTipDate = localStorage.getItem('wendyTipDate');
+    
+    if (storedTipDate && storedTipDate !== today) {
+      // New day - clear tip
+      setWendyTip(null);
+      setShowPostJournalTip(false);
+      localStorage.removeItem('wendyTipDate');
+    } else if (storedTipDate) {
+      setLastTipDate(storedTipDate);
+    }
+    
+    // Check for post-journal tips from navigation state
     if (location.state?.showWendyTip) {
       const { moodScore, entryText } = location.state;
       generatePostJournalTip(moodScore, entryText);
       setShowPostJournalTip(true);
+      localStorage.setItem('wendyTipDate', today);
       
       // Clear the state
       window.history.replaceState({}, document.title);
@@ -59,16 +74,20 @@ export default function ChildHome() {
   }, [location]);
 
   const generatePostJournalTip = (moodScore: number, entryText: string) => {
+    const today = new Date().toISOString().split('T')[0];
+    
     if (moodScore < 40) {
-      setWendyTip("I'm proud of you for sharing how you're feeling. Remember, it's okay to not feel okay. Would you like to try something calming?");
+      setWendyTip("I'm really proud of you for sharing how you're feeling. It takes courage! Remember, difficult feelings don't last forever. Would a calming activity help right now?");
       setPostJournalAction({ type: 'tool', link: '/child/tools', label: 'Try a Calming Tool' });
     } else if (moodScore < 60) {
-      setWendyTip("Thanks for checking in with your feelings. Taking a short break might help you feel even better!");
-      setPostJournalAction({ type: 'suggestion', link: '/child/tools', label: 'Explore Calming Activities' });
+      setWendyTip("Thanks for checking in with your feelings today. You're doing a great job taking care of yourself. A gentle activity might help you feel even better!");
+      setPostJournalAction({ type: 'tool', link: '/child/tools', label: 'Explore Calming Activities' });
     } else {
-      setWendyTip("You're doing great! Keep up this positive energy. Maybe try learning something new to keep that good feeling going.");
+      setWendyTip("Your positive energy is wonderful! Keep noticing the good things around you. Want to learn something new to keep that great feeling going?");
       setPostJournalAction({ type: 'module', link: '/child/modules', label: 'Learn Something New' });
     }
+    
+    localStorage.setItem('wendyTipDate', today);
   };
 
   const presetMoods = {
@@ -226,7 +245,7 @@ export default function ChildHome() {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-primary/10 to-background p-6 pb-24 relative">
+    <div className="min-h-screen bg-gradient-to-b from-primary/10 to-background px-4 sm:px-6 py-6 pb-24 relative">
       <FloatingElements theme={currentTheme} />
       <div className="max-w-2xl mx-auto space-y-6 relative z-10">
         {/* Header */}
@@ -279,21 +298,18 @@ export default function ChildHome() {
 
         {/* Regular Wendy's Tip */}
         {!showPostJournalTip && wendyTip && (
-          <Card className="p-5 bg-gradient-to-br from-primary/10 to-accent/10 border-primary/20">
-            <div className="flex items-start gap-3">
-              <WendyAvatar size="lg" />
-              <div className="flex-1">
-                <h3 className="font-bold text-lg mb-2">Wendy's Tip for You 💜</h3>
-                <p className="text-sm">{wendyTip}</p>
-              </div>
-            </div>
-          </Card>
+          <WendyTipCard 
+            tip={wendyTip}
+            actionType="suggestion"
+            actionLink="/child/tools"
+            actionLabel="Explore Tools"
+          />
         )}
 
         {/* Daily Check-in */}
         {!hasCheckedInToday && (
-          <Card className="p-6 bg-gradient-to-br from-primary/20 to-accent/20 border-primary/30">
-            <h2 className="text-xl font-bold mb-4">How are you feeling today?</h2>
+          <Card className="p-4 sm:p-6 bg-gradient-to-br from-primary/20 to-accent/20 border-primary/30">
+            <SectionTitle>How are you feeling today?</SectionTitle>
             
             <Tabs defaultValue="positive" className="w-full">
               <TabsList className="grid w-full grid-cols-3 mb-4">
@@ -373,50 +389,53 @@ export default function ChildHome() {
         )}
 
         {/* Quick Access Cards */}
-        <div className="grid grid-cols-2 gap-3">
-          <Card
-            className="p-5 cursor-pointer transition-all hover:scale-[1.02] bg-gradient-to-br from-accent/20 to-warm/20"
-            onClick={() => navigate('/child/tools')}
-          >
-            <div className="flex flex-col items-center gap-3 text-center">
-              <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
-                <Wrench className="h-6 w-6 text-primary" />
+        <div>
+          <SectionTitle>Quick Activities</SectionTitle>
+          <div className="grid grid-cols-2 gap-3">
+            <Card
+              className="p-4 sm:p-5 cursor-pointer transition-all hover:scale-[1.02] bg-gradient-to-br from-accent/20 to-warm/20"
+              onClick={() => navigate('/child/tools')}
+            >
+              <div className="flex flex-col items-center gap-3 text-center">
+                <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Wrench className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-bold">Tools</h3>
+                  <p className="text-xs text-muted-foreground">Calming activities</p>
+                </div>
               </div>
-              <div>
-                <h3 className="font-bold">Tools</h3>
-                <p className="text-xs text-muted-foreground">Calming activities</p>
-              </div>
-            </div>
-          </Card>
+            </Card>
 
-          <Card
-            className="p-5 cursor-pointer transition-all hover:scale-[1.02] bg-gradient-to-br from-secondary/20 to-accent/20"
-            onClick={() => navigate('/child/modules')}
-          >
-            <div className="flex flex-col items-center gap-3 text-center">
-              <div className="h-12 w-12 rounded-full bg-secondary/20 flex items-center justify-center">
-                <GraduationCap className="h-6 w-6 text-secondary" />
+            <Card
+              className="p-4 sm:p-5 cursor-pointer transition-all hover:scale-[1.02] bg-gradient-to-br from-secondary/20 to-accent/20"
+              onClick={() => navigate('/child/modules')}
+            >
+              <div className="flex flex-col items-center gap-3 text-center">
+                <div className="h-12 w-12 rounded-full bg-secondary/20 flex items-center justify-center">
+                  <GraduationCap className="h-6 w-6 text-secondary" />
+                </div>
+                <div>
+                  <h3 className="font-bold">Learn</h3>
+                  <p className="text-xs text-muted-foreground">Helpful modules</p>
+                </div>
               </div>
-              <div>
-                <h3 className="font-bold">Learn</h3>
-                <p className="text-xs text-muted-foreground">Helpful modules</p>
-              </div>
-            </div>
-          </Card>
+            </Card>
+          </div>
         </div>
 
         {/* All Entries Link */}
         <Card
-          className="p-5 cursor-pointer transition-all hover:scale-[1.02] bg-gradient-to-br from-primary/10 to-secondary/10"
+          className="p-4 sm:p-5 cursor-pointer transition-all hover:scale-[1.02] bg-gradient-to-br from-primary/10 to-secondary/10"
           onClick={() => navigate('/child/entries')}
         >
-          <div className="flex items-center gap-4">
-            <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
               <BookOpen className="h-6 w-6 text-primary" />
             </div>
-            <div className="flex-1">
-              <h3 className="font-bold text-lg">All My Entries</h3>
-              <p className="text-sm text-muted-foreground">View all journal entries, drawings & recordings</p>
+            <div className="flex-1 min-w-0">
+              <h3 className="font-bold text-base sm:text-lg">All My Entries</h3>
+              <p className="text-xs sm:text-sm text-muted-foreground">View all journal entries, drawings & recordings</p>
             </div>
           </div>
         </Card>

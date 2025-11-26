@@ -236,49 +236,67 @@ function CozyElements() {
   );
 }
 
-// Classic theme with subtle particles
+// Classic theme with enhanced soft animations
 function ClassicElements() {
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
-  const circleCount = isMobile ? 6 : 8;
-  const brushCount = isMobile ? 4 : 6;
+  const circleCount = isMobile ? 8 : 12;
+  const sparkleCount = isMobile ? 6 : 10;
+  const dotCount = isMobile ? 10 : 15;
   
   const circlePositions = useMemo(() => generateStablePositions(circleCount), [circleCount]);
-  const brushPositions = useMemo(() => generateStablePositions(brushCount), [brushCount]);
+  const sparklePositions = useMemo(() => generateStablePositions(sparkleCount), [sparkleCount]);
+  const dotPositions = useMemo(() => generateStablePositions(dotCount), [dotCount]);
 
   return (
     <>
-      {/* Pastel circles */}
+      {/* Soft floating circles with enhanced opacity */}
       {circlePositions.map((pos, i) => (
         <div
           key={`circle-${i}`}
-          className="absolute rounded-full animate-parallax-drift blur-2xl"
+          className="absolute rounded-full animate-gentle-float blur-2xl"
           style={{
             left: pos.left,
             top: pos.top,
-            width: `${24 + (i % 3) * 12}px`,
-            height: `${24 + (i % 3) * 12}px`,
+            width: `${32 + (i % 4) * 16}px`,
+            height: `${32 + (i % 4) * 16}px`,
             background: `hsl(${248 + (i * 15) % 60}, 70%, 85%)`,
-            opacity: 0.25,
+            opacity: 0.35,
             animationDelay: pos.delay,
-            animationDuration: pos.duration,
+            animationDuration: `${18 + (i % 3) * 8}s`,
             willChange: 'transform, opacity',
           }}
         />
       ))}
       
-      {/* Brushstroke particles */}
-      {brushPositions.map((pos, i) => (
+      {/* Sparkle particles */}
+      {sparklePositions.map((pos, i) => (
         <div
-          key={`brush-${i}`}
-          className="absolute w-16 h-2 rounded-full blur-sm animate-brush-drift"
+          key={`sparkle-${i}`}
+          className="absolute w-2 h-2 bg-accent/60 rounded-full animate-soft-pulse shadow-[0_0_8px_hsl(31,97%,88%)]"
           style={{
             left: pos.left,
             top: pos.top,
-            background: `hsl(${163 + (i * 10) % 40}, 60%, 75%)`,
-            opacity: 0.15,
             animationDelay: pos.delay,
-            animationDuration: `${20 + (i % 3) * 8}s`,
-            transform: `rotate(${(i * 45) % 360}deg)`,
+            animationDuration: `${3 + (i % 3) * 1.5}s`,
+            willChange: 'opacity, transform',
+          }}
+        />
+      ))}
+      
+      {/* Floating gentle dots */}
+      {dotPositions.map((pos, i) => (
+        <div
+          key={`dot-${i}`}
+          className="absolute rounded-full animate-gentle-float"
+          style={{
+            left: pos.left,
+            top: pos.top,
+            width: `${6 + (i % 3) * 4}px`,
+            height: `${6 + (i % 3) * 4}px`,
+            background: `hsl(${163 + (i * 12) % 40}, 60%, 75%)`,
+            opacity: 0.3,
+            animationDelay: pos.delay,
+            animationDuration: `${20 + (i % 4) * 6}s`,
             willChange: 'transform, opacity',
           }}
         />
