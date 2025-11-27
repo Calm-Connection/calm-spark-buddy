@@ -108,6 +108,10 @@ export function ObjectAvatarBuilder({
         </div>
       </Card>
 
+      <p className="text-xs text-center text-muted-foreground px-2">
+        This is just a list of what you've chosen. Your actual avatar will be created when you press Create Avatar at the bottom.
+      </p>
+
       {generatedImage ? (
         <div className="space-y-4">
           <Card className="p-4 sm:p-6">
