@@ -47,20 +47,6 @@ export function AvatarCustomizer({ open, onOpenChange, currentAvatar, onAvatarUp
   const handleAvatarGenerated = async (data: any) => {
     console.log('Avatar generated in customizer:', data);
     setNewAvatarData(data);
-    
-    // Save to avatar history
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        await supabase.from('avatar_history').insert({
-          user_id: user.id,
-          avatar_json: data,
-          is_current: false
-        });
-      }
-    } catch (error) {
-      console.error('Error saving to avatar history:', error);
-    }
   };
 
   const handleGeneratePreset = async (preset: any) => {
@@ -94,41 +80,19 @@ export function AvatarCustomizer({ open, onOpenChange, currentAvatar, onAvatarUp
     }
   };
 
-  const handleSaveAvatar = async () => {
-    if (!user || !newAvatarData) return;
-    
-    setLoading(true);
+  const updateAvatarHistory = async (avatarData: any) => {
+    if (!user) return;
     try {
-      const table = userRole === 'child' ? 'children_profiles' : 'carer_profiles';
-      
-      // IMMEDIATE optimistic update FIRST
-      onAvatarUpdate(newAvatarData);
-      
-      // Check if this avatar imageUrl already exists in history
       const { data: existingAvatars } = await supabase
         .from('avatar_history')
-        .select('id, avatar_json, is_current')
+        .select('id, avatar_json')
         .eq('user_id', user.id);
 
-      // Check if any existing avatar has the same imageUrl
       const existingAvatar = existingAvatars?.find(
-        (item) => (item.avatar_json as any)?.imageUrl === newAvatarData.imageUrl
+        (item) => (item.avatar_json as any)?.imageUrl === avatarData.imageUrl
       );
 
-      const { error: profileError } = await supabase
-        .from(table)
-        .update({ avatar_json: newAvatarData })
-        .eq('user_id', user.id);
-
-      if (profileError) {
-        console.error('Profile update error:', profileError);
-        // Revert optimistic update
-        onAvatarUpdate(currentAvatar);
-        throw profileError;
-      }
-
       if (existingAvatar) {
-        // Avatar already exists in history - just mark it as current
         await supabase
           .from('avatar_history')
           .update({ is_current: false })
@@ -139,7 +103,6 @@ export function AvatarCustomizer({ open, onOpenChange, currentAvatar, onAvatarUp
           .update({ is_current: true })
           .eq('id', existingAvatar.id);
       } else {
-        // Brand new avatar - insert into history
         await supabase
           .from('avatar_history')
           .update({ is_current: false })
@@ -149,21 +112,46 @@ export function AvatarCustomizer({ open, onOpenChange, currentAvatar, onAvatarUp
           .from('avatar_history')
           .insert({
             user_id: user.id,
-            avatar_json: newAvatarData,
+            avatar_json: avatarData,
             is_current: true
           });
       }
+    } catch (error) {
+      console.error('Error updating avatar history:', error);
+    }
+  };
 
-      // Success feedback
+  const handleSaveAvatar = async () => {
+    if (!user || !newAvatarData) return;
+    
+    setLoading(true);
+    try {
+      const table = userRole === 'child' ? 'children_profiles' : 'carer_profiles';
+      
+      // IMMEDIATE optimistic update
+      onAvatarUpdate(newAvatarData);
+      
+      // Update profile - critical operation
+      const { error: profileError } = await supabase
+        .from(table)
+        .update({ avatar_json: newAvatarData })
+        .eq('user_id', user.id);
+
+      if (profileError) {
+        onAvatarUpdate(currentAvatar);
+        throw profileError;
+      }
+
+      // Success - close immediately
       toast({
-        title: '✓ Avatar Updated',
+        title: '✓ Avatar Saved!',
         description: 'Your new avatar is now active!',
       });
+      onOpenChange(false);
       
-      // IMMEDIATE close with slight delay for visual feedback
-      setTimeout(() => {
-        onOpenChange(false);
-      }, 300);
+      // Handle history in background (non-blocking)
+      updateAvatarHistory(newAvatarData);
+      
     } catch (error) {
       console.error('Error saving avatar:', error);
       toast({

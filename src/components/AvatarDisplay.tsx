@@ -55,19 +55,19 @@ export function AvatarDisplay({ avatarData, size = 'md', className = '' }: Avata
     lg: { width: 96, height: 86 },
   };
 
-  // Object-based avatar
-  if (avatarData?.type === 'object_avatar' && avatarData?.objectData) {
+  // Priority 1: Display saved imageUrl (for ALL avatar types that have one)
+  if (avatarData?.imageUrl) {
     return (
-      <div className={className}>
-        <ObjectAvatarPreview
-          {...avatarData.objectData}
-          size={size}
-        />
-      </div>
+      <Avatar className={`${sizeClasses[size]} ${className}`}>
+        <AvatarImage src={avatarData.imageUrl} alt="Avatar" className="object-cover" />
+        <AvatarFallback className="bg-muted">
+          <span className={textSizes[size]}>👤</span>
+        </AvatarFallback>
+      </Avatar>
     );
   }
 
-  // Manual custom avatar with preview
+  // Priority 2: Manual custom avatar with preview
   if (avatarData?.type === 'manual_custom' && avatarData?.customization) {
     const scaleFactor = size === 'sm' ? 0.2 : size === 'md' ? 0.32 : 0.48;
     return (
@@ -82,15 +82,15 @@ export function AvatarDisplay({ avatarData, size = 'md', className = '' }: Avata
     );
   }
 
-  // AI-generated image avatar (check both imageUrl and type)
-  if (avatarData?.imageUrl || avatarData?.type === 'ai_generated') {
+  // Priority 3: Fallback to ObjectAvatarPreview only if no imageUrl (shouldn't normally happen)
+  if (avatarData?.type === 'object_avatar' && avatarData?.objectData && !avatarData?.imageUrl) {
     return (
-      <Avatar className={`${sizeClasses[size]} ${className}`}>
-        <AvatarImage src={avatarData.imageUrl} alt="Avatar" />
-        <AvatarFallback className="bg-muted">
-          <span className={textSizes[size]}>👤</span>
-        </AvatarFallback>
-      </Avatar>
+      <div className={className}>
+        <ObjectAvatarPreview
+          {...avatarData.objectData}
+          size={size}
+        />
+      </div>
     );
   }
 

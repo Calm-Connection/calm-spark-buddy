@@ -499,6 +499,35 @@ All colors MUST be HSL.
     animation: gentle-float 20s cubic-bezier(0.4, 0, 0.2, 1) infinite;
   }
 
+  /* Sonner Toast Close Button Styling */
+  [data-sonner-toast] [data-close-button] {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent !important;
+    border: none;
+    color: hsl(var(--foreground));
+    opacity: 0.6;
+    transition: opacity 0.2s;
+    padding: 0.25rem;
+    border-radius: 0.25rem;
+  }
+
+  [data-sonner-toast] [data-close-button]:hover {
+    opacity: 1;
+    background: hsl(var(--muted) / 0.3) !important;
+  }
+
+  [data-sonner-toast] [data-close-button] svg {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .dark [data-sonner-toast] [data-close-button] {
+    color: hsl(var(--foreground));
+  }
+
   .animate-soft-pulse {
     animation: soft-pulse 3.5s ease-in-out infinite;
   }
