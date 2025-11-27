@@ -99,6 +99,9 @@ export default function ChildHome() {
   useEffect(() => {
     const loadProfile = async () => {
       if (!user) return;
+      
+      // Prevent re-fetching if avatar already loaded in session
+      if (avatarData && nickname && childProfileId) return;
 
       const { data } = await supabase
         .from('children_profiles')

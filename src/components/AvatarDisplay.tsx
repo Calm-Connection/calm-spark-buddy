@@ -82,15 +82,14 @@ export function AvatarDisplay({ avatarData, size = 'md', className = '' }: Avata
     );
   }
 
-  // Priority 3: Fallback to ObjectAvatarPreview only if no imageUrl (shouldn't normally happen)
+  // Priority 3: Static fallback for object avatars without imageUrl (shouldn't normally happen)
   if (avatarData?.type === 'object_avatar' && avatarData?.objectData && !avatarData?.imageUrl) {
     return (
-      <div className={className}>
-        <ObjectAvatarPreview
-          {...avatarData.objectData}
-          size={size}
-        />
-      </div>
+      <Avatar className={`${sizeClasses[size]} ${className}`}>
+        <AvatarFallback className="bg-primary/20">
+          <span className={textSizes[size]}>✨</span>
+        </AvatarFallback>
+      </Avatar>
     );
   }
 

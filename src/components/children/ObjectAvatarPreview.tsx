@@ -37,44 +37,13 @@ export function ObjectAvatarPreview({
     lg: 'w-64 h-64',
   };
 
+  // No auto-generation - this component is now display-only
+  // Only used during avatar creation in ObjectAvatarBuilder
   useEffect(() => {
-    const generatePreview = async () => {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const { data, error: fnError } = await supabase.functions.invoke('generate-avatar', {
-          body: {
-            type: 'child',
-            objectData: {
-              objectType,
-              mainColor,
-              accentColor,
-              eyeStyle,
-              eyeColor,
-              accessory,
-              comfortItem,
-            },
-            age,
-          }
-        });
-
-        if (fnError) throw fnError;
-        if (data?.imageUrl) {
-          setImageUrl(data.imageUrl);
-        }
-      } catch (err) {
-        console.error('Preview generation error:', err);
-        setError('Failed to generate preview');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    // Debounce preview generation
-    const timeoutId = setTimeout(generatePreview, 800);
-    return () => clearTimeout(timeoutId);
-  }, [objectType, mainColor, accentColor, eyeStyle, eyeColor, accessory, comfortItem, age]);
+    // Component is for preview during creation only
+    // Actual saved avatars use imageUrl from database
+    setLoading(false);
+  }, []);
 
   if (loading) {
     return (
