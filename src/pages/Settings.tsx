@@ -817,8 +817,8 @@ export default function Settings() {
         onOpenChange={setAvatarCustomizerOpen}
         currentAvatar={avatarData}
         onAvatarUpdate={(newAvatar) => {
-          // Force immediate re-render with new object reference
-          setAvatarData({ ...newAvatar, _updated: Date.now() });
+          // Update avatar state without polluting with extra fields
+          setAvatarData(newAvatar);
         }}
       />
       <ReportConcernModal
