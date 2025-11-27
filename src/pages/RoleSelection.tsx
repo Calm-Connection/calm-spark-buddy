@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import { applyTheme } from '@/hooks/useTheme';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
 import { Footer } from '@/components/Footer';
+import { ArrowLeft } from 'lucide-react';
 
 export default function RoleSelection() {
   const navigate = useNavigate();
@@ -25,6 +26,15 @@ export default function RoleSelection() {
           </h1>
           <p className="text-base md:text-xl text-foreground/80 font-medium">Choose your role to get started</p>
         </div>
+
+        <Button 
+          variant="ghost" 
+          onClick={() => navigate('/')} 
+          className="mx-auto flex items-center gap-2"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to Welcome
+        </Button>
 
         <div className="grid grid-cols-2 gap-4 md:gap-8 max-w-4xl mx-auto">
           <Card 
