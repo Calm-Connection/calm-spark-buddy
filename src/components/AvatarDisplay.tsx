@@ -55,6 +55,17 @@ export function AvatarDisplay({ avatarData, size = 'md', className = '' }: Avata
     lg: { width: 96, height: 86 },
   };
 
+  // Priority 0: Check for emoji avatar (simple emoji-based avatars)
+  if (avatarData?.type === 'emoji_avatar' && avatarData?.emoji) {
+    return (
+      <Avatar className={`${sizeClasses[size]} ${className}`}>
+        <AvatarFallback className="bg-primary/20">
+          <span className={textSizes[size]}>{avatarData.emoji}</span>
+        </AvatarFallback>
+      </Avatar>
+    );
+  }
+
   // Priority 1: Display saved imageUrl (for ALL avatar types that have one)
   if (avatarData?.imageUrl) {
     return (

@@ -125,15 +125,15 @@ export default function CarerSignup() {
   };
 
   return (
-      <div className="min-h-screen flex items-center justify-center p-6 bg-background overflow-y-auto">
-        <Card className="relative max-w-md w-full p-8 space-y-6 my-8 bg-gradient-to-br from-primary/5 via-accent/10 to-secondary/5 border-interactive-accent/20 shadow-soft-lg">
+      <div className="min-h-screen flex items-center justify-center p-4 sm:p-6 bg-background overflow-y-auto">
+        <Card className="relative max-w-md w-full p-4 sm:p-6 md:p-8 space-y-4 sm:space-y-6 my-8 bg-gradient-to-br from-primary/5 via-accent/10 to-secondary/5 border-interactive-accent/20 shadow-soft-lg">
           <DecorativeIcon icon="sparkles" position="top-right" opacity={0.12} />
           <div className="text-center space-y-2">
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-interactive-accent to-primary bg-clip-text text-transparent">Carer Account</h1>
-          <p className="text-muted-foreground">Support your child's emotional journey</p>
+            <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-interactive-accent to-primary bg-clip-text text-transparent">Carer Account</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">Support your child's emotional journey</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
           <div className="space-y-2">
             <Label htmlFor="nickname">Nickname</Label>
             <Input
@@ -147,7 +147,7 @@ export default function CarerSignup() {
               maxLength={20}
             />
             <p className="text-xs text-muted-foreground">Between 3 and 20 characters</p>
-            <NicknameExplanation variant="compact" className="mt-3" />
+            <NicknameExplanation variant="compact" className="mt-2 text-sm" />
           </div>
 
           <div className="space-y-2">
@@ -176,9 +176,9 @@ export default function CarerSignup() {
             <p className="text-xs text-muted-foreground">At least 8 characters</p>
           </div>
 
-          <Card className="p-4 bg-warm/20 border-warm">
-            <h3 className="font-bold mb-2">Privacy & Safeguarding Notice</h3>
-            <div className="text-sm text-muted-foreground space-y-2">
+          <Card className="p-3 sm:p-4 bg-warm/20 border-warm">
+            <h3 className="font-bold mb-2 text-sm sm:text-base">Privacy & Safeguarding Notice</h3>
+            <div className="text-xs sm:text-sm text-muted-foreground space-y-1.5 sm:space-y-2">
               <p>
                 • Your child's journal entries are private by default
               </p>
@@ -197,15 +197,16 @@ export default function CarerSignup() {
             </div>
           </Card>
 
-          <div className="flex items-start space-x-2">
+          <div className="flex items-start space-x-2 sm:space-x-3">
             <Checkbox 
               id="privacy" 
               checked={acceptedPrivacy}
               onCheckedChange={(checked) => setAcceptedPrivacy(checked as boolean)}
+              className="mt-0.5"
             />
             <label
               htmlFor="privacy"
-              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              className="text-xs sm:text-sm font-medium leading-relaxed peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             >
               I have read and accept the{' '}
               <Button
