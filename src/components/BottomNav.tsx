@@ -55,9 +55,9 @@ export function BottomNav({ role }: BottomNavProps) {
                     cn(
                       'flex flex-col items-center gap-0.5 sm:gap-1 rounded-lg transition-colors',
                       role === 'carer' ? 'px-2 py-1.5 sm:px-3 sm:py-2' : 'px-3 py-2',
-                      isActive
-                        ? 'text-primary bg-primary/10'
-                        : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                  isActive
+                    ? 'text-foreground bg-secondary/20'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                     )
                   }
                 >
