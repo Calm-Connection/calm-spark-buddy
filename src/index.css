@@ -67,11 +67,11 @@ All colors MUST be HSL.
   }
 
   .dark {
-    /* Calm Connection Brand Colors - Dark Mode */
-    --background: 252 20% 20%; /* Midnight Lavender (#2C293F) */
+    /* Calm Connection Brand Colors - Dark Mode with improved contrast */
+    --background: 252 20% 18%; /* Deeper Midnight Lavender */
     --foreground: 240 20% 96%; /* Soft White (#F5F5F7) */
 
-    --card: 248 25% 30%; /* Deep Lilac (#3E3A5E) */
+    --card: 248 25% 24%; /* Deeper card background for better contrast */
     --card-foreground: 240 20% 96%;
 
     --popover: 248 25% 30%;
@@ -204,19 +204,19 @@ All colors MUST be HSL.
   @keyframes firefly {
     0%, 100% {
       transform: translate3d(0, 0, 0);
-      opacity: 0.2;
+      opacity: 0.3;
     }
     25% {
       transform: translate3d(15px, -10px, 0);
-      opacity: 0.7;
+      opacity: 0.8;
     }
     50% {
       transform: translate3d(25px, -20px, 0);
-      opacity: 0.9;
+      opacity: 1;
     }
     75% {
       transform: translate3d(10px, -15px, 0);
-      opacity: 0.6;
+      opacity: 0.7;
     }
   }
 
@@ -226,10 +226,10 @@ All colors MUST be HSL.
       opacity: 0;
     }
     10% {
-      opacity: 0.3;
+      opacity: 0.4;
     }
     90% {
-      opacity: 0.3;
+      opacity: 0.4;
     }
     100% {
       transform: translate(50px, -100px);
@@ -239,12 +239,12 @@ All colors MUST be HSL.
 
   @keyframes twinkle {
     0%, 100% {
-      opacity: 0.2;
+      opacity: 0.4;
       transform: scale(1);
     }
     50% {
-      opacity: 0.8;
-      transform: scale(1.2);
+      opacity: 1;
+      transform: scale(1.4);
     }
   }
 
@@ -279,11 +279,11 @@ All colors MUST be HSL.
       opacity: 0;
     }
     10% {
-      opacity: 0.4;
+      opacity: 0.6;
     }
     50% {
       transform: translate3d(20px, -50vh, 0) scale(1.1);
-      opacity: 0.5;
+      opacity: 0.7;
     }
     100% {
       transform: translate3d(-15px, -100vh, 0) scale(1.2);
@@ -323,30 +323,39 @@ All colors MUST be HSL.
   @keyframes heart-float {
     0%, 100% {
       transform: translate3d(0, 0, 0) rotate(-5deg);
-      opacity: 0.3;
+      opacity: 0.4;
     }
     25% {
       transform: translate3d(5px, -15px, 0) rotate(5deg);
-      opacity: 0.5;
+      opacity: 0.6;
     }
     50% {
       transform: translate3d(-5px, -25px, 0) rotate(10deg);
-      opacity: 0.4;
+      opacity: 0.5;
     }
     75% {
       transform: translate3d(8px, -15px, 0) rotate(-8deg);
-      opacity: 0.5;
+      opacity: 0.6;
     }
   }
 
   @keyframes candle-flicker {
     0%, 100% {
-      opacity: 0.15;
+      opacity: 0.2;
       transform: scale(1);
     }
     50% {
-      opacity: 0.25;
+      opacity: 0.35;
       transform: scale(1.1);
+    }
+  }
+
+  @keyframes glow-soft {
+    0%, 100% {
+      box-shadow: 0 0 8px currentColor;
+    }
+    50% {
+      box-shadow: 0 0 20px currentColor;
     }
   }
 
@@ -429,6 +438,18 @@ All colors MUST be HSL.
   overflow: hidden;
   z-index: 0;
   contain: layout style paint;
+  max-width: 100vw;
+  max-height: 100vh;
+}
+
+@media (max-width: 640px) {
+  .floating-container {
+    overflow: hidden;
+  }
+  
+  .animate-cloud-drift {
+    animation-duration: 35s;
+  }
 }
 
 .animate-float-slow {

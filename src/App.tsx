@@ -6,6 +6,8 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { ScrollToTop } from "@/components/ScrollToTop";
+import { useEffect } from "react";
+import { loadSavedTheme, applyTheme } from "@/hooks/useTheme";
 import Welcome from "./pages/Welcome";
 import About from "./pages/About";
 import LearnMore from "./pages/LearnMore";
@@ -193,6 +195,27 @@ function AppRoutes() {
   );
 }
 
+function ThemeObserver() {
+  useEffect(() => {
+    // Reapply theme when dark mode is toggled
+    const observer = new MutationObserver(() => {
+      const savedTheme = loadSavedTheme();
+      if (savedTheme) {
+        applyTheme(savedTheme);
+      }
+    });
+    
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
+    
+    return () => observer.disconnect();
+  }, []);
+  
+  return null;
+}
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -201,6 +224,7 @@ const App = () => (
       <BrowserRouter>
         <ScrollToTop />
         <ThemeProvider>
+          <ThemeObserver />
           <AuthProvider>
             <AppRoutes />
           </AuthProvider>
