@@ -122,8 +122,8 @@ export default function CarerInsights() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-primary/10 to-background p-6 pb-24">
-      <div className="max-w-2xl mx-auto space-y-6">
+    <div className="min-h-screen bg-gradient-to-b from-primary/10 to-background p-4 sm:p-6 pb-24">
+      <div className="max-w-2xl mx-auto space-y-4 sm:space-y-6">
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="icon" onClick={() => navigate('/carer/home')}>
             <ArrowLeft className="h-5 w-5" />
@@ -195,10 +195,10 @@ export default function CarerInsights() {
                 variant="outline" 
                 size="sm" 
                 onClick={() => setShowTechniqueGuide(true)}
-                className="w-full"
+                className="w-full text-xs sm:text-sm"
               >
-                <Lightbulb className="h-4 w-4 mr-2" />
-                Learn More About Support Techniques
+                <Lightbulb className="h-4 w-4 mr-2 flex-shrink-0" />
+                <span className="truncate sm:whitespace-normal">Learn More About Support Techniques</span>
               </Button>
             </Card>
 
@@ -334,12 +334,12 @@ function InsightCard({ insight, childNickname, toolDetails, getMoodIconId, getMo
   const [checkedActions, setCheckedActions] = useState<Record<number, boolean>>({});
 
   return (
-    <Card className="p-6">
-      <div className="flex items-start gap-4">
-        <WendyAvatar size="lg" />
-        <div className="flex-1 space-y-3">
+    <Card className="p-4 sm:p-6">
+      <div className="flex flex-col sm:flex-row items-start gap-3 sm:gap-4">
+        <WendyAvatar size="md" className="mx-auto sm:mx-0" />
+        <div className="flex-1 space-y-3 w-full">
           {/* Mood Score with Explanation */}
-          <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 flex-wrap">
             <MoodIcon moodId={getMoodIconId(insight.mood_score)} size="sm" />
             <HoverCard>
               <HoverCardTrigger asChild>
