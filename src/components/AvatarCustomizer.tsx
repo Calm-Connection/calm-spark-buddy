@@ -5,7 +5,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { ObjectAvatarBuilder } from '@/components/children/ObjectAvatarBuilder';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
 import { Loader2 } from 'lucide-react';
 import { useContentModeration } from '@/hooks/useContentModeration';
 
@@ -23,61 +23,28 @@ export function AvatarCustomizer({ open, onOpenChange, currentAvatar, onAvatarUp
   const { moderateContent } = useContentModeration();
   const [loading, setLoading] = useState(false);
   const [newAvatarData, setNewAvatarData] = useState<any>(null);
-  const [selectedPreset, setSelectedPreset] = useState<string | null>(null);
 
-  const carerEmojis = ['👨', '👩', '🧑', '👨‍🦱', '👩‍🦱', '🧑‍🦱', '👨‍🦰', '👩‍🦰', '🧑‍🦰', '👨‍🦲', '👩‍🦲', '🧑‍🦲'];
-
-  // Carer pre-made avatar prompts
-  const carerAvatarPresets = [
-    { id: 'parent1', label: 'Friendly Parent', prompt: 'A warm, friendly parent with a gentle smile, Disney Pixar style' },
-    { id: 'parent2', label: 'Professional Carer', prompt: 'A professional caregiver with glasses and warm expression, Disney style' },
-    { id: 'parent3', label: 'Young Parent', prompt: 'A young parent with casual style and bright smile, Pixar animation style' },
-    { id: 'parent4', label: 'Mature Carer', prompt: 'A mature caregiver with kind eyes and caring demeanor, Disney style' },
-    { id: 'parent5', label: 'Active Parent', prompt: 'An active parent in sporty attire with energetic smile, Pixar style' },
-    { id: 'parent6', label: 'Creative Carer', prompt: 'A creative caregiver with artistic flair and warm personality, Disney style' },
+  // Object-based avatars for carers (matching PickAvatar)
+  const carerAvatarObjects = [
+    { id: 'teddyBear', emoji: '🧸', label: 'Teddy Bear' },
+    { id: 'toyCar', emoji: '🚗', label: 'Toy Car' },
+    { id: 'starCharacter', emoji: '⭐', label: 'Star' },
+    { id: 'cloudCreature', emoji: '☁️', label: 'Cloud' },
+    { id: 'softAnimal', emoji: '🐰', label: 'Bunny' },
+    { id: 'flower', emoji: '🌸', label: 'Flower' },
+    { id: 'tree', emoji: '🌳', label: 'Tree' },
+    { id: 'sun', emoji: '☀️', label: 'Sun' },
   ];
   
   useEffect(() => {
     if (open) {
       setNewAvatarData(null);
-      setSelectedPreset(null);
     }
   }, [open]);
 
   const handleAvatarGenerated = async (data: any) => {
     console.log('Avatar generated in customizer:', data);
     setNewAvatarData(data);
-  };
-
-  const handleGeneratePreset = async (preset: any) => {
-    setSelectedPreset(preset.id);
-    setLoading(true);
-    try {
-      const { data, error } = await supabase.functions.invoke('generate-avatar', {
-        body: { type: 'carer', prompt: preset.prompt }
-      });
-
-      if (error) throw error;
-      
-      setNewAvatarData({
-        type: 'disney_custom',
-        imageUrl: data.imageUrl,
-      });
-      toast({
-        title: 'Success',
-        description: 'Avatar generated!',
-      });
-    } catch (error: any) {
-      console.error('Avatar generation error:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to generate avatar. Please try again.',
-        variant: 'destructive',
-      });
-    } finally {
-      setLoading(false);
-      setSelectedPreset(null);
-    }
   };
 
   const updateAvatarHistory = async (avatarData: any) => {
@@ -164,10 +131,14 @@ export function AvatarCustomizer({ open, onOpenChange, currentAvatar, onAvatarUp
     }
   };
 
-  const handleSaveEmoji = async (emoji: string) => {
+  const handleSaveEmoji = async (avatarObj: { id: string, emoji: string, label: string }) => {
     if (!user) return;
     
-    const emojiAvatar = { emoji };
+    const emojiAvatar = { 
+      type: 'emoji_avatar',
+      emoji: avatarObj.emoji,
+      label: avatarObj.label
+    };
     setLoading(true);
     
     const table = userRole === 'child' ? 'children_profiles' : 'carer_profiles';
@@ -189,6 +160,9 @@ export function AvatarCustomizer({ open, onOpenChange, currentAvatar, onAvatarUp
         description: 'Avatar updated successfully!',
       });
       onOpenChange(false);
+      
+      // Update avatar history in background
+      updateAvatarHistory(emojiAvatar);
     }
     setLoading(false);
   };
@@ -228,70 +202,23 @@ export function AvatarCustomizer({ open, onOpenChange, currentAvatar, onAvatarUp
           </div>
         ) : (
           <div className="py-4">
-            <Tabs defaultValue="presets">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="presets">Pre-made Avatars</TabsTrigger>
-                <TabsTrigger value="emoji">Emoji Style</TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="presets" className="space-y-4 mt-4">
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {carerAvatarPresets.map((preset) => (
-                    <Button
-                      key={preset.id}
-                      variant="outline"
-                      onClick={() => handleGeneratePreset(preset)}
-                      disabled={loading}
-                      className="h-auto py-6 flex flex-col items-center justify-center"
-                    >
-                      {loading && selectedPreset === preset.id ? (
-                        <Loader2 className="h-8 w-8 animate-spin mb-2" />
-                      ) : (
-                        <div className="text-4xl mb-2">👤</div>
-                      )}
-                      <span className="text-sm font-medium">{preset.label}</span>
-                    </Button>
-                  ))}
-                </div>
-                
-                {newAvatarData?.imageUrl && (
-                  <div className="space-y-4">
-                    <div className="border rounded-lg p-4 bg-muted/20">
-                      <img 
-                        src={newAvatarData.imageUrl} 
-                        alt="Generated avatar" 
-                        className="w-48 h-48 mx-auto rounded-lg object-cover"
-                      />
-                    </div>
-                    <Button 
-                      onClick={handleSaveAvatar}
-                      disabled={loading}
-                      className="w-full"
-                      size="lg"
-                    >
-                      {loading ? 'Saving...' : 'Save This Avatar'}
-                    </Button>
-                  </div>
-                )}
-              </TabsContent>
-
-              <TabsContent value="emoji" className="space-y-4 mt-4">
-                <div className="grid grid-cols-6 gap-2">
-                  {carerEmojis.map((emoji) => (
-                    <Button
-                      key={emoji}
-                      variant="outline"
-                      size="lg"
-                      onClick={() => handleSaveEmoji(emoji)}
-                      disabled={loading}
-                      className="text-3xl p-4 h-auto"
-                    >
-                      {emoji}
-                    </Button>
-                  ))}
-                </div>
-              </TabsContent>
-            </Tabs>
+            <p className="text-center text-muted-foreground mb-4">
+              Choose an avatar to represent you
+            </p>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {carerAvatarObjects.map((avatar) => (
+                <Button
+                  key={avatar.id}
+                  variant="outline"
+                  onClick={() => handleSaveEmoji(avatar)}
+                  disabled={loading}
+                  className="h-24 flex flex-col items-center justify-center gap-2 hover:border-primary"
+                >
+                  <span className="text-3xl">{avatar.emoji}</span>
+                  <span className="text-xs font-medium">{avatar.label}</span>
+                </Button>
+              ))}
+            </div>
           </div>
         )}
       </DialogContent>
