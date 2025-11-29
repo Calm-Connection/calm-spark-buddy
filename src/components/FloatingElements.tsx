@@ -52,36 +52,38 @@ export function FloatingElements({ theme }: FloatingElementsProps) {
 // Forest theme with leaves and fireflies
 function ForestElements() {
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
-  const leafCount = isMobile ? 6 : 8;
-  const fireflyCount = isMobile ? 4 : 6;
+  const isSmallMobile = typeof window !== 'undefined' && window.innerWidth < 375;
+  const leafCount = isSmallMobile ? 4 : isMobile ? 6 : 8;
+  const fireflyCount = isSmallMobile ? 3 : isMobile ? 4 : 6;
   
   const leafPositions = useMemo(() => generateStablePositions(leafCount), [leafCount]);
   const fireflyPositions = useMemo(() => generateStablePositions(fireflyCount), [fireflyCount]);
 
   return (
     <>
-      {/* Floating leaves */}
+      {/* Floating leaves - Enhanced visibility */}
       {leafPositions.map((pos, i) => (
         <span
           key={`leaf-${i}`}
-          className="absolute text-2xl animate-leaf-float"
+          className="absolute text-3xl sm:text-4xl animate-leaf-float"
           style={{
             left: pos.left,
             top: pos.top,
             animationDelay: pos.delay,
             animationDuration: pos.duration,
             willChange: 'transform, opacity',
+            filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.15))',
           }}
         >
           🍃
         </span>
       ))}
       
-      {/* Fireflies */}
+      {/* Fireflies - Enhanced size and glow */}
       {fireflyPositions.map((pos, i) => (
         <div
           key={`firefly-${i}`}
-          className="absolute w-2 h-2 bg-yellow-300/60 rounded-full animate-firefly shadow-[0_0_8px_rgba(253,224,71,0.6)]"
+          className="absolute w-3 h-3 sm:w-4 sm:h-4 bg-yellow-300/70 rounded-full animate-firefly shadow-[0_0_12px_4px_rgba(253,224,71,0.7)]"
           style={{
             left: pos.left,
             top: pos.top,
@@ -97,41 +99,43 @@ function ForestElements() {
 // Sky theme with stars and clouds
 function SkyElements() {
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
-  const starCount = isMobile ? 8 : 12;
-  const cloudCount = isMobile ? 4 : 6;
+  const isSmallMobile = typeof window !== 'undefined' && window.innerWidth < 375;
+  const starCount = isSmallMobile ? 6 : isMobile ? 8 : 12;
+  const cloudCount = isSmallMobile ? 3 : isMobile ? 4 : 6;
   
   const starPositions = useMemo(() => generateStablePositions(starCount), [starCount]);
   const cloudPositions = useMemo(() => generateStablePositions(cloudCount), [cloudCount]);
 
   return (
     <>
-      {/* Stars */}
+      {/* Stars - Enhanced size and glow */}
       {starPositions.map((pos, i) => (
         <div
           key={`star-${i}`}
-          className="absolute w-1 h-1 bg-white rounded-full animate-twinkle"
+          className="absolute w-2 h-2 sm:w-3 sm:h-3 bg-white rounded-full animate-twinkle shadow-[0_0_8px_rgba(255,255,255,0.8)]"
           style={{
             left: pos.left,
             top: pos.top,
             animationDelay: pos.delay,
             animationDuration: `${3 + (i % 3)}s`,
-            willChange: 'opacity',
+            willChange: 'opacity, transform',
           }}
         />
       ))}
       
-      {/* Clouds */}
+      {/* Clouds - Enhanced visibility */}
       {cloudPositions.map((pos, i) => (
         <span
           key={`cloud-${i}`}
-          className="absolute opacity-30 animate-cloud-drift"
+          className="absolute opacity-40 animate-cloud-drift"
           style={{
             left: pos.left,
             top: pos.top,
-            fontSize: `${32 + (i % 3) * 8}px`,
+            fontSize: `${40 + (i % 3) * 10}px`,
             animationDelay: pos.delay,
-            animationDuration: `${25 + (i % 3) * 5}s`,
+            animationDuration: `${isMobile ? 35 : 25 + (i % 3) * 5}s`,
             willChange: 'transform',
+            filter: 'drop-shadow(0 2px 6px rgba(255,255,255,0.3))',
           }}
         >
           ☁️
@@ -144,43 +148,45 @@ function SkyElements() {
 // Ocean theme with bubbles and fish
 function OceanElements() {
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
-  const bubbleCount = isMobile ? 8 : 12;
-  const fishCount = isMobile ? 3 : 5;
+  const isSmallMobile = typeof window !== 'undefined' && window.innerWidth < 375;
+  const bubbleCount = isSmallMobile ? 6 : isMobile ? 8 : 12;
+  const fishCount = isSmallMobile ? 2 : isMobile ? 3 : 5;
   
   const bubblePositions = useMemo(() => generateStablePositions(bubbleCount), [bubbleCount]);
   const fishPositions = useMemo(() => generateStablePositions(fishCount), [fishCount]);
 
   return (
     <>
-      {/* Bubbles */}
+      {/* Bubbles - Enhanced size and shine */}
       {bubblePositions.map((pos, i) => (
         <div
           key={`bubble-${i}`}
-          className="absolute rounded-full bg-blue-200/30 animate-bubble-rise"
+          className="absolute rounded-full bg-blue-200/40 animate-bubble-rise"
           style={{
             left: pos.left,
             bottom: '-20px',
-            width: `${4 + (i % 4) * 4}px`,
-            height: `${4 + (i % 4) * 4}px`,
+            width: `${6 + (i % 4) * 6}px`,
+            height: `${6 + (i % 4) * 6}px`,
             animationDelay: pos.delay,
             animationDuration: `${10 + (i % 3) * 3}s`,
             willChange: 'transform, opacity',
-            boxShadow: 'inset -2px -2px 4px rgba(255,255,255,0.5)'
+            boxShadow: 'inset -2px -2px 6px rgba(255,255,255,0.6), 0 0 8px rgba(173,216,230,0.3)'
           }}
         />
       ))}
       
-      {/* Fish silhouettes */}
+      {/* Fish silhouettes - Enhanced visibility */}
       {fishPositions.map((pos, i) => (
         <span
           key={`fish-${i}`}
-          className="absolute text-3xl opacity-20 animate-fish-swim"
+          className="absolute text-4xl sm:text-5xl opacity-25 animate-fish-swim"
           style={{
             left: pos.left,
             top: pos.top,
             animationDelay: pos.delay,
             animationDuration: `${12 + (i % 3) * 4}s`,
             willChange: 'transform',
+            filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))',
           }}
         >
           🐠
@@ -193,42 +199,44 @@ function OceanElements() {
 // Cozy theme with hearts and warm glows
 function CozyElements() {
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
-  const heartCount = isMobile ? 5 : 7;
-  const glowCount = isMobile ? 4 : 6;
+  const isSmallMobile = typeof window !== 'undefined' && window.innerWidth < 375;
+  const heartCount = isSmallMobile ? 4 : isMobile ? 5 : 7;
+  const glowCount = isSmallMobile ? 3 : isMobile ? 4 : 6;
   
   const heartPositions = useMemo(() => generateStablePositions(heartCount), [heartCount]);
   const glowPositions = useMemo(() => generateStablePositions(glowCount), [glowCount]);
 
   return (
     <>
-      {/* Floating hearts */}
+      {/* Floating hearts - Enhanced visibility */}
       {heartPositions.map((pos, i) => (
         <span
           key={`heart-${i}`}
-          className="absolute text-2xl opacity-40 animate-heart-float"
+          className="absolute text-3xl sm:text-4xl opacity-50 animate-heart-float"
           style={{
             left: pos.left,
             top: pos.top,
             animationDelay: pos.delay,
             animationDuration: pos.duration,
             willChange: 'transform, opacity',
+            filter: 'drop-shadow(0 2px 6px rgba(255,182,193,0.4))',
           }}
         >
           💕
         </span>
       ))}
       
-      {/* Warm glows */}
+      {/* Warm glows - Enhanced visibility */}
       {glowPositions.map((pos, i) => (
         <div
           key={`glow-${i}`}
-          className="absolute w-32 h-32 rounded-full bg-orange-200/20 blur-xl animate-candle-flicker"
+          className="absolute w-40 h-40 sm:w-48 sm:h-48 rounded-full bg-orange-200/30 blur-2xl animate-candle-flicker"
           style={{
             left: pos.left,
             top: pos.top,
             animationDelay: pos.delay,
             animationDuration: `${6 + (i % 3) * 2}s`,
-            willChange: 'opacity',
+            willChange: 'opacity, transform',
           }}
         />
       ))}
@@ -239,9 +247,10 @@ function CozyElements() {
 // Classic theme with enhanced soft animations
 function ClassicElements() {
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
-  const circleCount = isMobile ? 8 : 12;
-  const sparkleCount = isMobile ? 6 : 10;
-  const dotCount = isMobile ? 10 : 15;
+  const isSmallMobile = typeof window !== 'undefined' && window.innerWidth < 375;
+  const circleCount = isSmallMobile ? 6 : isMobile ? 8 : 12;
+  const sparkleCount = isSmallMobile ? 5 : isMobile ? 6 : 10;
+  const dotCount = isSmallMobile ? 8 : isMobile ? 10 : 15;
   
   const circlePositions = useMemo(() => generateStablePositions(circleCount), [circleCount]);
   const sparklePositions = useMemo(() => generateStablePositions(sparkleCount), [sparkleCount]);
@@ -249,7 +258,7 @@ function ClassicElements() {
 
   return (
     <>
-      {/* Soft floating circles with enhanced opacity */}
+      {/* Soft floating circles - Enhanced visibility */}
       {circlePositions.map((pos, i) => (
         <div
           key={`circle-${i}`}
@@ -257,10 +266,10 @@ function ClassicElements() {
           style={{
             left: pos.left,
             top: pos.top,
-            width: `${32 + (i % 4) * 16}px`,
-            height: `${32 + (i % 4) * 16}px`,
+            width: `${40 + (i % 4) * 20}px`,
+            height: `${40 + (i % 4) * 20}px`,
             background: `hsl(${248 + (i * 15) % 60}, 70%, 85%)`,
-            opacity: 0.35,
+            opacity: 0.45,
             animationDelay: pos.delay,
             animationDuration: `${18 + (i % 3) * 8}s`,
             willChange: 'transform, opacity',
@@ -268,11 +277,11 @@ function ClassicElements() {
         />
       ))}
       
-      {/* Sparkle particles */}
+      {/* Sparkle particles - Enhanced size and glow */}
       {sparklePositions.map((pos, i) => (
         <div
           key={`sparkle-${i}`}
-          className="absolute w-2 h-2 bg-accent/60 rounded-full animate-soft-pulse shadow-[0_0_8px_hsl(31,97%,88%)]"
+          className="absolute w-3 h-3 sm:w-4 sm:h-4 bg-accent/70 rounded-full animate-soft-pulse shadow-[0_0_12px_4px_hsl(31,97%,88%)]"
           style={{
             left: pos.left,
             top: pos.top,
@@ -283,7 +292,7 @@ function ClassicElements() {
         />
       ))}
       
-      {/* Floating gentle dots */}
+      {/* Floating gentle dots - Enhanced visibility */}
       {dotPositions.map((pos, i) => (
         <div
           key={`dot-${i}`}
@@ -291,10 +300,10 @@ function ClassicElements() {
           style={{
             left: pos.left,
             top: pos.top,
-            width: `${6 + (i % 3) * 4}px`,
-            height: `${6 + (i % 3) * 4}px`,
+            width: `${8 + (i % 3) * 6}px`,
+            height: `${8 + (i % 3) * 6}px`,
             background: `hsl(${163 + (i * 12) % 40}, 60%, 75%)`,
-            opacity: 0.3,
+            opacity: 0.4,
             animationDelay: pos.delay,
             animationDuration: `${20 + (i % 4) * 6}s`,
             willChange: 'transform, opacity',

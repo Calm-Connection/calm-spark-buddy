@@ -93,23 +93,29 @@ export function applyTheme(themeName: ThemeName) {
   const root = document.documentElement;
   const isDarkMode = root.classList.contains('dark');
   
-  // Apply theme colors - darken backgrounds in dark mode for better readability
   if (isDarkMode) {
-    // In dark mode, make backgrounds slightly darker for better text contrast
-    const darkenBackground = (hsl: string) => {
+    // Dark mode - darken backgrounds more and adjust all colors for proper contrast
+    const darkenHSL = (hsl: string, amount: number) => {
       const [h, s, l] = hsl.split(' ').map(v => parseFloat(v));
-      return `${h} ${s}% ${Math.max(l - 15, 20)}%`;
+      return `${h} ${Math.min(s, 50)}% ${Math.max(l - amount, 15)}%`;
     };
     
-    root.style.setProperty('--background', darkenBackground(theme.background));
+    root.style.setProperty('--background', darkenHSL(theme.background, 65));
+    root.style.setProperty('--card', darkenHSL(theme.background, 55));
     root.style.setProperty('--primary', theme.primary);
     root.style.setProperty('--secondary', theme.secondary);
     root.style.setProperty('--accent', theme.accent);
+    root.style.setProperty('--foreground', '240 20% 96%'); // Light text for dark mode
+    root.style.setProperty('--card-foreground', '240 20% 96%');
   } else {
+    // Light mode - apply theme colors directly
     root.style.setProperty('--background', theme.background);
+    root.style.setProperty('--card', '0 0% 98%'); // Keep light card
     root.style.setProperty('--primary', theme.primary);
     root.style.setProperty('--secondary', theme.secondary);
     root.style.setProperty('--accent', theme.accent);
+    root.style.setProperty('--foreground', '0 0% 10%'); // Dark text for light mode
+    root.style.setProperty('--card-foreground', '0 0% 10%');
   }
   
   localStorage.setItem('appliedTheme', themeName);
