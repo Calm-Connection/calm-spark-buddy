@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { WendyAvatar } from '@/components/WendyAvatar';
-import { Brain, TrendingUp, Heart, ArrowLeft, Lightbulb, AlertTriangle, Info, ChevronDown, ChevronUp, CheckCircle2, ExternalLink, Smile, Frown } from 'lucide-react';
+import { Brain, TrendingUp, Heart, ArrowLeft, Lightbulb, AlertTriangle, Info, ChevronDown, ChevronUp, CheckCircle2, ExternalLink, Smile, Frown, MessageCircle } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { format } from 'date-fns';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
@@ -334,12 +334,12 @@ function InsightCard({ insight, childNickname, toolDetails, getMoodIconId, getMo
   const [checkedActions, setCheckedActions] = useState<Record<number, boolean>>({});
 
   return (
-    <Card className="p-4 sm:p-6">
+    <Card className="p-3 sm:p-4 md:p-6">
       <div className="flex flex-col sm:flex-row items-start gap-3 sm:gap-4">
         <WendyAvatar size="md" className="mx-auto sm:mx-0" />
-        <div className="flex-1 space-y-3 w-full">
+        <div className="flex-1 space-y-2 sm:space-y-3 w-full">
           {/* Mood Score with Explanation */}
-          <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 flex-wrap">
+          <div className="flex flex-wrap items-center gap-2">
             <MoodIcon moodId={getMoodIconId(insight.mood_score)} size="sm" />
             <HoverCard>
               <HoverCardTrigger asChild>
@@ -364,7 +364,7 @@ function InsightCard({ insight, childNickname, toolDetails, getMoodIconId, getMo
                 Needs attention
               </Badge>
             )}
-            <span className="text-xs text-muted-foreground ml-auto">
+            <span className="text-xs text-muted-foreground w-full sm:w-auto sm:ml-auto">
               {format(new Date(insight.created_at), 'PPP')}
             </span>
           </div>
@@ -463,10 +463,25 @@ function InsightCard({ insight, childNickname, toolDetails, getMoodIconId, getMo
               </Button>
             </CollapsibleTrigger>
             <CollapsibleContent className="mt-3 space-y-3">
-              <div className="p-4 bg-muted/30 rounded-lg">
-                <p className="text-xs font-semibold mb-2">Full Analysis:</p>
+              {/* What Wendy Said to Child */}
+              <div className="p-3 sm:p-4 bg-muted/30 rounded-lg">
+                <p className="text-xs font-semibold mb-2 flex items-center gap-2">
+                  <Heart className="h-3 w-3" />
+                  What Wendy Told {childNickname}:
+                </p>
+                <p className="text-sm text-muted-foreground leading-relaxed italic">
+                  "{insight.summary}"
+                </p>
+              </div>
+              
+              {/* Parent-Focused Interpretation */}
+              <div className="p-3 sm:p-4 bg-primary/5 rounded-lg border border-primary/20">
+                <p className="text-xs font-semibold mb-2 flex items-center gap-2">
+                  <Heart className="h-3 w-3 text-primary" />
+                  For You (The Carer):
+                </p>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  {insight.summary}
+                  {insight.parent_summary || "Based on this entry, your child may benefit from gentle support and reassurance. Consider creating a calm moment to connect."}
                 </p>
               </div>
             </CollapsibleContent>

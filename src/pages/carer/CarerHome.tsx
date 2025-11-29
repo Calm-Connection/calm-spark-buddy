@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Settings, TrendingUp, Heart, Brain, Sparkles, BookOpen, Bell, Shield } from 'lucide-react';
+import { Settings, TrendingUp, Heart, Brain, Sparkles, BookOpen, Bell, Shield, Info } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { AvatarDisplay } from '@/components/AvatarDisplay';
@@ -166,16 +166,50 @@ export default function CarerHome() {
           </div>
         </div>
 
-        {!linkedChildId ? <Card className="p-8 text-center">
-            <Heart className="h-12 w-12 mx-auto mb-4 text-primary" />
-            <h2 className="text-xl font-bold mb-2">Connect with Your Child</h2>
-            <p className="text-muted-foreground mb-4">
-              Generate an invite code to link with your child's account
-            </p>
-            <Button onClick={() => navigate('/carer/invite-code')}>
-              Generate Invite Code
-            </Button>
-          </Card> : <>
+        {!linkedChildId ? <div className="space-y-4">
+            {/* Primary CTA - Connect with Child */}
+            <Card className="p-8 text-center">
+              <Heart className="h-12 w-12 mx-auto mb-4 text-primary" />
+              <h2 className="text-xl font-bold mb-2">Connect with Your Child</h2>
+              <p className="text-muted-foreground mb-4">
+                Generate an invite code to link with your child's account
+              </p>
+              <Button onClick={() => navigate('/carer/invite-code')}>
+                Generate Invite Code
+              </Button>
+            </Card>
+
+            {/* While You Wait - Accessible Features */}
+            <Card className="p-6 bg-gradient-to-br from-primary/5 to-accent/5">
+              <h3 className="font-bold mb-4">While You Wait 🌿</h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                Explore these features while your child sets up their account:
+              </p>
+              <div className="grid gap-3">
+                <Button variant="outline" className="justify-start h-auto py-3" onClick={() => navigate('/carer/journal')}>
+                  <BookOpen className="h-5 w-5 mr-3" />
+                  <div className="text-left">
+                    <p className="font-semibold">Your Private Journal</p>
+                    <p className="text-xs text-muted-foreground">Reflect on your own feelings</p>
+                  </div>
+                </Button>
+                <Button variant="outline" className="justify-start h-auto py-3" onClick={() => navigate('/carer/resources')}>
+                  <Sparkles className="h-5 w-5 mr-3" />
+                  <div className="text-left">
+                    <p className="font-semibold">Resources & Learning</p>
+                    <p className="text-xs text-muted-foreground">Parenting modules and calming tools</p>
+                  </div>
+                </Button>
+                <Button variant="outline" className="justify-start h-auto py-3" onClick={() => navigate('/carer/policy-hub')}>
+                  <Info className="h-5 w-5 mr-3" />
+                  <div className="text-left">
+                    <p className="font-semibold">Learn About Our Approach</p>
+                    <p className="text-xs text-muted-foreground">Privacy, safeguarding & policies</p>
+                  </div>
+                </Button>
+              </div>
+            </Card>
+          </div> : <>
             {/* Notifications Panel */}
             {hasNewSharedEntry && <Card className="p-4 bg-gradient-to-r from-secondary/20 to-primary/20 border-primary/30">
                 <div className="flex items-center gap-3">
