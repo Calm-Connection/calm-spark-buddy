@@ -8,7 +8,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { AvatarDisplay } from '@/components/AvatarDisplay';
 import { WendyAvatar } from '@/components/WendyAvatar';
-import { applyTheme } from '@/hooks/useTheme';
+import { applyTheme, loadSavedTheme } from '@/hooks/useTheme';
 import { BottomNav } from '@/components/BottomNav';
 import { format, subDays, startOfDay, endOfDay } from 'date-fns';
 import { NotificationBell } from '@/components/NotificationBell';
@@ -64,7 +64,8 @@ export default function CarerHome() {
       setChildNickname(linkedChild.nickname);
       await loadChildData(linkedChild.id);
     }
-    applyTheme('classic');
+    const savedTheme = loadSavedTheme();
+    applyTheme(savedTheme || 'classic');
   };
   const loadChildData = async (childId: string) => {
     // Count shared entries
