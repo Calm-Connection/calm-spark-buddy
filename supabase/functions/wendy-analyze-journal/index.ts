@@ -267,23 +267,30 @@ SPELLING & LANGUAGE:
 - Use correct spelling in your responses (gentle modeling)
 
 YOUR TASK:
-1. Provide warm, validating 2-3 sentence summary
-2. Detect ALL relevant themes from: school, friends, family, body, sleep, bullying, change, identity, loss, hobbies, worry-general, anger, sadness, fear, excitement, pride, confusion, overwhelm
-3. Score mood 0-10 based on:
+1. Provide warm, validating 2-3 sentence summary FOR THE CHILD
+2. Provide a SEPARATE parent-focused summary that explains:
+   - What the child expressed in simple terms
+   - Key emotions detected and what might be affecting them
+   - Gentle, supportive suggestions for the parent
+3. Detect ALL relevant themes from: school, friends, family, body, sleep, bullying, change, identity, loss, hobbies, worry-general, anger, sadness, fear, excitement, pride, confusion, overwhelm
+4. Score mood 0-10 based on:
    - 0-2: Severe distress, crisis
    - 3-4: Low mood, struggling
    - 5-6: Mixed/neutral
    - 7-8: Positive, coping
    - 9-10: Thriving, happy
-4. Recommend 2-3 specific coping tools
-5. Determine if escalation needed (high-risk keywords, persistent distress, declining pattern)
+5. Recommend 2-3 specific coping tools
+6. Suggest 2-3 specific carer actions (concrete, practical steps)
+7. Determine if escalation needed (high-risk keywords, persistent distress, declining pattern)
 
 RESPOND WITH VALID JSON ONLY:
 {
-  "summary": "Warm validating summary here",
+  "summary": "Warm validating summary for child here",
+  "parent_summary": "Parent-focused summary explaining what the child expressed, emotions detected, potential triggers, and supportive suggestions",
   "themes": ["theme1", "theme2"],
   "mood_score": 7,
   "recommended_tools": ["Tool Name 1", "Tool Name 2"],
+  "carer_actions": ["Specific action 1", "Specific action 2"],
   "escalate": false,
   "escalation_reason": "Brief reason if true, null if false"
 }`;
@@ -343,6 +350,43 @@ RESPOND WITH VALID JSON ONLY:
       .select('id, name')
       .in('name', analysis.recommended_tools || []);
 
+    // Helper function to generate fallback parent summary
+    function generateParentSummary(analysis: any, escalation: EscalationDecision): string {
+      const moodLevel = analysis.mood_score >= 7 ? 'positive' : analysis.mood_score >= 5 ? 'mixed' : 'challenging';
+      const themes = analysis.themes?.slice(0, 3).join(', ') || 'general feelings';
+      
+      if (escalation.tier >= 3) {
+        return escalation.carerMessage || `Your child expressed some challenging emotions today around ${themes}. Extra support and reassurance may be helpful.`;
+      }
+      
+      if (moodLevel === 'positive') {
+        return `Your child expressed ${moodLevel} emotions today, touching on ${themes}. They seem to be processing their feelings well. Continue being available for conversations when they need you.`;
+      } else if (moodLevel === 'mixed') {
+        return `Your child shared some mixed feelings today, including thoughts about ${themes}. This is a normal part of emotional development. A gentle check-in or quality time together might be helpful.`;
+      } else {
+        return `Your child expressed some challenging emotions today, particularly around ${themes}. They may benefit from extra support and reassurance. Consider creating a calm moment to connect.`;
+      }
+    }
+
+    // Helper function to generate fallback carer actions
+    function generateCarerActions(analysis: any): string[] {
+      const actions: string[] = [];
+      const moodScore = analysis.mood_score || 5;
+      
+      if (moodScore < 5) {
+        actions.push("Schedule some one-on-one quality time together in a relaxed setting");
+        actions.push("Listen without judgment if they want to talk about what's bothering them");
+      } else if (moodScore < 7) {
+        actions.push("Check in casually about how they're feeling");
+        actions.push("Acknowledge their feelings and let them know you're here for support");
+      } else {
+        actions.push("Keep up the positive environment and open communication");
+        actions.push("Celebrate their emotional awareness and healthy expression");
+      }
+      
+      return actions;
+    }
+
     const { data: insertedInsight } = await supabase
       .from('wendy_insights')
       .insert({
@@ -353,8 +397,9 @@ RESPOND WITH VALID JSON ONLY:
         mood_score: analysis.mood_score,
         recommended_tools: analysis.recommended_tools,
         recommended_tool_ids: copingTools?.map(t => t.id) || [],
+        carer_actions: analysis.carer_actions || generateCarerActions(analysis),
         escalate: shouldEscalate,
-        parent_summary: escalationDecision.carerMessage
+        parent_summary: analysis.parent_summary || generateParentSummary(analysis, escalationDecision)
       })
       .select()
       .single();
