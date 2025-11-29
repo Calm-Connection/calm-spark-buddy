@@ -1,9 +1,13 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { PageLayout } from '@/components/PageLayout';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Lock, FileText, Shield, UserX, HelpCircle, Mail } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Lock, FileText, Shield, UserX, HelpCircle, Mail, ArrowLeft } from 'lucide-react';
+import { BottomNav } from '@/components/BottomNav';
 
 export default function PolicyHub() {
+  const navigate = useNavigate();
+  
   const policies = [
     {
       icon: Lock,
@@ -49,17 +53,22 @@ export default function PolicyHub() {
 
   return (
     <PageLayout>
-      <div className="max-w-4xl mx-auto space-y-6 pb-20">
-        {/* Header */}
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Policies & Information</h1>
-          <p className="text-muted-foreground mt-2">
-            Everything you need to know about privacy, safety, and your rights
-          </p>
+      <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6 pb-24">
+        {/* Header with Back Button */}
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <div className="flex-1">
+            <h1 className="text-3xl font-bold text-foreground">Policies & Information</h1>
+            <p className="text-muted-foreground mt-2">
+              Everything you need to know about privacy, safety, and your rights
+            </p>
+          </div>
         </div>
 
         {/* Policy Cards Grid */}
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-3 sm:gap-4 md:grid-cols-2">
           {policies.map((policy) => {
             const Icon = policy.icon;
             return (
@@ -133,6 +142,8 @@ export default function PolicyHub() {
           </ul>
         </div>
       </div>
+      
+      <BottomNav role="carer" />
     </PageLayout>
   );
 }
