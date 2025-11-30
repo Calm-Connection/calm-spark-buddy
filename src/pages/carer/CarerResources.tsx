@@ -187,7 +187,7 @@ export default function CarerResources() {
                 <Card 
                   key={module.id} 
                   className="p-5 cursor-pointer hover:bg-accent/10 transition-colors"
-                  onClick={() => navigate(`/modules/${module.id}`)}
+                  onClick={() => navigate(`/carer/modules/${module.id}`)}
                 >
                   <div className="flex items-start gap-4">
                     <div className="h-12 w-12 rounded-full bg-secondary/20 flex items-center justify-center flex-shrink-0">
