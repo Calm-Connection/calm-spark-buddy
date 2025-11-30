@@ -60,6 +60,10 @@ import JointTools from "./pages/carer/JointTools";
 import BreathingTogether from "./pages/carer/tools/BreathingTogether";
 import CalmMoment from "./pages/carer/tools/CalmMoment";
 import ReflectionPrompts from "./pages/carer/tools/ReflectionPrompts";
+import MomentScripts from "./pages/carer/tools/MomentScripts";
+import SafetySignals from "./pages/carer/tools/SafetySignals";
+import RitualBuilder from "./pages/carer/tools/RitualBuilder";
+import GroundingTogether from "./pages/carer/tools/GroundingTogether";
 import CarerJournal from "./pages/carer/CarerJournal";
 import CarerNotificationSettings from "./pages/carer/NotificationSettings";
 import SafeguardingDashboard from "./pages/carer/SafeguardingDashboard";
@@ -166,6 +170,10 @@ function AppRoutes() {
       <Route path="/carer/tools/breathing-together" element={<ProtectedRoute role="carer"><BreathingTogether /></ProtectedRoute>} />
       <Route path="/carer/tools/calm-moment" element={<ProtectedRoute role="carer"><CalmMoment /></ProtectedRoute>} />
       <Route path="/carer/tools/reflection-prompts" element={<ProtectedRoute role="carer"><ReflectionPrompts /></ProtectedRoute>} />
+      <Route path="/carer/tools/moment-scripts" element={<ProtectedRoute role="carer"><MomentScripts /></ProtectedRoute>} />
+      <Route path="/carer/tools/safety-signals" element={<ProtectedRoute role="carer"><SafetySignals /></ProtectedRoute>} />
+      <Route path="/carer/tools/ritual-builder" element={<ProtectedRoute role="carer"><RitualBuilder /></ProtectedRoute>} />
+      <Route path="/carer/tools/grounding-together" element={<ProtectedRoute role="carer"><GroundingTogether /></ProtectedRoute>} />
       <Route path="/carer/journal" element={<ProtectedRoute role="carer"><CarerJournal /></ProtectedRoute>} />
       <Route path="/carer/notification-settings" element={<ProtectedRoute role="carer"><CarerNotificationSettings /></ProtectedRoute>} />
             <Route path="/carer/safeguarding" element={<ProtectedRoute role="carer"><SafeguardingDashboard /></ProtectedRoute>} />
