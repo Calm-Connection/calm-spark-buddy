@@ -61,7 +61,7 @@ export default function BreathingTogether() {
         }
         return prev - 1;
       });
-    }, 1000);
+    }, 1200); // Slower 1.2s interval for calming NHS pace
 
     return () => clearInterval(interval);
   }, [started, phase, completed]);
@@ -158,17 +158,23 @@ export default function BreathingTogether() {
     return (
       <div className={`min-h-screen bg-gradient-to-b ${currentTheme.gradient} to-background p-6 pb-24 flex items-center justify-center`}>
         <Card className="p-8 max-w-md mx-auto text-center space-y-6">
-          <div className="text-5xl">💚</div>
+          <div className="text-5xl">✨</div>
           <div>
-            <h2 className="text-2xl font-bold mb-2">Beautiful Work</h2>
+            <h2 className="text-2xl font-bold mb-2">Beautiful Work!</h2>
             <p className="text-muted-foreground leading-relaxed">
-              Connection helps calm the nervous system — you just co-regulated beautifully. 
-              Your calm presence is your child's greatest resource.
+              You've completed 5 cycles of co-regulation breathing together. 
+              This shared calm moment helps you both feel more connected and safe.
+            </p>
+          </div>
+          <div className="bg-primary/5 rounded-lg p-4">
+            <p className="text-sm text-muted-foreground">
+              💜 <strong>Co-regulation works:</strong> Your calm nervous system helps your child's nervous system find calm too. You're doing wonderfully.
             </p>
           </div>
           <div className="flex gap-3">
             <Button variant="outline" onClick={() => navigate('/carer/resources')} className="flex-1">
-              Done
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Resources
             </Button>
             <Button
               onClick={() => {
@@ -181,7 +187,7 @@ export default function BreathingTogether() {
               className="flex-1"
             >
               <Repeat className="h-4 w-4 mr-2" />
-              Again
+              Breathe Again
             </Button>
           </div>
         </Card>
@@ -206,34 +212,35 @@ export default function BreathingTogether() {
           Cycle {cycleCount + 1} of {totalCycles}
         </Badge>
 
-        <div className="relative w-full max-w-md aspect-square flex items-center justify-center">
+        {/* Animated breathing circles */}
+        <div className="flex justify-center gap-12 mb-8">
           {/* Parent circle */}
-          <div
-            className="absolute transition-all duration-[4000ms] ease-in-out rounded-full"
-            style={{
-              width: leaderMode === 'parent' ? `${scale * 140}px` : '140px',
-              height: leaderMode === 'parent' ? `${scale * 140}px` : '140px',
-              backgroundColor: currentTheme.color,
-              opacity: 0.6,
-              left: '30%',
-              top: '40%',
-              transform: 'translate(-50%, -50%)',
-            }}
-          />
+          <div className="flex flex-col items-center gap-3">
+            <div 
+              className="w-32 h-32 rounded-full transition-all duration-[1200ms] ease-in-out shadow-lg"
+              style={{
+                backgroundColor: currentTheme.color,
+                transform: phase === 'inhale' ? 'scale(1.3)' : 'scale(0.9)',
+                opacity: phase === 'inhale' ? 1 : 0.7,
+                boxShadow: phase === 'inhale' ? `0 0 30px ${currentTheme.color}` : 'none'
+              }}
+            />
+            <span className="text-sm font-medium">Parent</span>
+          </div>
 
           {/* Child circle */}
-          <div
-            className="absolute transition-all duration-[4000ms] ease-in-out rounded-full"
-            style={{
-              width: leaderMode === 'child' ? `${scale * 120}px` : '120px',
-              height: leaderMode === 'child' ? `${scale * 120}px` : '120px',
-              backgroundColor: currentTheme.color,
-              opacity: 0.5,
-              right: '30%',
-              bottom: '35%',
-              transform: 'translate(50%, 50%)',
-            }}
-          />
+          <div className="flex flex-col items-center gap-3">
+            <div 
+              className="w-32 h-32 rounded-full transition-all duration-[1200ms] ease-in-out shadow-lg"
+              style={{
+                backgroundColor: currentTheme.color,
+                transform: phase === 'inhale' ? 'scale(1.3)' : 'scale(0.9)',
+                opacity: phase === 'inhale' ? 1 : 0.7,
+                boxShadow: phase === 'inhale' ? `0 0 30px ${currentTheme.color}` : 'none'
+              }}
+            />
+            <span className="text-sm font-medium">Child</span>
+          </div>
         </div>
 
         <div className="text-center space-y-4 mt-8">
@@ -241,8 +248,10 @@ export default function BreathingTogether() {
             {count}
           </p>
           <p className="text-2xl font-medium capitalize">{phase}</p>
-          <p className="text-muted-foreground">
-            {phase === 'inhale' ? 'Breathe in together... 4 counts' : 'Breathe out together... 4 counts'}
+          <p className="text-sm text-muted-foreground italic max-w-md mx-auto">
+            {phase === 'inhale' 
+              ? "Breathe in slowly together... filling your lungs gently..."
+              : "Now breathe out slowly... letting go of any tension..."}
           </p>
         </div>
       </div>
