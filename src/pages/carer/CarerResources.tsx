@@ -12,10 +12,10 @@ import {
   Wind, 
   Sparkles,
   GraduationCap,
-  CheckCircle2,
+  MessageCircle,
   Shield,
-  FileText,
-  Lock
+  Calendar,
+  Users
 } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
@@ -87,6 +87,30 @@ export default function CarerResources() {
       icon: BookOpen,
       action: () => navigate('/carer/tools/reflection-prompts'),
     },
+    {
+      title: 'In-the-Moment Scripts 💬',
+      description: 'Ready-to-use phrases for anxiety, school refusal, bedtime worries',
+      icon: MessageCircle,
+      action: () => navigate('/carer/tools/moment-scripts'),
+    },
+    {
+      title: 'Safety Signals 🤲',
+      description: 'Learn physical cues that signal safety to your child',
+      icon: Shield,
+      action: () => navigate('/carer/tools/safety-signals'),
+    },
+    {
+      title: 'Ritual Builder 📅',
+      description: 'Create calming morning, after-school, and bedtime routines',
+      icon: Calendar,
+      action: () => navigate('/carer/tools/ritual-builder'),
+    },
+    {
+      title: 'Grounding for Two 🫂',
+      description: 'Mini co-regulation exercises for you and your child together',
+      icon: Users,
+      action: () => navigate('/carer/tools/grounding-together'),
+    },
   ];
 
   const learningModules = [
@@ -127,14 +151,6 @@ export default function CarerResources() {
     },
   ];
 
-  const comingSoonModules = [
-    'Supporting anxious children through change',
-    'Repairing connection after conflict',
-    'Teaching consent and emotional language',
-    'Understanding your own triggers',
-    'Navigating professional support safely',
-  ];
-
   const getIconComponent = (iconName: string) => {
     const icons: Record<string, any> = {
       BookOpen,
@@ -170,7 +186,7 @@ export default function CarerResources() {
         </div>
 
         {/* Carer Tools */}
-        <div>
+        <div className="bg-card/80 backdrop-blur-sm rounded-lg p-4">
           <h2 className="text-xl font-bold mb-3">Quick Tools for Carers</h2>
           <div className="grid gap-3">
             {carerTools.map((tool, idx) => {
@@ -193,7 +209,7 @@ export default function CarerResources() {
         </div>
 
         {/* Learning Modules */}
-        <div>
+        <div className="bg-card/80 backdrop-blur-sm rounded-lg p-4">
           <h2 className="text-xl font-bold mb-3">Learning Modules 📘</h2>
           <p className="text-sm text-muted-foreground mb-4">
             Bite-sized psychoeducation in warm, everyday language — 2-minute reads
@@ -223,72 +239,6 @@ export default function CarerResources() {
                 </Card>
               );
             })}
-          </div>
-        </div>
-
-        {/* Coming Soon */}
-        <div>
-          <h2 className="text-xl font-bold mb-3">Coming Soon 🌱</h2>
-          <Card className="p-5">
-            <ul className="space-y-2">
-              {comingSoonModules.map((title, idx) => (
-                <li key={idx} className="text-sm text-muted-foreground flex items-center gap-2">
-                  <div className="h-1.5 w-1.5 rounded-full bg-primary/40" />
-                  {title}
-                </li>
-              ))}
-            </ul>
-          </Card>
-        </div>
-
-        {/* Policies & Trust Section */}
-        <div>
-          <h2 className="text-xl font-bold mb-3">Policies & Trust 🔒</h2>
-          <div className="grid gap-3">
-            <Card 
-              className="p-5 cursor-pointer hover:bg-accent/10 transition-colors" 
-              onClick={() => navigate('/carer/privacy-policy')}
-            >
-              <div className="flex items-center gap-4">
-                <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                  <Lock className="h-6 w-6 text-primary" />
-                </div>
-                <div className="flex-1">
-                  <h3 className="font-semibold mb-1">Privacy Policy</h3>
-                  <p className="text-sm text-muted-foreground">How we protect and use your data</p>
-                </div>
-              </div>
-            </Card>
-            
-            <Card 
-              className="p-5 cursor-pointer hover:bg-accent/10 transition-colors" 
-              onClick={() => navigate('/carer/terms-of-use')}
-            >
-              <div className="flex items-center gap-4">
-                <div className="h-12 w-12 rounded-full bg-secondary/20 flex items-center justify-center flex-shrink-0">
-                  <FileText className="h-6 w-6 text-secondary" />
-                </div>
-                <div className="flex-1">
-                  <h3 className="font-semibold mb-1">Terms of Use</h3>
-                  <p className="text-sm text-muted-foreground">Guidelines for using Calm Connection</p>
-                </div>
-              </div>
-            </Card>
-            
-            <Card 
-              className="p-5 cursor-pointer hover:bg-accent/10 transition-colors" 
-              onClick={() => navigate('/carer/safeguarding-info')}
-            >
-              <div className="flex items-center gap-4">
-                <div className="h-12 w-12 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0">
-                  <Shield className="h-6 w-6 text-accent" />
-                </div>
-                <div className="flex-1">
-                  <h3 className="font-semibold mb-1">Safeguarding & Safety</h3>
-                  <p className="text-sm text-muted-foreground">How we protect children's wellbeing</p>
-                </div>
-              </div>
-            </Card>
           </div>
         </div>
 
