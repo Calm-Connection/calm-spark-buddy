@@ -166,7 +166,11 @@ export default function ModuleDetail() {
     <div className="min-h-screen bg-gradient-to-b from-primary/10 to-background pb-20">
       <div className="max-w-4xl mx-auto p-6 space-y-6">
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={() => navigate(`/${userRole}/modules`)}>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={() => navigate(userRole === 'carer' ? '/carer/resources' : `/${userRole}/modules`)}
+          >
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <div className="flex items-center gap-3">

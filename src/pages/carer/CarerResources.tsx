@@ -43,11 +43,11 @@ export default function CarerResources() {
   const loadResources = async () => {
     if (!user) return;
 
-    // Load modules for carers
+    // Load modules for carers - fetch all carer courses
     const { data: modulesData } = await supabase
       .from('modules')
       .select('*')
-      .eq('category', 'carer')
+      .like('category', 'carer-%')
       .order('order_index', { ascending: true });
 
     setModules((modulesData as Module[]) || []);
@@ -113,43 +113,6 @@ export default function CarerResources() {
     },
   ];
 
-  const learningModules = [
-    {
-      id: 'connection',
-      title: 'Understanding Anxiety Through Connection',
-      description: "How your child's nervous system seeks safety through you",
-      icon: Heart,
-      content: "Based on Polyvagal Theory, anxiety isn't just in their head — it's their nervous system looking for safety signals. Your calm presence is the strongest signal of all.",
-    },
-    {
-      id: 'boundaries',
-      title: 'Boundaries, Standards, and Expectations',
-      description: 'Clear, compassionate guidance on the differences',
-      icon: GraduationCap,
-      content: `Boundaries protect safety. Standards reflect values. Expectations are what we hope for. Knowing the difference helps you parent with clarity and kindness.`,
-    },
-    {
-      id: 'coregulation',
-      title: 'Co-Regulation in Action',
-      description: 'Practical examples of calming together',
-      icon: Wind,
-      content: `Your calm nervous system is like Wi-Fi for safety — your child connects through you. Learn simple ways to regulate together in real moments.`,
-    },
-    {
-      id: 'grounding',
-      title: 'Grounding and Body Awareness',
-      description: 'Simple sensory tools you can use anywhere',
-      icon: Sparkles,
-      content: `The 5-4-3-2-1 technique, warming hands, slow sipping — small body-based practices that signal safety to the nervous system.`,
-    },
-    {
-      id: 'preventative',
-      title: 'Preventative Care: Creating Safety Before Stress',
-      description: 'Building calm rituals and predictable routines',
-      icon: Heart,
-      content: "Prevention isn't avoiding hard feelings — it's creating enough safety so your child has capacity to face them. Small rituals build big resilience.",
-    },
-  ];
 
   const getIconComponent = (iconName: string) => {
     const icons: Record<string, any> = {
@@ -212,28 +175,34 @@ export default function CarerResources() {
         <div className="bg-card/80 backdrop-blur-sm rounded-lg p-4">
           <h2 className="text-xl font-bold mb-3">Learning Modules 📘</h2>
           <p className="text-sm text-muted-foreground mb-4">
-            Bite-sized psychoeducation in warm, everyday language — 2-minute reads
+            5 comprehensive courses with bite-sized lessons — evidence-based guidance from NHS, NICE, and Anna Freud Centre
           </p>
           
           <div className="space-y-3">
-            {learningModules.map((module) => {
-              const Icon = module.icon;
+            {modules.map((module) => {
+              const Icon = getIconComponent(module.icon);
+              const isCompleted = progress[module.id];
               
               return (
                 <Card 
                   key={module.id} 
-                  className="p-5 hover:bg-accent/10 transition-colors"
+                  className="p-5 cursor-pointer hover:bg-accent/10 transition-colors"
+                  onClick={() => navigate(`/modules/${module.id}`)}
                 >
                   <div className="flex items-start gap-4">
                     <div className="h-12 w-12 rounded-full bg-secondary/20 flex items-center justify-center flex-shrink-0">
                       <Icon className="h-6 w-6 text-secondary" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-semibold mb-1">{module.title}</h3>
-                      <p className="text-sm text-muted-foreground mb-3">{module.description}</p>
-                      <p className="text-sm leading-relaxed bg-accent/10 p-3 rounded-lg italic">
-                        {module.content}
-                      </p>
+                      <div className="flex items-center gap-2 mb-1">
+                        <h3 className="font-semibold">{module.title}</h3>
+                        {isCompleted && (
+                          <Badge variant="secondary" className="text-xs">
+                            ✓ Complete
+                          </Badge>
+                        )}
+                      </div>
+                      <p className="text-sm text-muted-foreground">{module.description}</p>
                     </div>
                   </div>
                 </Card>
