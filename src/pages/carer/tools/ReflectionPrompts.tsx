@@ -1,12 +1,14 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowLeft, Sparkles, Save } from 'lucide-react';
+import { ArrowLeft, Sparkles, Save, AlertCircle } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { useToast } from '@/hooks/use-toast';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
+import { supabase } from '@/integrations/supabase/client';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 const prompts = [
   {
@@ -38,8 +40,27 @@ export default function ReflectionPrompts() {
   const [response, setResponse] = useState('');
   const [reframedText, setReframedText] = useState('');
   const [isReframing, setIsReframing] = useState(false);
+  const [carerId, setCarerId] = useState<string | null>(null);
 
   const currentPrompt = prompts[currentPromptIndex];
+
+  // Get carer profile ID
+  useEffect(() => {
+    const getCarerProfile = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profile } = await supabase
+          .from('carer_profiles')
+          .select('id')
+          .eq('user_id', user.id)
+          .single();
+        if (profile) {
+          setCarerId(profile.id);
+        }
+      }
+    };
+    getCarerProfile();
+  }, []);
 
   const handleReframe = async () => {
     if (!response.trim()) {
@@ -53,20 +74,83 @@ export default function ReflectionPrompts() {
 
     setIsReframing(true);
     
-    // Simulate AI reframing - in production, this would call an edge function
-    setTimeout(() => {
-      const reframes = [
-        `What if this wasn't a failure, but a learning moment? ${response.slice(0, 50)}... shows you're trying, and that's what matters.`,
-        `You're being so hard on yourself. Look at what you did manage: ${response.slice(0, 50)}... That took strength.`,
-        `Notice the self-criticism here. A kinder story might be: You showed up today, even when it was hard. That's parenting with courage.`,
-      ];
-      setReframedText(reframes[Math.floor(Math.random() * reframes.length)]);
+    try {
+      const { data, error } = await supabase.functions.invoke('carer-reframe', {
+        body: { reflection: response }
+      });
+
+      if (error) {
+        console.error('Reframe error:', error);
+        
+        if (error.message?.includes('429')) {
+          toast({
+            title: 'Please wait',
+            description: 'Too many requests. Please try again in a moment.',
+            variant: 'destructive',
+          });
+        } else if (error.message?.includes('402')) {
+          toast({
+            title: 'Service temporarily unavailable',
+            description: 'Please try again later.',
+            variant: 'destructive',
+          });
+        } else {
+          toast({
+            title: 'Could not generate reframe',
+            description: 'Please try again or continue without a reframe.',
+            variant: 'destructive',
+          });
+        }
+        setIsReframing(false);
+        return;
+      }
+
+      if (data?.reframe) {
+        setReframedText(data.reframe);
+      }
+    } catch (error) {
+      console.error('Reframe exception:', error);
+      toast({
+        title: 'Could not generate reframe',
+        description: 'Please try again or continue without a reframe.',
+        variant: 'destructive',
+      });
+    } finally {
       setIsReframing(false);
-    }, 2000);
+    }
   };
 
-  const handleSave = () => {
-    // In production, save to carer_journal_entries
+  const handleSave = async () => {
+    if (!carerId) {
+      toast({
+        title: 'Error',
+        description: 'Could not save reflection. Please try again.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    // Save to carer_journal_entries
+    const entryText = `Prompt: ${currentPrompt.question}\n\nResponse: ${response}${reframedText ? `\n\nReframe: ${reframedText}` : ''}`;
+    
+    const { error } = await supabase
+      .from('carer_journal_entries')
+      .insert({
+        carer_id: carerId,
+        entry_type: 'reflection',
+        entry_text: entryText,
+      });
+
+    if (error) {
+      console.error('Save error:', error);
+      toast({
+        title: 'Could not save',
+        description: 'Please try again.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     toast({
       title: 'Reflection saved',
       description: 'Your thoughts have been recorded',
@@ -150,6 +234,13 @@ export default function ReflectionPrompts() {
             There's no right or wrong — just honesty and self-compassion.
           </p>
         </Card>
+
+        <Alert className="bg-primary/5 border-primary/20">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription className="text-xs">
+            If you're feeling overwhelmed or worried about safety, it's important to speak with a GP, school, or local NHS support service.
+          </AlertDescription>
+        </Alert>
 
         <div className="flex justify-between items-center text-xs text-muted-foreground">
           <Button

@@ -34,21 +34,24 @@ const modes = {
 
 const affirmations = [
   "You're doing your best — and that's enough.",
-  'Calm is contagious.',
-  "It's okay to pause.",
-  'Your presence matters more than perfection.',
-  'Small moments create lasting safety.',
+  "Calm is contagious. Your steadiness matters.",
+  "It's okay to pause and take a breath.",
+  "Your presence matters more than perfection.",
+  "Small moments create lasting safety.",
+  "You are your child's safe harbour.",
+  "Rest is not selfish — it's essential.",
+  "One breath at a time. You've got this.",
 ];
 
 const tappingPoints = [
-  { name: 'Top of head', instruction: 'Gently tap the crown of your head' },
-  { name: 'Between eyebrows', instruction: 'Tap between your eyebrows' },
-  { name: 'Side of eye', instruction: 'Tap the outer corner of your eye' },
-  { name: 'Under eye', instruction: 'Tap under your eye on the cheekbone' },
-  { name: 'Under nose', instruction: 'Tap between your nose and upper lip' },
-  { name: 'Chin', instruction: 'Tap the center of your chin' },
-  { name: 'Collarbone', instruction: 'Tap your collarbone points' },
-  { name: 'Under arm', instruction: 'Tap under your arm (about 4 inches below armpit)' },
+  { name: 'Side of Hand', instruction: 'Tap gently while acknowledging: "Even though I feel stressed, I accept myself"' },
+  { name: 'Eyebrow', instruction: 'Tap at the beginning of your eyebrow with gentle pressure' },
+  { name: 'Side of Eye', instruction: 'Tap on the bone at the side of your eye — breathe slowly' },
+  { name: 'Under Eye', instruction: "Tap on the bone under your eye — you're doing well" },
+  { name: 'Under Nose', instruction: 'Tap between your nose and upper lip — release tension' },
+  { name: 'Chin', instruction: 'Tap in the crease of your chin — let it go' },
+  { name: 'Collarbone', instruction: 'Tap just below your collarbone — feel your breath' },
+  { name: 'Under Arm', instruction: 'Tap about 4 inches below your armpit — almost done' },
 ];
 
 export default function CalmMoment() {
@@ -59,6 +62,11 @@ export default function CalmMoment() {
   const [completed, setCompleted] = useState(false);
 
   const mode = selectedMode ? modes[selectedMode] : null;
+
+  // Calculate progress percentage
+  const progressPercentage = selectedMode 
+    ? (currentStep / (selectedMode === 'quick' ? 1 : selectedMode === 'tapping' ? tappingPoints.length : affirmations.length)) * 100 
+    : 0;
 
   useEffect(() => {
     if (!started || !mode || completed) return;
@@ -100,81 +108,67 @@ export default function CalmMoment() {
 
     if (selectedMode === 'quick') {
       return (
-        <div className="text-center space-y-8 animate-fade-in">
-          <div className="relative w-32 h-32 mx-auto">
-            <Heart
-              className="absolute inset-0 m-auto animate-pulse"
-              size={120}
-              style={{ color: mode.color }}
-            />
+        <Card className="p-8 text-center space-y-6">
+          <div className="text-6xl mb-4">🌬️</div>
+          <div className="mb-4">
+            <div className="w-full bg-secondary/20 rounded-full h-2">
+              <div 
+                className="bg-primary h-2 rounded-full transition-all duration-500"
+                style={{ width: `${progressPercentage}%` }}
+              />
+            </div>
           </div>
-          <div className="space-y-4">
-            <p className="text-xl font-medium">Place your hand on your heart</p>
-            <p className="text-muted-foreground leading-relaxed">
-              Breathe slowly and deeply. Feel your chest rise and fall. You are safe in this moment.
-            </p>
-            <p className="text-lg italic" style={{ color: mode.color }}>
-              "{affirmations[0]}"
-            </p>
-          </div>
-        </div>
+          <h3 className="text-xl font-semibold">Place your hand on your heart</h3>
+          <p className="text-muted-foreground">Breathe slowly and deeply. Feel your chest rise and fall. You are safe in this moment.</p>
+          <p className="text-lg italic" style={{ color: mode.color }}>
+            "{affirmations[0]}"
+          </p>
+        </Card>
       );
     }
 
     if (selectedMode === 'tapping') {
       const point = tappingPoints[currentStep];
       return (
-        <div className="text-center space-y-8 animate-fade-in">
-          <div className="relative w-32 h-32 mx-auto">
-            <div
-              className="absolute inset-0 m-auto w-24 h-24 rounded-full animate-pulse"
-              style={{ backgroundColor: mode.color, opacity: 0.3 }}
-            />
-            <Hand
-              className="absolute inset-0 m-auto"
-              size={80}
-              style={{ color: mode.color }}
-            />
+        <Card className="p-8 text-center space-y-6">
+          <div className="text-6xl mb-4">👆</div>
+          <div className="mb-4">
+            <div className="w-full bg-secondary/20 rounded-full h-2">
+              <div 
+                className="bg-primary h-2 rounded-full transition-all duration-500"
+                style={{ width: `${progressPercentage}%` }}
+              />
+            </div>
+            <p className="text-xs text-muted-foreground mt-2">Point {currentStep + 1} of {tappingPoints.length}</p>
           </div>
-          <div className="space-y-4">
-            <p className="text-2xl font-bold">{point.name}</p>
-            <p className="text-lg text-muted-foreground">{point.instruction}</p>
-            <p className="text-sm italic">
-              As you tap, release any tension you're holding.
+          <h3 className="text-xl font-semibold">{point.name}</h3>
+          <p className="text-muted-foreground">{point.instruction}</p>
+          <div className="bg-primary/5 rounded-lg p-3 max-w-md mx-auto">
+            <p className="text-xs text-muted-foreground">
+              💡 EFT tapping helps calm your nervous system through gentle stimulation
             </p>
           </div>
-          <p className="text-xs text-muted-foreground">
-            Point {currentStep + 1} of {tappingPoints.length}
-          </p>
-        </div>
+        </Card>
       );
     }
 
     if (selectedMode === 'stillness') {
       const affirmation = affirmations[currentStep];
       return (
-        <div className="text-center space-y-8 animate-fade-in">
-          <div className="relative w-32 h-32 mx-auto">
-            <div
-              className="absolute inset-0 m-auto w-full h-full rounded-full animate-pulse"
-              style={{ backgroundColor: mode.color, opacity: 0.2 }}
-            />
-            <Sparkles
-              className="absolute inset-0 m-auto"
-              size={80}
-              style={{ color: mode.color }}
-            />
+        <Card className="p-8 text-center space-y-6">
+          <div className="text-6xl mb-4">✨</div>
+          <div className="mb-4">
+            <div className="w-full bg-secondary/20 rounded-full h-2">
+              <div 
+                className="bg-primary h-2 rounded-full transition-all duration-500"
+                style={{ width: `${progressPercentage}%` }}
+              />
+            </div>
+            <p className="text-xs text-muted-foreground mt-2">Affirmation {currentStep + 1} of {affirmations.length}</p>
           </div>
-          <div className="space-y-4">
-            <p className="text-2xl font-medium leading-relaxed px-4" style={{ color: mode.color }}>
-              "{affirmation}"
-            </p>
-            <p className="text-muted-foreground">Breathe this in. Let it settle.</p>
-          </div>
-          <p className="text-xs text-muted-foreground">
-            {currentStep + 1} of {affirmations.length}
-          </p>
-        </div>
+          <h3 className="text-2xl font-semibold italic">"{affirmation}"</h3>
+          <p className="text-sm text-muted-foreground">Breathe this in. You deserve this kindness.</p>
+        </Card>
       );
     }
   };
@@ -183,17 +177,35 @@ export default function CalmMoment() {
     return (
       <div className="min-h-screen bg-gradient-to-b from-warm/20 to-background p-6 pb-24 flex items-center justify-center">
         <Card className="p-8 max-w-md mx-auto text-center space-y-6">
-          <div className="text-5xl">✨</div>
+          <div className="text-5xl">💚</div>
           <div>
-            <h2 className="text-2xl font-bold mb-2">You Just Took Care of You</h2>
+            <h2 className="text-2xl font-bold mb-2">Well Done</h2>
             <p className="text-muted-foreground leading-relaxed">
-              Regulating yourself is one of the most powerful things you can do for your child. 
-              Your calm becomes their safety.
+              You took time for yourself. That matters. Small moments of calm add up.
             </p>
           </div>
-          <Button onClick={() => navigate('/carer/resources')} className="w-full">
-            Return to Resources
-          </Button>
+          <div className="bg-primary/5 rounded-lg p-4">
+            <p className="text-sm text-muted-foreground">
+              💜 Your calm nervous system supports your child's regulation. Taking care of yourself is taking care of them too.
+            </p>
+          </div>
+          <div className="text-xs text-muted-foreground">
+            If you're feeling persistently overwhelmed, it's okay to reach out to your GP or local NHS support services.
+          </div>
+          <div className="flex gap-4 justify-center">
+            <Button variant="outline" onClick={() => navigate('/carer/resources')}>
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Resources
+            </Button>
+            <Button onClick={() => {
+              setCompleted(false);
+              setStarted(false);
+              setCurrentStep(0);
+              setSelectedMode(null);
+            }}>
+              Try Another
+            </Button>
+          </div>
         </Card>
         <BottomNav role="carer" />
       </div>

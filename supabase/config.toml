@@ -1,5 +1,8 @@
 project_id = "adlftnqdeltcbdqgibsr"
 
+[functions.carer-reframe]
+verify_jwt = true
+
 [functions.wendy-analyze-journal]
 verify_jwt = true
 
