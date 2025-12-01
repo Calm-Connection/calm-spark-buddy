@@ -7,6 +7,8 @@ import { BottomNav } from '@/components/BottomNav';
 import { toast } from 'sonner';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
 import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
+import { WendyAvatar } from '@/components/WendyAvatar';
+import confetti from 'canvas-confetti';
 
 interface ThoughtCloud {
   id: number;
@@ -67,10 +69,20 @@ export default function ThoughtClouds() {
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
-      // Clear the cloud
+      // Clear the cloud with pop animation
       setClouds(clouds.map(c => 
         c.id === selectedCloud.id ? { ...c, cleared: true } : c
       ));
+      
+      // Check if all clouds are cleared for confetti
+      const newClearedCount = clouds.filter(c => c.cleared).length + 1;
+      if (newClearedCount === clouds.length) {
+        confetti({
+          particleCount: 150,
+          spread: 100,
+          origin: { y: 0.5 }
+        });
+      }
       
       toast.success("Cloud cleared! 🌤️ You're learning to work through tough feelings.");
       setSelectedCloud(null);
@@ -113,7 +125,7 @@ export default function ThoughtClouds() {
                   disabled={cloud.cleared}
                   className={`absolute transition-all duration-1000 ${
                     cloud.cleared
-                      ? 'opacity-0 scale-0'
+                      ? 'opacity-0 scale-0 rotate-180'
                       : 'opacity-100 scale-100 hover:scale-110'
                   }`}
                   style={{
@@ -123,8 +135,8 @@ export default function ThoughtClouds() {
                   }}
                 >
                   <div className="relative">
-                    <Cloud className="w-20 h-20 text-muted fill-muted/30" />
-                    <span className="absolute inset-0 flex items-center justify-center text-3xl">
+                    <Cloud className="w-28 h-28 text-muted fill-muted/30" />
+                    <span className="absolute inset-0 flex items-center justify-center text-5xl">
                       {cloud.emoji}
                     </span>
                   </div>
@@ -139,13 +151,16 @@ export default function ThoughtClouds() {
               )}
             </div>
 
-            {/* Question Dialog */}
+            {/* Question Dialog with Wendy */}
             {selectedCloud && (
               <Card className="p-6 bg-gradient-to-br from-secondary/30 to-accent/30 border-2 border-secondary animate-scale-in">
                 <div className="flex items-start gap-4">
-                  <span className="text-4xl">{selectedCloud.emoji}</span>
+                  <WendyAvatar size="lg" />
                   <div className="flex-1">
-                    <h3 className="font-bold mb-2">Feeling {selectedCloud.feeling}?</h3>
+                    <h3 className="font-bold mb-2 flex items-center gap-2">
+                      <span className="text-4xl">{selectedCloud.emoji}</span>
+                      Feeling {selectedCloud.feeling}?
+                    </h3>
                     <p className="text-lg mb-4">
                       {reframeQuestions[selectedCloud.feeling as keyof typeof reframeQuestions][currentQuestion]}
                     </p>
@@ -174,6 +189,12 @@ export default function ThoughtClouds() {
               </p>
               <p className="text-muted-foreground">
                 Every feeling is okay. What matters is that you're learning to understand them. 💙
+              </p>
+            </Card>
+
+            <Card className="p-4 bg-warm/20 border border-warm/30">
+              <p className="text-center text-sm">
+                💙 <strong>Share with someone you trust</strong> — talking about feelings helps them feel lighter
               </p>
             </Card>
 

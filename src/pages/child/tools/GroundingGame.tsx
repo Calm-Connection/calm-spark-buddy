@@ -6,6 +6,8 @@ import { ArrowLeft, Eye, Hand, Ear, Droplet, Apple, Sparkles } from 'lucide-reac
 import { BottomNav } from '@/components/BottomNav';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
 import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
+import { ConnectionBadge } from '@/components/ConnectionBadge';
+import confetti from 'canvas-confetti';
 
 type Step = 'intro' | 'see' | 'touch' | 'hear' | 'smell' | 'taste' | 'complete';
 
@@ -55,6 +57,12 @@ export default function GroundingGame() {
           setSelectedItems(0);
         } else {
           setCurrentStep('complete');
+          // Celebrate completion with confetti
+          confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6 }
+          });
         }
       }, 800);
     }
@@ -84,6 +92,8 @@ export default function GroundingGame() {
               </p>
               <p className="font-bold">Ready? Let's begin! ✨</p>
             </Card>
+
+            <ConnectionBadge />
 
             <Button onClick={startGame} className="w-full text-lg py-6" size="lg">
               Start the Game 🎮
@@ -117,7 +127,7 @@ export default function GroundingGame() {
 
             {/* Current Step */}
             <Card className={`p-8 bg-gradient-to-br ${stepData.color} text-center`}>
-              {Icon && <Icon className="w-16 h-16 mx-auto mb-4 text-primary" />}
+              {Icon && <Icon className="w-24 h-24 mx-auto mb-4 text-primary" />}
               <h2 className="text-2xl font-bold mb-2">{stepData.prompt}</h2>
               <p className="text-4xl font-bold text-primary">
                 {selectedItems} / {stepData.count}
@@ -131,7 +141,7 @@ export default function GroundingGame() {
                   key={idx}
                   onClick={handleItemClick}
                   disabled={selectedItems >= stepData.count}
-                  className="text-5xl hover:scale-125 transition-transform duration-300 disabled:opacity-50"
+                  className="text-7xl hover:scale-125 active:scale-95 transition-transform duration-300 disabled:opacity-50 animate-bounce-gentle"
                   style={{
                     animation: `float-slow ${4 + idx}s ease-in-out infinite`,
                     animationDelay: `${idx * 0.5}s`
