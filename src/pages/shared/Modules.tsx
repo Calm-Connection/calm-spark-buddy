@@ -31,9 +31,16 @@ export default function Modules() {
   const [userRole, setUserRole] = useState<'child' | 'carer'>('child');
 
   useEffect(() => {
-    loadUserRole();
-    loadModules();
+    if (user) {
+      loadUserRole();
+    }
   }, [user]);
+
+  useEffect(() => {
+    if (userRole) {
+      loadModules();
+    }
+  }, [userRole]);
 
   const loadUserRole = async () => {
     if (!user) return;
@@ -50,10 +57,20 @@ export default function Modules() {
   };
 
   const loadModules = async () => {
-    const { data: modulesData } = await supabase
+    // Filter modules by role: child sees child-* categories, carer sees carer-* categories
+    let query = supabase
       .from('modules')
-      .select('*')
-      .order('order_index', { ascending: true });
+      .select('*');
+
+    if (userRole === 'child') {
+      // Children see modules that start with 'child-'
+      query = query.like('category', 'child-%');
+    } else if (userRole === 'carer') {
+      // Carers see modules that start with 'carer-'
+      query = query.like('category', 'carer-%');
+    }
+
+    const { data: modulesData } = await query.order('order_index', { ascending: true });
 
     if (modulesData) {
       setModules(modulesData);

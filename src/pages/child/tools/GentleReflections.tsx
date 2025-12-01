@@ -7,13 +7,12 @@ import { BottomNav } from '@/components/BottomNav';
 import { toast } from 'sonner';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
 import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
+import { ConnectionBadge } from '@/components/ConnectionBadge';
 
 const reflectionPrompts = [
   { prompt: "What made you smile today?", emoji: "😊", type: "positive" },
   { prompt: "Something that felt tricky?", emoji: "🤔", type: "challenge" },
   { prompt: "What helped you feel calm?", emoji: "🌈", type: "coping" },
-  { prompt: "Something you're proud of?", emoji: "⭐", type: "proud" },
-  { prompt: "A kind thing someone did?", emoji: "💝", type: "gratitude" },
   { prompt: "How are you feeling right now?", emoji: "💭", type: "current" },
 ];
 
@@ -71,6 +70,11 @@ export default function GentleReflections() {
     }
   };
 
+  const skipAll = () => {
+    setComplete(true);
+    toast.success("That's okay! You can come back anytime.");
+  };
+
   const reset = () => {
     setCurrentPromptIndex(0);
     setResponses([]);
@@ -90,6 +94,7 @@ export default function GentleReflections() {
 
         {!complete ? (
           <>
+            <ConnectionBadge message="Do this with your grown-up for extra support!" />
             {/* Progress */}
             <div className="flex justify-center gap-2">
               {reflectionPrompts.map((_, idx) => (
@@ -123,39 +128,29 @@ export default function GentleReflections() {
 
             {/* Quick Emoji Response */}
             <Card className="p-6 bg-card">
-              <p className="font-bold mb-3 text-center">Quick Answer with Emoji:</p>
+              <p className="font-bold mb-3 text-center">Choose how you feel:</p>
               <div className="grid grid-cols-4 gap-3">
                 {emojiResponses.map((emoji) => (
                   <button
                     key={emoji.emoji}
                     onClick={() => handleEmojiResponse(emoji.emoji)}
-                    className="flex flex-col items-center p-3 rounded-lg hover:bg-accent/20 transition-colors"
+                    className="flex flex-col items-center p-3 rounded-lg hover:bg-accent/20 transition-colors active:scale-95"
                   >
-                    <span className="text-3xl mb-1">{emoji.emoji}</span>
+                    <span className="text-5xl mb-1">{emoji.emoji}</span>
                     <span className="text-xs text-muted-foreground">{emoji.label}</span>
                   </button>
                 ))}
               </div>
             </Card>
 
-            {/* Text Response Option */}
-            <Card className="p-6 bg-card">
-              <p className="font-bold mb-3">Or share your thoughts:</p>
-              <textarea
-                value={textResponse}
-                onChange={(e) => setTextResponse(e.target.value)}
-                placeholder="Type here if you'd like to say more..."
-                className="w-full min-h-[100px] p-3 rounded-lg border border-border bg-background resize-none focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-              <div className="flex gap-2 mt-3">
-                <Button onClick={handleTextResponse} disabled={!textResponse.trim()} className="flex-1">
-                  Save Thought 💭
-                </Button>
-                <Button onClick={skipPrompt} variant="ghost">
-                  Skip
-                </Button>
-              </div>
-            </Card>
+            <div className="flex gap-2">
+              <Button onClick={skipPrompt} variant="outline" className="flex-1">
+                Skip This One
+              </Button>
+              <Button onClick={skipAll} variant="ghost" className="flex-1">
+                Skip All & Finish
+              </Button>
+            </div>
 
             <p className="text-center text-sm text-muted-foreground">
               Every feeling is okay — thank you for sharing 💙
@@ -197,18 +192,18 @@ export default function GentleReflections() {
                 Write in Journal 📝
               </Button>
             </div>
-
-            <Card className="p-4 bg-muted/20">
-              <p className="text-sm text-muted-foreground text-center">
-                💡 Regular reflection helps you understand your emotions better. You're doing great!
-              </p>
-            </Card>
-            
-            <div className="mt-4">
-              <DisclaimerCard variant="tool-limitation" size="small" />
-            </div>
           </div>
         )}
+
+        <Card className="p-4 bg-muted/20">
+          <p className="text-sm text-muted-foreground text-center">
+            💡 Regular reflection helps you understand your emotions better. You're doing great!
+          </p>
+        </Card>
+        
+        <div className="mt-4">
+          <DisclaimerCard variant="tool-limitation" size="small" />
+        </div>
       </div>
 
       <BottomNav role="child" />
