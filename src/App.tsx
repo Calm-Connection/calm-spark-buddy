@@ -45,6 +45,17 @@ import GroundingGame from "./pages/child/tools/GroundingGame";
 import ThoughtClouds from "./pages/child/tools/ThoughtClouds";
 import ColourCalm from "./pages/child/tools/ColourCalm";
 import GentleReflections from "./pages/child/tools/GentleReflections";
+import CalmCorner from "./pages/child/tools/CalmCorner";
+import BlowWorryClouds from "./pages/child/tools/BlowWorryClouds";
+import CoolDownCube from "./pages/child/tools/CoolDownCube";
+import CalmCreature from "./pages/child/tools/CalmCreature";
+import MoodMusicMixer from "./pages/child/tools/MoodMusicMixer";
+import HandTraceBreathing from "./pages/child/tools/HandTraceBreathing";
+import WiggleReset from "./pages/child/tools/WiggleReset";
+import CalmWheel from "./pages/child/tools/CalmWheel";
+import WarmHandsTrick from "./pages/child/tools/WarmHandsTrick";
+import SlowMoMode from "./pages/child/tools/SlowMoMode";
+import GentleReminderBell from "./pages/child/tools/GentleReminderBell";
 import ChildJournal from "./pages/child/ChildJournal";
 import { ChildAchievements } from "./pages/child/ChildAchievements";
 import ChildNotificationSettingsPage from "./pages/child/NotificationSettingsPage";
@@ -153,6 +164,17 @@ function AppRoutes() {
       <Route path="/child/tools/thought-clouds" element={<ProtectedRoute role="child"><ThoughtClouds /></ProtectedRoute>} />
       <Route path="/child/tools/colour-calm" element={<ProtectedRoute role="child"><ColourCalm /></ProtectedRoute>} />
       <Route path="/child/tools/gentle-reflections" element={<ProtectedRoute role="child"><GentleReflections /></ProtectedRoute>} />
+      <Route path="/child/tools/calm-corner" element={<ProtectedRoute role="child"><CalmCorner /></ProtectedRoute>} />
+      <Route path="/child/tools/blow-worry-clouds" element={<ProtectedRoute role="child"><BlowWorryClouds /></ProtectedRoute>} />
+      <Route path="/child/tools/cool-down-cube" element={<ProtectedRoute role="child"><CoolDownCube /></ProtectedRoute>} />
+      <Route path="/child/tools/calm-creature" element={<ProtectedRoute role="child"><CalmCreature /></ProtectedRoute>} />
+      <Route path="/child/tools/mood-music-mixer" element={<ProtectedRoute role="child"><MoodMusicMixer /></ProtectedRoute>} />
+      <Route path="/child/tools/hand-trace-breathing" element={<ProtectedRoute role="child"><HandTraceBreathing /></ProtectedRoute>} />
+      <Route path="/child/tools/wiggle-reset" element={<ProtectedRoute role="child"><WiggleReset /></ProtectedRoute>} />
+      <Route path="/child/tools/calm-wheel" element={<ProtectedRoute role="child"><CalmWheel /></ProtectedRoute>} />
+      <Route path="/child/tools/warm-hands" element={<ProtectedRoute role="child"><WarmHandsTrick /></ProtectedRoute>} />
+      <Route path="/child/tools/slow-mo-mode" element={<ProtectedRoute role="child"><SlowMoMode /></ProtectedRoute>} />
+      <Route path="/child/tools/gentle-bell" element={<ProtectedRoute role="child"><GentleReminderBell /></ProtectedRoute>} />
       <Route path="/child/journal" element={<ProtectedRoute role="child"><ChildJournal /></ProtectedRoute>} />
       <Route path="/child/achievements" element={<ProtectedRoute role="child"><ChildAchievements /></ProtectedRoute>} />
       <Route path="/child/notification-settings" element={<ProtectedRoute role="child"><ChildNotificationSettingsPage /></ProtectedRoute>} />

@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { ArrowLeft, Wind, Heart, Music, Palette, Sparkles } from 'lucide-react';
+import { ArrowLeft, Wind, Heart, Music, Palette, Sparkles, Home, CloudRain, Snowflake, Bug, Sliders, Hand, Move, CircleDot, Sun, Clock, Bell } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
 
@@ -41,6 +41,72 @@ const tools = [
     title: 'Talk to Wendy',
     description: 'Chat with your AI friend',
     path: '/child/wendy-chat',
+  },
+  {
+    icon: Home,
+    title: 'Create My Calm Corner',
+    description: 'Design your own peaceful space',
+    path: '/child/tools/calm-corner',
+  },
+  {
+    icon: CloudRain,
+    title: 'Blow Away Worry Clouds',
+    description: 'Clear your worries gently',
+    path: '/child/tools/blow-worry-clouds',
+  },
+  {
+    icon: Snowflake,
+    title: 'Cool Down Cube',
+    description: 'Calm down with a melting ice cube',
+    path: '/child/tools/cool-down-cube',
+  },
+  {
+    icon: Bug,
+    title: 'Follow the Calm Creature',
+    description: 'Copy calming movements',
+    path: '/child/tools/calm-creature',
+  },
+  {
+    icon: Sliders,
+    title: 'Mood Music Mixer',
+    description: 'Mix your own calming sounds',
+    path: '/child/tools/mood-music-mixer',
+  },
+  {
+    icon: Hand,
+    title: 'Hand Trace Breathing',
+    description: 'Breathe along with your hand',
+    path: '/child/tools/hand-trace-breathing',
+  },
+  {
+    icon: Move,
+    title: 'Wiggle Reset',
+    description: 'Quick physical reset',
+    path: '/child/tools/wiggle-reset',
+  },
+  {
+    icon: CircleDot,
+    title: 'Spin the Calm Wheel',
+    description: 'Try a random calming activity',
+    path: '/child/tools/calm-wheel',
+  },
+  {
+    icon: Sun,
+    title: 'Warm Hands Trick',
+    description: 'Warm your hands with sunshine',
+    path: '/child/tools/warm-hands',
+  },
+  {
+    icon: Clock,
+    title: 'Slow Mo Mode',
+    description: 'Slow down and breathe',
+    path: '/child/tools/slow-mo-mode',
+  },
+  {
+    icon: Bell,
+    title: 'Gentle Reminder Bell',
+    description: 'Ring the calming bell',
+    path: '/child/tools/gentle-bell',
   },
 ];
 
