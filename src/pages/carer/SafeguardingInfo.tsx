@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { PageLayout } from '@/components/PageLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Shield, AlertTriangle, Clock, Phone, Mail, ArrowLeft, Heart, Eye, Users } from 'lucide-react';
+import { Shield, AlertTriangle, Clock, Phone, Mail, ArrowLeft, Heart, Eye, Users, Calendar } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
 export default function SafeguardingInfo() {
@@ -96,6 +96,42 @@ export default function SafeguardingInfo() {
           </CardContent>
         </Card>
 
+        {/* Age Requirements */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Calendar className="h-5 w-5 text-primary" />
+              Age Requirements & Handling
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <h3 className="font-semibold text-foreground">👶 Minimum Age</h3>
+              <p className="text-sm text-muted-foreground">
+                Calm Connection is designed for children aged <strong>7 years and older</strong>. 
+                Younger children should not use the app.
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="font-semibold text-foreground">👨‍👩‍👧 Carer Requirements</h3>
+              <p className="text-sm text-muted-foreground">
+                Carers must be <strong>legal guardians or persons with parental responsibility</strong> 
+                for the linked child. This ensures appropriate oversight and consent.
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="font-semibold text-foreground">📅 Date of Birth Handling</h3>
+              <p className="text-sm text-muted-foreground">
+                Child DOB is used only for age-appropriate content selection. 
+                Displayed age is obfuscated (e.g., "10–12 years") to protect privacy. 
+                We use age range categories (7-10, 11-13, 14-16) rather than exact ages.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* How We Protect Your Child */}
         <Card>
           <CardHeader>
@@ -116,8 +152,9 @@ export default function SafeguardingInfo() {
             <div className="space-y-2">
               <h3 className="font-semibold text-foreground">🔍 Pattern Detection</h3>
               <p className="text-sm text-muted-foreground">
-                We track patterns over time - repeated mentions of worry, changes in mood, 
-                or escalating concerns trigger alerts.
+                Patterns are detected using Wendy's weekly reflection engine, which analyzes 
+                mood trends, keyword frequency, missed check-ins, and semantic emotional indicators 
+                over time. This helps identify recurring concerns before they escalate.
               </p>
             </div>
 
@@ -159,6 +196,35 @@ export default function SafeguardingInfo() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
+            {/* Escalation Flow Diagram */}
+            <div className="bg-muted/30 p-4 rounded-lg">
+              <h4 className="font-semibold text-foreground mb-3">Escalation Flow</h4>
+              <div className="flex flex-col items-center space-y-2 text-sm">
+                <div className="bg-background px-4 py-2 rounded-lg border">📝 Journal Entry</div>
+                <div className="text-muted-foreground">↓</div>
+                <div className="bg-primary/10 px-4 py-2 rounded-lg border border-primary/20">🤖 Wendy Analysis (AI + Keywords)</div>
+                <div className="text-muted-foreground">↓</div>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2 w-full">
+                  <div className="bg-green-500/10 px-2 py-2 rounded text-center border border-green-500/20">
+                    <span className="text-green-600 font-medium">Tier 1</span>
+                    <p className="text-xs text-muted-foreground">Supportive</p>
+                  </div>
+                  <div className="bg-yellow-500/10 px-2 py-2 rounded text-center border border-yellow-500/20">
+                    <span className="text-yellow-600 font-medium">Tier 2</span>
+                    <p className="text-xs text-muted-foreground">Tool Tips</p>
+                  </div>
+                  <div className="bg-amber-500/10 px-2 py-2 rounded text-center border border-amber-500/20">
+                    <span className="text-amber-600 font-medium">Tier 3</span>
+                    <p className="text-xs text-muted-foreground">Check-in</p>
+                  </div>
+                  <div className="bg-destructive/10 px-2 py-2 rounded text-center border border-destructive/20">
+                    <span className="text-destructive font-medium">Tier 4</span>
+                    <p className="text-xs text-muted-foreground">Immediate</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* Tier 4 - Red */}
             <div className="border-l-4 border-destructive pl-4 py-2 bg-destructive/5">
               <div className="flex items-center justify-between mb-2">
@@ -179,6 +245,10 @@ export default function SafeguardingInfo() {
                 <li>Child sees crisis support resources</li>
                 <li>DSL may escalate to emergency services or social services</li>
               </ul>
+              <div className="mt-3 p-2 bg-destructive/10 rounded text-sm">
+                <strong className="text-destructive">⚠️ Quiet Hours Bypass:</strong>
+                <span className="text-muted-foreground"> Tier 4 escalations bypass quiet hours and send a push notification plus optional email (if enabled by the carer).</span>
+              </div>
             </div>
 
             {/* Tier 3 - Amber */}
@@ -249,6 +319,79 @@ export default function SafeguardingInfo() {
           </CardContent>
         </Card>
 
+        {/* Journal Access & Privacy */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Eye className="h-5 w-5 text-primary" />
+              Carer Access to Journal Entries
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              Your child's privacy is important. Carers see entries <strong>only</strong> when:
+            </p>
+            <ul className="text-sm text-muted-foreground list-disc list-inside space-y-2">
+              <li>The child <strong>chooses to share</strong> an entry with you</li>
+              <li>An entry is escalated at <strong>Tier 3</strong> (significant concern) or <strong>Tier 4</strong> (immediate risk)</li>
+            </ul>
+            <p className="text-sm text-muted-foreground mt-2">
+              <strong>All other entries remain private.</strong> This helps children feel safe expressing 
+              themselves honestly while ensuring genuine concerns are flagged.
+            </p>
+            <div className="bg-primary/5 p-3 rounded-lg">
+              <p className="text-sm text-muted-foreground">
+                <strong>Note:</strong> High-risk messages are stored securely in safeguarding logs 
+                and visible to carers only when escalation tier ≥3. Normal conversations stay private.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* UI Safety Components */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Shield className="h-5 w-5 text-primary" />
+              Safety Features in the App
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <h3 className="font-semibold text-foreground">🆘 "I Need Help" Button</h3>
+              <p className="text-sm text-muted-foreground">
+                Available to <strong>children only</strong>. Shows crisis support resources 
+                (Childline, emergency numbers) immediately.
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="font-semibold text-foreground">🐛 Report Concern (Bug/Issue)</h3>
+              <p className="text-sm text-muted-foreground">
+                Available to <strong>both children and carers</strong>. Used for reporting 
+                technical issues, bugs, or app problems. This is NOT for safeguarding concerns.
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="font-semibold text-foreground">💬 WendyChat</h3>
+              <p className="text-sm text-muted-foreground">
+                If a child shares something concerning, Wendy responds with crisis scripts 
+                and logs it securely. <strong>Child reports go only to safeguarding logs, 
+                not to other users.</strong>
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="font-semibold text-foreground">📞 Helpline Modal</h3>
+              <p className="text-sm text-muted-foreground">
+                Quick access to UK helplines (Childline, Samaritans, emergency services) 
+                for both children and carers.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Your Role as a Carer */}
         <Card>
           <CardHeader>
@@ -288,7 +431,7 @@ export default function SafeguardingInfo() {
             <div className="flex gap-2">
               <span className="text-primary">✓</span>
               <p className="text-sm text-muted-foreground">
-                <strong>Report concerns:</strong> Use the "Report Concern" button if you're unsure about escalation
+                <strong>Report concerns:</strong> Use the "Report Concern" button for technical issues, or contact the DSL for safeguarding matters
               </p>
             </div>
           </CardContent>

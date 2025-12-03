@@ -98,10 +98,10 @@ export default function SafetyAndPrivacy() {
             <div className="space-y-2">
               <p className="text-sm font-medium text-foreground">Good nickname ideas:</p>
               <div className="flex flex-wrap gap-2">
-                <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">StarGazer</span>
+                <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">CalmOtter</span>
+                <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">SkyHopper</span>
+                <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">GentlePanda</span>
                 <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">CozyCloud</span>
-                <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">HappyDoodle</span>
-                <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">CoolCat</span>
               </div>
             </div>
             <p className="text-xs text-muted-foreground">

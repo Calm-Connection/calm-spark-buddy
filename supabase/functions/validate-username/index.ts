@@ -58,17 +58,26 @@ function normalizeText(text: string): string {
     .replace(/8/g, 'b');
 }
 
+// Generate Calm Connection themed nickname suggestions
 function generateSuggestions(): string[] {
-  const prefixes = ['Cool', 'Star', 'Super', 'Happy', 'Sunny', 'Moon', 'Sky', 'Ocean', 'Forest', 'Rainbow'];
-  const suffixes = ['Cat', 'Fox', 'Bear', 'Bird', 'Wolf', 'Dancer', 'Artist', 'Dreamer', 'Explorer', 'Friend'];
-  const numbers = ['123', '99', '777', '2024', ''];
+  // Calm Connection themed prefixes - calm, gentle, nature-inspired
+  const prefixes = ['Calm', 'Gentle', 'Cozy', 'Peaceful', 'Warm', 'Soft', 'Kind', 'Quiet', 'Sky', 'Star'];
+  // Calm Connection themed suffixes - friendly animals and nature
+  const suffixes = ['Otter', 'Panda', 'Cloud', 'Wave', 'Breeze', 'Heart', 'Gazer', 'Hopper', 'Fox', 'Bear'];
+  const numbers = ['', ''];  // Prefer no numbers for cleaner names
   
   const suggestions: string[] = [];
-  for (let i = 0; i < 3; i++) {
+  const usedCombos = new Set<string>();
+  
+  while (suggestions.length < 3) {
     const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
     const suffix = suffixes[Math.floor(Math.random() * suffixes.length)];
-    const number = numbers[Math.floor(Math.random() * numbers.length)];
-    suggestions.push(`${prefix}${suffix}${number}`);
+    const combo = `${prefix}${suffix}`;
+    
+    if (!usedCombos.has(combo)) {
+      usedCombos.add(combo);
+      suggestions.push(combo);
+    }
   }
   return suggestions;
 }
