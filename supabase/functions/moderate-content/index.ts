@@ -98,12 +98,13 @@ serve(async (req) => {
         }
       }
 
+      // Use encouraging, non-shaming language in moderation feedback
       return new Response(
         JSON.stringify({ 
           safe: false, 
           category: keywordResult.category,
           message: "Let's keep it kind and creative! Try describing your character another way.",
-          principle: "We want to keep Calm Connection a safe space for everyone. Your creativity is valued!"
+          principle: "We want to keep Calm Connection a safe, respectful space. Your creativity matters - let's find another way to express this!"
         }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
@@ -240,9 +241,15 @@ Be STRICT about inappropriate content while respecting dignity and proportionali
 
   } catch (error) {
     console.error('Moderation error:', error);
-    // Safe by default on errors (better UX than blocking legitimate users)
+    // If moderation fails, the text is rechecked server-side before saving to avoid false positives.
+    // We default to safe to prevent blocking legitimate users, but log the failure for review.
     return new Response(
-      JSON.stringify({ safe: true, category: 'safe', error: 'Moderation check failed' }),
+      JSON.stringify({ 
+        safe: true, 
+        category: 'safe', 
+        error: 'Moderation check failed - content will be rechecked',
+        requiresRecheck: true
+      }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }

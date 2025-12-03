@@ -66,11 +66,15 @@ export default function TrustAndSafetyFAQ() {
                 <AccordionContent className="text-muted-foreground">
                   <ul className="list-disc list-inside space-y-1">
                     <li><strong>Your child</strong> - Always has full access to their own entries</li>
-                    <li><strong>You (their carer)</strong> - Only entries they choose to share with you</li>
+                    <li><strong>You (their carer)</strong> - Only entries they choose to share <strong>OR</strong> entries escalated at Tier 3/Tier 4</li>
                     <li><strong>Wendy (AI)</strong> - Reviews all entries for safeguarding purposes</li>
                     <li><strong>Our DSL</strong> - Reviews high-priority safeguarding alerts only</li>
                     <li><strong>No one else</strong> - Not teachers, not other children, not third parties</li>
                   </ul>
+                  <div className="mt-3 p-3 bg-primary/5 rounded-lg">
+                    <strong>Important:</strong> Carers see entries only when the child chooses to share 
+                    or when an entry is escalated at Tier 3 or Tier 4. All other entries remain private.
+                  </div>
                 </AccordionContent>
               </AccordionItem>
 
@@ -112,6 +116,10 @@ export default function TrustAndSafetyFAQ() {
                     <li>Clear, age-appropriate privacy information</li>
                     <li>Data minimization - we only collect what's necessary</li>
                   </ul>
+                  <div className="mt-3 p-3 bg-primary/5 rounded-lg">
+                    <strong>Consent Withdrawal:</strong> If consent is withdrawn, the app moves into a 
+                    limited mode (no journal storage, but coping tools remain available).
+                  </div>
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
@@ -165,15 +173,22 @@ export default function TrustAndSafetyFAQ() {
               <AccordionItem value="ai-3">
                 <AccordionTrigger>How does Wendy detect concerns?</AccordionTrigger>
                 <AccordionContent className="text-muted-foreground">
-                  Wendy uses natural language processing to analyze journal entries and chat messages for:
+                  Wendy uses <strong>semantic AI detection</strong> to understand the meaning and context of 
+                  journal entries and chat messages - not just exact keyword matching. This includes:
                   <ul className="list-disc list-inside mt-2 space-y-1">
-                    <li><strong>Keywords:</strong> Words like "hurt," "scared," "suicide" trigger alerts</li>
-                    <li><strong>Themes:</strong> Repeated mentions of worry, fear, or sadness</li>
-                    <li><strong>Patterns:</strong> Changes in mood over time (e.g., sudden decline)</li>
-                    <li><strong>Context:</strong> Understanding the situation around concerning language</li>
+                    <li><strong>Semantic Understanding:</strong> Recognizes child language like "I want to disappear", 
+                    "I feel invisible", "they're mean to me every day"</li>
+                    <li><strong>Keyword Detection:</strong> Specific high-risk words trigger immediate review</li>
+                    <li><strong>Pattern Analysis:</strong> Mood trends, repeated themes, declining trajectories</li>
+                    <li><strong>Context Awareness:</strong> Understands the situation around concerning language</li>
                   </ul>
+                  <div className="mt-3 p-3 bg-primary/5 rounded-lg">
+                    <strong>Privacy Note:</strong> High-risk messages are stored securely in safeguarding_logs 
+                    and visible to carers only when escalation tier ≥3. Normal conversations stay private.
+                  </div>
                   <p className="mt-2">
-                    She's trained to be sensitive and trauma-informed, recognizing that children express distress in many ways.
+                    She's trained to be sensitive and trauma-informed, recognizing that children express distress 
+                    in many ways - including through misspellings, slang, and indirect language.
                   </p>
                 </AccordionContent>
               </AccordionItem>
@@ -245,6 +260,10 @@ export default function TrustAndSafetyFAQ() {
                     <li>DSL review within 1 hour</li>
                     <li>Potential escalation to emergency services if risk is imminent</li>
                   </ul>
+                  <div className="mt-3 p-3 bg-destructive/5 rounded-lg border border-destructive/20">
+                    <strong className="text-destructive">Quiet Hours Bypass:</strong> Tier 4 escalations bypass 
+                    quiet hours and send a push notification plus optional email (if enabled by the carer).
+                  </div>
                   <p className="mt-2">
                     We encourage you to seek immediate professional help (GP, A&E, 999) if you receive this alert.
                   </p>
@@ -337,7 +356,8 @@ export default function TrustAndSafetyFAQ() {
                     <li>Personal identifiers (birthdates, addresses)</li>
                   </ul>
                   <p className="mt-2">
-                    If a real name is detected, your child will be prompted to choose a different nickname.
+                    If a real name is detected, your child will be prompted to choose a different nickname. 
+                    Suggestions match Calm Connection themes (e.g., CalmOtter, SkyHopper, GentlePanda).
                   </p>
                 </AccordionContent>
               </AccordionItem>

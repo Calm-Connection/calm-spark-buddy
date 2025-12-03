@@ -220,6 +220,14 @@ export default function PrivacyPolicy() {
                           <li>Interaction with AI support (Wendy)</li>
                         </ul>
                       </div>
+                      <div className="bg-primary/10 p-3 rounded-lg">
+                        <strong className="text-foreground">Age Requirements:</strong>
+                        <ul className="list-disc list-inside mt-1 space-y-1">
+                          <li><strong>Minimum age:</strong> 7 years old</li>
+                          <li><strong>Carers:</strong> Must be legal guardians or persons with parental responsibility</li>
+                          <li><strong>DOB handling:</strong> Child DOB is used only for age-appropriate content. Displayed age is obfuscated (e.g., "10–12 years")</li>
+                        </ul>
+                      </div>
                       <div>
                         <strong className="text-foreground">2.2 Parent/Carer Data:</strong>
                         <ul className="list-disc list-inside mt-2 space-y-1">
@@ -380,6 +388,10 @@ export default function PrivacyPolicy() {
                           <li><strong>Objection:</strong> Object to automated decision-making</li>
                           <li><strong>Withdraw Consent:</strong> Stop using the service at any time</li>
                         </ul>
+                      </div>
+                      <div className="bg-amber-500/10 p-3 rounded-lg border border-amber-500/20">
+                        <strong className="text-foreground">Consent Withdrawal:</strong>
+                        <p className="mt-1">If consent is withdrawn, the app moves into a <strong>limited mode</strong> (no journal storage, but coping tools remain available). This ensures children retain access to helpful resources while respecting your data choices.</p>
                       </div>
                       <div>
                         <strong className="text-foreground">For Children Under 13:</strong>
