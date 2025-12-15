@@ -176,7 +176,7 @@ export default function CarerHome() {
                 Generate an invite code to link with your child's account
               </p>
               <Button onClick={() => navigate('/carer/invite-code')}>
-                Generate Invite Code
+                Create an Invite Code
               </Button>
             </Card>
 
@@ -251,7 +251,7 @@ export default function CarerHome() {
                       </p>
                       <Button variant="outline" size="sm" onClick={() => navigate('/carer/insights')} className="mt-3 w-full">
                         <Brain className="h-4 w-4 mr-2" />
-                        View Detailed Insights
+                        See More Insights
                       </Button>
                     </div>
                     <p className="text-xs text-muted-foreground">

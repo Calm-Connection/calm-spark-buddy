@@ -31,8 +31,8 @@ export default function InviteCode() {
     } catch (error) {
       console.error('Error generating code:', error);
       toast({
-        title: 'Error',
-        description: 'Failed to generate code. Please try again.',
+        title: 'Oops',
+        description: 'Something didn\'t work quite right. Let\'s try again.',
         variant: 'destructive',
       });
     } finally {
@@ -132,7 +132,7 @@ export default function InviteCode() {
                       Generating...
                     </>
                   ) : (
-                    'Generate Invite Code'
+                    'Create Invite Code'
                   )}
                 </Button>
               )}

@@ -33,7 +33,7 @@ export default function CarerSignup() {
     
     if (nickname.length < 3 || nickname.length > 20) {
       toast({
-        title: 'Invalid nickname',
+        title: 'Oops',
         description: 'Your nickname should be between 3 and 20 characters',
         variant: 'destructive',
       });
@@ -42,8 +42,8 @@ export default function CarerSignup() {
     
     if (!acceptedPrivacy) {
       toast({
-        title: 'Privacy notice required',
-        description: 'Please read and accept the privacy and safeguarding notice',
+        title: 'One more step',
+        description: 'Please read and accept the privacy and safeguarding notice to continue',
         variant: 'destructive',
       });
       return;
@@ -56,7 +56,7 @@ export default function CarerSignup() {
 
       if (error) {
         toast({
-          title: 'Signup failed',
+          title: 'Oops',
           description: error.message,
           variant: 'destructive',
         });
@@ -69,8 +69,8 @@ export default function CarerSignup() {
       
       if (!user) {
         toast({
-          title: 'Error',
-          description: 'Could not create your profile. Please try logging in.',
+          title: 'Oops',
+          description: 'Something didn\'t work quite right. Please try logging in.',
           variant: 'destructive',
         });
         setLoading(false);
@@ -88,8 +88,8 @@ export default function CarerSignup() {
       if (profileError) {
         console.error('Profile creation error:', profileError);
         toast({
-          title: 'Error',
-          description: 'Failed to create your profile. Please contact support.',
+          title: 'Oops',
+          description: 'Something didn\'t work quite right. Please contact support.',
           variant: 'destructive',
         });
         setLoading(false);
@@ -97,7 +97,7 @@ export default function CarerSignup() {
       }
 
       toast({
-        title: 'Account created! 🎉',
+        title: 'All done! 🎉',
         description: 'Now let\'s pick your avatar',
       });
 
@@ -116,8 +116,8 @@ export default function CarerSignup() {
     } catch (error) {
       console.error('Signup error:', error);
       toast({
-        title: 'Error',
-        description: 'Something went wrong. Please try again.',
+        title: 'Oops',
+        description: 'Something didn\'t work quite right. Let\'s try again.',
         variant: 'destructive',
       });
       setLoading(false);

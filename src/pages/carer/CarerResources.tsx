@@ -150,7 +150,7 @@ export default function CarerResources() {
 
         {/* Carer Tools */}
         <div className="bg-card/80 backdrop-blur-sm rounded-lg p-4">
-          <h2 className="text-xl font-bold mb-3">Quick Tools for Carers</h2>
+          <h2 className="text-xl font-bold mb-3">Gentle Tools for You</h2>
           <div className="grid gap-3">
             {carerTools.map((tool, idx) => {
               const Icon = tool.icon;

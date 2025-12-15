@@ -59,7 +59,7 @@ export function ConversationStartersCard({ starters, themes }: ConversationStart
 
       <div className="mt-6 p-4 bg-interactive-accent/10 rounded-xl">
         <p className="text-sm text-muted-foreground">
-          💡 <strong>Tip:</strong> Choose a calm, comfortable moment. Let them know you're here to listen, not to judge or fix.
+          💡 <strong>Tip:</strong> Choose a calm, comfortable moment. Let them know you're here to listen, not to judge or solve.
         </p>
       </div>
     </Card>

@@ -126,7 +126,7 @@ export default function Tools() {
         </div>
 
         <p className="text-muted-foreground font-medium">
-          Choose a tool to help you feel calm and centered
+          Try something gentle to help you feel calm and centered
         </p>
 
         <div className="space-y-3">

@@ -34,8 +34,8 @@ export default function ChildSignup() {
     
     if (nickname.length < 3 || nickname.length > 20) {
       toast({
-        title: 'Invalid nickname',
-        description: 'Nickname must be between 3 and 20 characters',
+        title: 'Oops',
+        description: 'Your nickname should be between 3 and 20 characters',
         variant: 'destructive',
       });
       return;
@@ -45,8 +45,8 @@ export default function ChildSignup() {
     const moderationResult = await moderateContent(nickname, 'child_nickname');
     if (!moderationResult.safe) {
       toast({
-        title: 'Nickname not allowed',
-        description: 'Please choose a nickname that doesn\'t include real names. Try something creative like "StarGazer" or "CozyCloud"!',
+        title: 'Let\'s try a different nickname',
+        description: 'Try something creative that doesn\'t include real names, like "StarGazer" or "CozyCloud"',
         variant: 'destructive',
       });
       return;
@@ -58,7 +58,7 @@ export default function ChildSignup() {
 
     if (error) {
       toast({
-        title: 'Signup failed',
+        title: 'Oops',
         description: error.message,
         variant: 'destructive',
       });

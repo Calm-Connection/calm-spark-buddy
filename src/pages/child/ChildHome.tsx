@@ -136,7 +136,7 @@ export default function ChildHome() {
         // Prompt for avatar if missing
         if (!data.avatar_json) {
           setTimeout(() => {
-            toast.info('Create Your Avatar! 🎨 - Make your profile unique by creating an avatar.', {
+            toast.info('Create your character! 🎨 Make your profile feel like you.', {
               duration: 10000,
             });
           }, 2000);

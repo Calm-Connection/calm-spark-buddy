@@ -30,7 +30,7 @@ export default function Login() {
 
     if (error) {
       toast({
-        title: 'Login failed',
+        title: 'Oops',
         description: error.message,
         variant: 'destructive',
       });

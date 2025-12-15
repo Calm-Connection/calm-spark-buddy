@@ -62,7 +62,7 @@ export function HelplineModal({ open, onOpenChange, childProfileId, triggeredBy 
         <AlertDialogHeader>
           <AlertDialogTitle className="text-2xl">You're not alone 💜</AlertDialogTitle>
           <AlertDialogDescription className="text-base space-y-4">
-            <p>It sounds like you might be feeling unsafe or worried. Here are trusted people who can help right now:</p>
+            <p>It sounds like things might be feeling hard right now. Here are trusted people who can listen:</p>
             
             <div className="space-y-3 mt-4">
               <div className="p-4 bg-primary/10 rounded-lg">
