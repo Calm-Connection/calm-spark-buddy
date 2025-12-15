@@ -293,7 +293,7 @@ export default function WendyChat() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-            placeholder="Type your message..."
+            placeholder="What's on your mind?"
             disabled={isLoading}
           />
           <Button

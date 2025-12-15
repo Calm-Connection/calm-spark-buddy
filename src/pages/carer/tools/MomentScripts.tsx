@@ -66,8 +66,8 @@ const scriptCategories = [
     ]
   },
   {
-    id: 'meltdown',
-    title: 'Just Before Meltdown',
+    id: 'big-feelings',
+    title: 'When Feelings Feel Big',
     icon: Zap,
     description: 'De-escalation scripts',
     tip: 'Lower your voice, slow your movements, offer space. Do not reason or lecture now.',

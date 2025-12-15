@@ -22,8 +22,8 @@ export default function CreateAvatarEnhanced() {
   const handleSave = async () => {
     if (!user || !avatarData) {
       toast({
-        title: 'Error',
-        description: 'Please create your avatar first',
+        title: 'Oops',
+        description: 'Let\'s create your character first',
         variant: 'destructive'
       });
       return;
@@ -32,7 +32,7 @@ export default function CreateAvatarEnhanced() {
     setLoading(true);
     try {
       // Optimistic feedback
-      toast({ title: 'Saving...', duration: 1000 });
+      toast({ title: 'Just a moment...', duration: 1000 });
       
       // Parallel operations for speed
       const [profileUpdate, historyInsert] = await Promise.all([
@@ -52,8 +52,8 @@ export default function CreateAvatarEnhanced() {
       if (profileUpdate.error) throw profileUpdate.error;
       
       toast({
-        title: 'Success!',
-        description: 'Your avatar has been saved',
+        title: 'All done!',
+        description: 'Your character has been saved',
       });
       
       // Immediate navigation
@@ -61,8 +61,8 @@ export default function CreateAvatarEnhanced() {
     } catch (error) {
       console.error('Error saving avatar:', error);
       toast({
-        title: 'Error',
-        description: 'Failed to save avatar. Please try again.',
+        title: 'Oops',
+        description: 'Something didn\'t work quite right. Let\'s try again.',
         variant: 'destructive'
       });
     } finally {
@@ -75,9 +75,9 @@ export default function CreateAvatarEnhanced() {
       <Card className="border-0">
         <CardContent className="space-y-8">
           <div className="text-center space-y-3">
-            <h1 className="text-foreground">CREATE YOUR CHARACTER</h1>
+            <h1 className="text-foreground">Create Your Character</h1>
             <p className="text-lg text-foreground/70">
-              Design a character that represents you!
+              Design a character that feels like you
             </p>
           </div>
 
@@ -93,7 +93,7 @@ export default function CreateAvatarEnhanced() {
               className="w-full"
               disabled={loading}
             >
-              {loading ? 'SAVING...' : 'SAVE AVATAR'}
+              {loading ? 'Saving...' : 'Save My Character'}
             </Button>
           )}
         </CardContent>

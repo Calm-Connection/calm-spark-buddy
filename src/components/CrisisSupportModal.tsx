@@ -38,8 +38,8 @@ export function CrisisSupportModal({ open, onOpenChange, triggerReason = 'manual
           <AlertDialogDescription className="text-base">
             {triggerReason === 'keywords' && (
               <div className="bg-destructive/10 p-4 rounded-lg mb-4 text-destructive-foreground">
-                <strong>We're concerned about what you shared.</strong>
-                <p className="mt-2">If you're thinking about harming yourself or feeling in crisis, please reach out for immediate support.</p>
+                <strong>It sounds like things might feel really hard right now.</strong>
+                <p className="mt-2">If you're struggling or feeling unsafe, please reach out for support. You don't have to face this alone.</p>
               </div>
             )}
             {triggerReason === 'button' && (

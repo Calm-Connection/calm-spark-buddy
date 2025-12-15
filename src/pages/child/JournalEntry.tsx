@@ -72,8 +72,8 @@ export default function JournalEntry() {
       if (error) {
         console.error('Error loading profile:', error);
         toast({
-          title: 'Error',
-          description: 'Failed to load profile. Please try again.',
+          title: 'Oops',
+          description: 'Something went wrong. Let\'s try again.',
           variant: 'destructive'
         });
         return;
@@ -124,8 +124,8 @@ export default function JournalEntry() {
       setIsRecording(true);
     } catch (error) {
       toast({
-        title: 'Error',
-        description: 'Could not access microphone',
+        title: 'Oops',
+        description: 'We couldn\'t access the microphone',
         variant: 'destructive',
       });
     }
@@ -301,8 +301,8 @@ export default function JournalEntry() {
       console.error('Error saving entry:', error);
       setLoading(false);
       toast({
-        title: 'Error',
-        description: 'Failed to save entry. Please try again.',
+        title: 'Oops',
+        description: 'Something didn\'t work quite right. Let\'s try again.',
         variant: 'destructive',
       });
     }
@@ -346,8 +346,8 @@ export default function JournalEntry() {
     } catch (error) {
       console.error('Error sharing entry:', error);
       toast({
-        title: 'Error',
-        description: 'Failed to share entry. Please try again.',
+        title: 'Oops',
+        description: 'Something didn\'t work quite right. Let\'s try again.',
         variant: 'destructive'
       });
     }

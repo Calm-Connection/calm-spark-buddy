@@ -50,29 +50,29 @@ export default function Welcome() {
           
           <CardContent className="p-8 md:p-12 space-y-8">
             <div className="space-y-4">
-              <h1 className="text-foreground text-3xl md:text-5xl bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
-                WELCOME!
-              </h1>
-              
-              <p className="text-base md:text-xl text-foreground/80">
-                A gentle, nurturing space where children and carers grow emotionally together
-              </p>
-            </div>
-
-            {/* Get Started Button */}
-            <Button 
-              onClick={() => navigate('/role-selection')}
-              variant="gradient"
-              size="lg"
-              className="hover:scale-[1.02] transition-all duration-200 w-full"
-            >
-              GET STARTED
-            </Button>
-
-            {/* Tagline */}
-            <p className="text-base text-foreground/60">
-              A safe space to share feelings, explore emotions, and connect 💜
+            <h1 className="text-foreground text-3xl md:text-5xl bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+              Welcome 💜
+            </h1>
+            
+            <p className="text-base md:text-xl text-foreground/80">
+              A gentle, nurturing space where children and carers grow emotionally together
             </p>
+          </div>
+
+          {/* Get Started Button */}
+          <Button 
+            onClick={() => navigate('/role-selection')}
+            variant="gradient"
+            size="lg"
+            className="hover:scale-[1.02] transition-all duration-200 w-full"
+          >
+            Let's Begin
+          </Button>
+
+          {/* Tagline */}
+          <p className="text-base text-foreground/60">
+            A safe space to share feelings, explore emotions, and connect
+          </p>
           </CardContent>
         </Card>
         </div>

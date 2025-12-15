@@ -32,8 +32,8 @@ export default function EnterInviteCode() {
     
     if (trimmedCode.length !== 6) {
       toast({
-        title: 'Invalid code',
-        description: 'Please enter a valid 6-character code',
+        title: 'Oops',
+        description: 'The code should be 6 characters',
         variant: 'destructive',
       });
       return;
@@ -51,8 +51,8 @@ export default function EnterInviteCode() {
       if (claimError) {
         console.error('Claim error:', claimError);
         toast({
-          title: 'Error',
-          description: 'Could not process code. Please try again.',
+          title: 'Oops',
+          description: 'Something didn\'t work quite right. Let\'s try again.',
           variant: 'destructive',
         });
         setLoading(false);
@@ -63,10 +63,10 @@ export default function EnterInviteCode() {
       if (!claimResult.success) {
         const errorMessages: Record<string, string> = {
           not_authenticated: 'Please log in and try again',
-          code_used: 'This code has already been used. Please ask your carer for a new code.',
-          code_expired: 'This code has expired. Please ask your carer for a new code.',
-          code_not_found: 'This code doesn\'t exist. Please check the code and try again.',
-          carer_not_found: 'The carer account hasn\'t completed setup yet. Please ask them to log in and complete their profile.',
+          code_used: 'This code has already been used. Ask your grown-up for a new code.',
+          code_expired: 'This code has expired. Ask your grown-up for a new code.',
+          code_not_found: 'This code doesn\'t look right. Please check and try again.',
+          carer_not_found: 'Your grown-up needs to finish setting up their account first.',
         };
 
         toast({
@@ -80,8 +80,8 @@ export default function EnterInviteCode() {
       }
 
       toast({
-        title: 'Success! 🎉',
-        description: 'You\'re now linked with your carer!',
+        title: 'All done! 🎉',
+        description: 'You\'re now connected with your grown-up!',
       });
 
       // Store carer ID for later profile creation
@@ -91,8 +91,8 @@ export default function EnterInviteCode() {
     } catch (error) {
       console.error('Error linking accounts:', error);
       toast({
-        title: 'Error',
-        description: 'Something went wrong. Please try again.',
+        title: 'Oops',
+        description: 'Something didn\'t work quite right. Let\'s try again.',
         variant: 'destructive',
       });
     } finally {
@@ -111,10 +111,10 @@ export default function EnterInviteCode() {
               <span className="text-5xl">🔐</span>
             </div>
             <h1 className="text-foreground bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
-              ENTER INVITE CODE
+              Enter Invite Code
             </h1>
             <p className="text-lg text-foreground/70 font-medium">
-              Your parent or carer should have shared a 6-character code with you
+              Your grown-up should have shared a 6-character code with you
             </p>
           </div>
 
@@ -147,7 +147,7 @@ export default function EnterInviteCode() {
                   Checking code...
                 </>
               ) : (
-                'CONNECT'
+                'Connect'
               )}
             </Button>
           </form>
@@ -158,7 +158,7 @@ export default function EnterInviteCode() {
             size="lg"
             className="w-full"
           >
-            Skip for now
+            Maybe later — that's okay
           </Button>
 
           <DisclaimerCard variant="parent-monitoring" size="small" className="mt-4" />
