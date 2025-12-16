@@ -18,13 +18,47 @@ import { toast } from 'sonner';
 import { getEmotionalIconsByCategory } from '@/constants/emotionalIcons';
 import { MoodIcon } from '@/components/MoodIcon';
 
+// 30+ warm, gentle affirmations following Calm Connection brand voice
 const affirmations = [
   "You are brave and strong 💪",
   "Your feelings matter 💜",
   "You are doing great today ⭐",
   "It's okay to ask for help 🤗",
   "You make the world brighter ☀️",
+  "You are loved just as you are 💕",
+  "Every feeling is okay to have 🌈",
+  "You're doing your best, and that's enough ✨",
+  "Your heart is full of kindness 💛",
+  "It's okay to take things slowly 🐢",
+  "You bring joy to people around you 🌻",
+  "Being you is your superpower 🦸",
+  "You are safe and supported here 🏠",
+  "Small steps still count 👣",
+  "You are capable of amazing things 🌟",
+  "It's okay to feel however you feel 🫂",
+  "You deserve kindness, especially from yourself 💗",
+  "Your thoughts and ideas are valuable 💭",
+  "Every day is a fresh start 🌅",
+  "You have the strength to get through this 💪",
+  "It's brave to share how you feel 🗣️",
+  "You are never alone in your feelings 👐",
+  "Taking a break is always okay 🧘",
+  "Your smile can light up a room 😊",
+  "Mistakes help us learn and grow 🌱",
+  "You are worthy of good things 🎁",
+  "It's okay to ask for a hug 🤗",
+  "You matter more than you know 💫",
+  "Being gentle with yourself is important 🌸",
+  "You have so much to be proud of 🏆",
+  "Every breath you take is a tiny victory 🌬️",
 ];
+
+// Get consistent daily quote based on date
+const getDailyAffirmation = () => {
+  const today = new Date();
+  const dayOfYear = Math.floor((today.getTime() - new Date(today.getFullYear(), 0, 0).getTime()) / 86400000);
+  return affirmations[dayOfYear % affirmations.length];
+};
 
 export default function ChildHome() {
   const navigate = useNavigate();
@@ -33,7 +67,7 @@ export default function ChildHome() {
   const [nickname, setNickname] = useState('');
   const [avatarData, setAvatarData] = useState<any>(null);
   const [currentTheme, setCurrentTheme] = useState<ThemeName>('classic');
-  const [affirmation] = useState(() => affirmations[Math.floor(Math.random() * affirmations.length)]);
+  const [affirmation] = useState(() => getDailyAffirmation());
   const [hasCheckedInToday, setHasCheckedInToday] = useState(false);
   const [achievements, setAchievements] = useState<any[]>([]);
   const [userAchievements, setUserAchievements] = useState<any[]>([]);
@@ -379,15 +413,6 @@ export default function ChildHome() {
               </TabsContent>
             </Tabs>
 
-            <div className="mt-4 pt-4 border-t border-border/50">
-              <Button 
-                variant="outline" 
-                className="w-full"
-                disabled
-              >
-                ✨ + Create Your Own Mood (Coming Soon)
-              </Button>
-            </div>
           </Card>
         )}
 

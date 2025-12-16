@@ -556,8 +556,6 @@ export default function JournalEntry() {
       <HelplineModal 
         open={showSafeguardingModal} 
         onOpenChange={setShowSafeguardingModal}
-        childProfileId={childProfile?.id}
-        triggeredBy="journal_entry"
       />
 
       <CheckInPromptModal

@@ -643,27 +643,18 @@ export default function Settings() {
               />
             </div>
 
-            {/* Calm Mode */}
+            {/* Calm Mode (merged with Reduce Motion) */}
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
                 <Label>Calm Mode</Label>
-                <p className="text-sm text-muted-foreground">Reduce animations and visual effects</p>
+                <p className="text-sm text-muted-foreground">Reduce animations and movement for a calmer experience</p>
               </div>
               <Switch
                 checked={settings.calmMode}
-                onCheckedChange={(checked) => updateSetting('calmMode', checked)}
-              />
-            </div>
-
-            {/* Reduce Motion */}
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label>Reduce Motion</Label>
-                <p className="text-sm text-muted-foreground">Minimize movement for comfort</p>
-              </div>
-              <Switch
-                checked={settings.reduceMotion}
-                onCheckedChange={(checked) => updateSetting('reduceMotion', checked)}
+                onCheckedChange={(checked) => {
+                  updateSetting('calmMode', checked);
+                  updateSetting('reduceMotion', checked);
+                }}
               />
             </div>
           </div>
@@ -745,47 +736,49 @@ export default function Settings() {
           </div>
         </Card>
 
-        {/* Legal & Privacy */}
-        <Card className="p-6">
-          <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-            <FileText className="h-5 w-5" />
-            Legal & Privacy
-          </h2>
-          <div className="space-y-2">
-            <Button
-              variant="outline"
-              className="w-full justify-start"
-              onClick={() => navigate('/carer/privacy-policy')}
-            >
-              <Lock className="h-4 w-4 mr-2" />
-              Privacy Policy
-            </Button>
-            <Button
-              variant="outline"
-              className="w-full justify-start"
-              onClick={() => navigate('/carer/terms-of-use')}
-            >
-              <FileText className="h-4 w-4 mr-2" />
-              Terms of Use
-            </Button>
-            <Button
-              variant="outline"
-              className="w-full justify-start"
-              onClick={() => navigate('/carer/safeguarding-info')}
-            >
-              <Shield className="h-4 w-4 mr-2" />
-              Safeguarding Information
-            </Button>
-            <Button
-              variant="outline"
-              className="w-full justify-start"
-              onClick={() => navigate('/carer/pseudonym-policy')}
-            >
-              <UserX className="h-4 w-4 mr-2" />
-              Pseudonym Policy
-            </Button>
-          </div>
-        </Card>
+        {/* Legal & Privacy - Hidden for children */}
+        {userRole !== 'child' && (
+          <Card className="p-6">
+            <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+              <FileText className="h-5 w-5" />
+              Legal & Privacy
+            </h2>
+            <div className="space-y-2">
+              <Button
+                variant="outline"
+                className="w-full justify-start"
+                onClick={() => navigate('/carer/privacy-policy')}
+              >
+                <Lock className="h-4 w-4 mr-2" />
+                Privacy Policy
+              </Button>
+              <Button
+                variant="outline"
+                className="w-full justify-start"
+                onClick={() => navigate('/carer/terms-of-use')}
+              >
+                <FileText className="h-4 w-4 mr-2" />
+                Terms of Use
+              </Button>
+              <Button
+                variant="outline"
+                className="w-full justify-start"
+                onClick={() => navigate('/carer/safeguarding-info')}
+              >
+                <Shield className="h-4 w-4 mr-2" />
+                Safeguarding Information
+              </Button>
+              <Button
+                variant="outline"
+                className="w-full justify-start"
+                onClick={() => navigate('/carer/pseudonym-policy')}
+              >
+                <UserX className="h-4 w-4 mr-2" />
+                Pseudonym Policy
+              </Button>
+            </div>
+          </Card>
+        )}
 
         <Card className="p-6">
           <div className="space-y-4">
