@@ -37,7 +37,8 @@ export function MoodIcon({ moodId, size = 'md', selected = false, className }: M
       )}
       style={{ backgroundColor: emotionalIcon.color }}
     >
-      <Icon className={cn(iconSizes[size], 'text-foreground/80')} />
+      {/* High contrast icon - white/dark text depending on background brightness */}
+      <Icon className={cn(iconSizes[size], 'text-foreground drop-shadow-sm')} style={{ filter: 'contrast(1.2)' }} />
     </div>
   );
 }

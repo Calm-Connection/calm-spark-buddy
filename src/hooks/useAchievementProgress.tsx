@@ -39,7 +39,7 @@ export function useAchievementProgress(userId: string | undefined) {
       // Check journal entry count for relevant achievements
       const { data: journalEntries, count: journalCount } = await supabase
         .from('journal_entries')
-        .select('id', { count: 'exact' })
+        .select('id, mood_tag, share_with_carer, created_at', { count: 'exact' })
         .eq('child_id', userId);
 
       // Check module completion for relevant achievements
@@ -49,48 +49,91 @@ export function useAchievementProgress(userId: string | undefined) {
         .eq('user_id', userId)
         .eq('completed', true);
 
+      // Check tool usage for relevant achievements
+      const { data: toolUsage, count: toolCount } = await supabase
+        .from('tool_usage')
+        .select('id, tool_name', { count: 'exact' })
+        .eq('user_id', userId);
+
+      // Count shared entries
+      const sharedCount = journalEntries?.filter(e => e.share_with_carer)?.length || 0;
+      
+      // Count unique mood types used
+      const uniqueMoods = new Set(journalEntries?.map(e => e.mood_tag).filter(Boolean) || []);
+      const moodVarietyCount = uniqueMoods.size;
+
+      // Count breathing tool uses
+      const breathingCount = toolUsage?.filter(t => 
+        t.tool_name?.toLowerCase().includes('breathing') || 
+        t.tool_name?.toLowerCase().includes('breath')
+      )?.length || 0;
+
+      // Count calm corner uses
+      const calmCornerCount = toolUsage?.filter(t => 
+        t.tool_name?.toLowerCase().includes('calm')
+      )?.length || 0;
+
+      // Calculate streak
+      let streakCount = 0;
+      if (journalEntries && journalEntries.length > 0) {
+        const sortedEntries = [...journalEntries].sort((a, b) => 
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        );
+        
+        let lastDate: Date | null = null;
+        for (const entry of sortedEntries) {
+          const entryDate = new Date(entry.created_at);
+          entryDate.setHours(0, 0, 0, 0);
+          
+          if (!lastDate) {
+            streakCount = 1;
+            lastDate = entryDate;
+          } else {
+            const dayDiff = Math.floor((lastDate.getTime() - entryDate.getTime()) / (1000 * 60 * 60 * 24));
+            if (dayDiff === 1) {
+              streakCount++;
+              lastDate = entryDate;
+            } else if (dayDiff > 1) {
+              break;
+            }
+          }
+        }
+      }
+
       for (const achievement of achievements) {
         if (earnedIds.has(achievement.id)) continue;
 
         let currentProgress = 0;
 
-        // Determine progress based on achievement category (matches DB categories)
-        if (achievement.category === 'journal') {
-          currentProgress = journalCount || 0;
-        } else if (achievement.category === 'module') {
-          currentProgress = moduleCount || 0;
-        } else if (achievement.category === 'checkin') {
-          // Get consecutive days with mood check-ins
-          const { data: recentEntries } = await supabase
-            .from('journal_entries')
-            .select('created_at')
-            .eq('child_id', userId)
-            .not('mood_tag', 'is', null)
-            .order('created_at', { ascending: false })
-            .limit(30);
-
-          if (recentEntries) {
-            let streak = 0;
-            let lastDate: Date | null = null;
-            for (const entry of recentEntries) {
-              const entryDate = new Date(entry.created_at);
-              entryDate.setHours(0, 0, 0, 0);
-              
-              if (!lastDate) {
-                streak = 1;
-                lastDate = entryDate;
-              } else {
-                const dayDiff = Math.floor((lastDate.getTime() - entryDate.getTime()) / (1000 * 60 * 60 * 24));
-                if (dayDiff === 1) {
-                  streak++;
-                  lastDate = entryDate;
-                } else {
-                  break;
-                }
-              }
-            }
-            currentProgress = streak;
-          }
+        // Determine progress based on achievement category
+        switch (achievement.category) {
+          case 'journal':
+            currentProgress = journalCount || 0;
+            break;
+          case 'module':
+            currentProgress = moduleCount || 0;
+            break;
+          case 'checkin':
+            currentProgress = journalCount || 0;
+            break;
+          case 'streak':
+            currentProgress = streakCount;
+            break;
+          case 'sharing':
+            currentProgress = sharedCount;
+            break;
+          case 'tool_usage':
+            currentProgress = toolCount || 0;
+            break;
+          case 'breathing':
+            currentProgress = breathingCount;
+            break;
+          case 'calm_corner':
+            currentProgress = calmCornerCount;
+            break;
+          case 'emotion_variety':
+            currentProgress = moodVarietyCount;
+            break;
         }
 
         // Update or create user achievement record
@@ -163,9 +206,23 @@ export function useAchievementProgress(userId: string | undefined) {
       )
       .subscribe();
 
+    const toolChannel = supabase
+      .channel('achievement-tool-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'tool_usage',
+        },
+        () => checkAndUpdateAchievements()
+      )
+      .subscribe();
+
     return () => {
       supabase.removeChannel(journalChannel);
       supabase.removeChannel(moduleChannel);
+      supabase.removeChannel(toolChannel);
     };
   }, [userId, notifyAchievementEarned]);
 }

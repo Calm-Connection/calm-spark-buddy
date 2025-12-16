@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, BookOpen, AlertCircle, Wrench, Brain, Sparkles, Info } from 'lucide-react';
+import { Home, AlertCircle, Wrench, Brain, Sparkles, Info, BookOpen, Heart } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { HelplineModal } from './HelplineModal';
 
@@ -8,33 +8,45 @@ interface BottomNavProps {
   role: 'child' | 'carer';
 }
 
+// Custom emotion-styled journal icon for child nav
+function JournalEmotionIcon({ className }: { className?: string }) {
+  return (
+    <div className={cn("relative", className)}>
+      <Heart className="h-5 w-5 text-current fill-current opacity-80" />
+    </div>
+  );
+}
+
 export function BottomNav({ role }: BottomNavProps) {
   const [showHelpModal, setShowHelpModal] = useState(false);
   
-  const navItems = role === 'child' 
-    ? [
-        { icon: Home, label: 'Home', path: '/child/home' },
-        { icon: BookOpen, label: 'Journal', path: '/child/journal' },
-        { icon: Wrench, label: 'Tools', path: '/child/tools' },
-        { icon: AlertCircle, label: 'Help', path: null, action: () => setShowHelpModal(true) },
-      ]
-    : [
-        { icon: Home, label: 'Dashboard', path: '/carer/home' },
-        { icon: BookOpen, label: 'Journal', path: '/carer/journal' },
-        { icon: Brain, label: 'Insights', path: '/carer/insights' },
-        { icon: Sparkles, label: 'Resources', path: '/carer/resources' },
-        { icon: Info, label: 'Info', path: '/carer/policy-hub' },
-      ];
+  const childNavItems = [
+    { icon: Home, label: 'Home', path: '/child/home' },
+    { icon: JournalEmotionIcon, label: 'Journal', path: '/child/journal', isCustom: true },
+    { icon: Wrench, label: 'Tools', path: '/child/tools' },
+    { icon: AlertCircle, label: 'Help', path: null, action: () => setShowHelpModal(true) },
+  ];
+  
+  const carerNavItems = [
+    { icon: Home, label: 'Dashboard', path: '/carer/home' },
+    { icon: BookOpen, label: 'Journal', path: '/carer/journal' },
+    { icon: Brain, label: 'Insights', path: '/carer/insights' },
+    { icon: Sparkles, label: 'Resources', path: '/carer/resources' },
+    { icon: Info, label: 'Info', path: '/carer/policy-hub' },
+  ];
+  
+  const navItems = role === 'child' ? childNavItems : carerNavItems;
 
   return (
     <>
       <nav className="fixed bottom-0 left-0 right-0 bg-background border-t border-border z-50">
         <div className="max-w-2xl mx-auto px-4 py-2">
           <div className="flex justify-around items-center">
-            {navItems.map((item, index) => {
-              const Icon = item.icon;
+          {navItems.map((item, index) => {
+              const Icon = item.icon as any;
+              const isCustomIcon = 'isCustom' in item && item.isCustom;
               
-              if (item.action) {
+              if ('action' in item && item.action) {
                 return (
                   <button
                     key={index}
@@ -61,7 +73,11 @@ export function BottomNav({ role }: BottomNavProps) {
                     )
                   }
                 >
-                  <Icon className={cn('h-5 w-5', role === 'carer' && 'h-4 w-4 sm:h-5 sm:w-5')} />
+                  {isCustomIcon ? (
+                    <Icon className={cn('h-5 w-5', role === 'carer' && 'h-4 w-4 sm:h-5 sm:w-5')} />
+                  ) : (
+                    <Icon className={cn('h-5 w-5', role === 'carer' && 'h-4 w-4 sm:h-5 sm:w-5')} />
+                  )}
                   <span className={cn('text-xs font-medium', role === 'carer' && 'text-[10px] sm:text-xs')}>{item.label}</span>
                 </NavLink>
               );

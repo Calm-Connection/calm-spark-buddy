@@ -612,22 +612,13 @@ textarea {
   --ring: 220 100% 40%;
 }
 
-.high-contrast *,
-.high-contrast button,
-.high-contrast .card,
-.high-contrast input,
-.high-contrast select,
-.high-contrast textarea {
-  border-color: hsl(0 0% 0%) !important;
-  border-width: 2px !important;
-}
-
+/* High contrast focus styles only - no intrusive borders */
 .high-contrast button:focus,
 .high-contrast a:focus,
 .high-contrast input:focus,
 .high-contrast select:focus,
 .high-contrast textarea:focus {
-  outline: 4px solid hsl(220 100% 40%) !important;
+  outline: 3px solid hsl(220 100% 40%) !important;
   outline-offset: 2px;
 }
 
@@ -650,22 +641,13 @@ textarea {
   --ring: 220 100% 60%;
 }
 
-.high-contrast-dark *,
-.high-contrast-dark button,
-.high-contrast-dark .card,
-.high-contrast-dark input,
-.high-contrast-dark select,
-.high-contrast-dark textarea {
-  border-color: hsl(0 0% 100%) !important;
-  border-width: 2px !important;
-}
-
+/* Dark high contrast focus styles only - no intrusive borders */
 .high-contrast-dark button:focus,
 .high-contrast-dark a:focus,
 .high-contrast-dark input:focus,
 .high-contrast-dark select:focus,
 .high-contrast-dark textarea:focus {
-  outline: 4px solid hsl(220 100% 60%) !important;
+  outline: 3px solid hsl(220 100% 60%) !important;
   outline-offset: 2px;
 }
 
