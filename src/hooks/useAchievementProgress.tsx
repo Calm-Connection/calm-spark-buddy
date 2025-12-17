@@ -1,12 +1,14 @@
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useNotificationTrigger } from './useNotificationTrigger';
+import { useToast } from './use-toast';
 
 interface Achievement {
   id: string;
   name: string;
   icon: string;
   requirement_count: number;
+  category: string;
 }
 
 /**
@@ -14,6 +16,15 @@ interface Achievement {
  */
 export function useAchievementProgress(userId: string | undefined) {
   const { notifyAchievementEarned } = useNotificationTrigger();
+  const { toast } = useToast();
+
+  const showAchievementUnlock = useCallback((name: string, icon: string) => {
+    toast({
+      title: `${icon} Achievement Unlocked!`,
+      description: name,
+      duration: 5000,
+    });
+  }, [toast]);
 
   useEffect(() => {
     if (!userId) return;
@@ -156,8 +167,9 @@ export function useAchievementProgress(userId: string | undefined) {
               });
           }
 
-          // Trigger notification
+          // Trigger notification and show toast
           await notifyAchievementEarned(userId, achievement.name, achievement.icon);
+          showAchievementUnlock(achievement.name, achievement.icon);
         } else if (existingAchievement && existingAchievement.progress < currentProgress) {
           // Update progress
           await supabase
@@ -219,10 +231,37 @@ export function useAchievementProgress(userId: string | undefined) {
       )
       .subscribe();
 
+    // Subscribe to user_achievements for instant UI feedback
+    const achievementChannel = supabase
+      .channel('achievement-earned-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'user_achievements',
+          filter: `user_id=eq.${userId}`,
+        },
+        async (payload) => {
+          // Fetch achievement details for the toast
+          const { data: achievement } = await supabase
+            .from('achievements')
+            .select('name, icon, requirement_count')
+            .eq('id', payload.new.achievement_id)
+            .single();
+          
+          if (achievement && payload.new.progress >= achievement.requirement_count) {
+            showAchievementUnlock(achievement.name, achievement.icon);
+          }
+        }
+      )
+      .subscribe();
+
     return () => {
       supabase.removeChannel(journalChannel);
       supabase.removeChannel(moduleChannel);
       supabase.removeChannel(toolChannel);
+      supabase.removeChannel(achievementChannel);
     };
-  }, [userId, notifyAchievementEarned]);
+  }, [userId, notifyAchievementEarned, showAchievementUnlock]);
 }

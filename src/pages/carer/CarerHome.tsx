@@ -40,9 +40,16 @@ export default function CarerHome() {
   const [suggestedAction, setSuggestedAction] = useState('');
   const [hasNewSharedEntry, setHasNewSharedEntry] = useState(false);
   const [safeguardingAlertCount, setSafeguardingAlertCount] = useState(0);
+  // Load theme immediately on mount to prevent flash
+  useEffect(() => {
+    const savedTheme = loadSavedTheme();
+    applyTheme(savedTheme || 'classic');
+  }, []);
+
   useEffect(() => {
     loadCarerData();
   }, [user]);
+
   const loadCarerData = async () => {
     if (!user) return;
 
@@ -64,8 +71,6 @@ export default function CarerHome() {
       setChildNickname(linkedChild.nickname);
       await loadChildData(linkedChild.id);
     }
-    const savedTheme = loadSavedTheme();
-    applyTheme(savedTheme || 'classic');
   };
   const loadChildData = async (childId: string) => {
     // Count shared entries
