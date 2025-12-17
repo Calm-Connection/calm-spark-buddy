@@ -85,17 +85,15 @@ export default function CreateAvatarEnhanced() {
             onAvatarGenerated={handleAvatarGenerated}
           />
           
-          {avatarData && (
-            <Button 
-              onClick={handleSave}
-              variant="gradient"
-              size="lg"
-              className="w-full"
-              disabled={loading}
-            >
-              {loading ? 'Saving...' : 'Save My Character'}
-            </Button>
-          )}
+          <Button 
+            onClick={handleSave}
+            variant="gradient"
+            size="lg"
+            className="w-full"
+            disabled={loading || !avatarData}
+          >
+            {loading ? 'Saving...' : 'Save Avatar & Continue'}
+          </Button>
         </CardContent>
       </Card>
     </PageLayout>

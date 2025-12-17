@@ -397,20 +397,25 @@ export default function JournalEntry() {
 
           {/* Only show mood selector if no mood is selected yet */}
           {!selectedMood && (
-            <div className="space-y-2">
+            <div className="space-y-3">
               <Label>How are you feeling today?</Label>
-              <Select value={mood} onValueChange={(value) => setMood(value as MoodType)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Pick a mood (optional)" />
-                </SelectTrigger>
-                <SelectContent>
-                  {emotionalIcons.map((icon) => (
-                    <SelectItem key={icon.id} value={icon.id}>
-                      {icon.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
+                {emotionalIcons.map((icon) => (
+                  <button
+                    key={icon.id}
+                    type="button"
+                    onClick={() => setMood(icon.id as MoodType)}
+                    className={`flex flex-col items-center gap-1 p-2 rounded-xl transition-all ${
+                      mood === icon.id 
+                        ? 'bg-primary/20 ring-2 ring-primary scale-105' 
+                        : 'bg-muted/50 hover:bg-muted'
+                    }`}
+                  >
+                    <MoodIcon moodId={icon.id} size="md" />
+                    <span className="text-xs text-center truncate w-full">{icon.label}</span>
+                  </button>
+                ))}
+              </div>
             </div>
           )}
 
