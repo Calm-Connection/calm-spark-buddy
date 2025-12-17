@@ -13,8 +13,10 @@ interface Achievement {
 
 /**
  * Hook to track achievement progress and trigger notifications when earned
+ * @param userId - auth.users.id (for tool_usage, user_module_progress, user_achievements)
+ * @param childProfileId - children_profiles.id (for journal_entries queries)
  */
-export function useAchievementProgress(userId: string | undefined) {
+export function useAchievementProgress(userId: string | undefined, childProfileId: string | undefined) {
   const { notifyAchievementEarned } = useNotificationTrigger();
   const { toast } = useToast();
 
@@ -27,7 +29,7 @@ export function useAchievementProgress(userId: string | undefined) {
   }, [toast]);
 
   useEffect(() => {
-    if (!userId) return;
+    if (!userId || !childProfileId) return;
 
     const checkAndUpdateAchievements = async () => {
       // Get all achievements
@@ -37,7 +39,7 @@ export function useAchievementProgress(userId: string | undefined) {
 
       if (!achievements) return;
 
-      // Get user's current progress
+      // Get user's current progress (uses userId)
       const { data: userAchievements } = await supabase
         .from('user_achievements')
         .select('*')
@@ -47,20 +49,20 @@ export function useAchievementProgress(userId: string | undefined) {
         userAchievements?.filter(ua => ua.progress >= (achievements.find(a => a.id === ua.achievement_id)?.requirement_count || 1)).map(ua => ua.achievement_id) || []
       );
 
-      // Check journal entry count for relevant achievements
+      // Check journal entry count (uses childProfileId)
       const { data: journalEntries, count: journalCount } = await supabase
         .from('journal_entries')
         .select('id, mood_tag, share_with_carer, created_at', { count: 'exact' })
-        .eq('child_id', userId);
+        .eq('child_id', childProfileId);
 
-      // Check module completion for relevant achievements
+      // Check module completion (uses userId)
       const { data: moduleProgress, count: moduleCount } = await supabase
         .from('user_module_progress')
         .select('id', { count: 'exact' })
         .eq('user_id', userId)
         .eq('completed', true);
 
-      // Check tool usage for relevant achievements
+      // Check tool usage (uses userId)
       const { data: toolUsage, count: toolCount } = await supabase
         .from('tool_usage')
         .select('id, tool_name', { count: 'exact' })
@@ -200,6 +202,7 @@ export function useAchievementProgress(userId: string | undefined) {
           event: 'INSERT',
           schema: 'public',
           table: 'journal_entries',
+          filter: `child_id=eq.${childProfileId}`,
         },
         () => checkAndUpdateAchievements()
       )
@@ -213,6 +216,7 @@ export function useAchievementProgress(userId: string | undefined) {
           event: 'UPDATE',
           schema: 'public',
           table: 'user_module_progress',
+          filter: `user_id=eq.${userId}`,
         },
         () => checkAndUpdateAchievements()
       )
@@ -226,6 +230,7 @@ export function useAchievementProgress(userId: string | undefined) {
           event: 'INSERT',
           schema: 'public',
           table: 'tool_usage',
+          filter: `user_id=eq.${userId}`,
         },
         () => checkAndUpdateAchievements()
       )
@@ -263,5 +268,5 @@ export function useAchievementProgress(userId: string | undefined) {
       supabase.removeChannel(toolChannel);
       supabase.removeChannel(achievementChannel);
     };
-  }, [userId, notifyAchievementEarned, showAchievementUnlock]);
+  }, [userId, childProfileId, notifyAchievementEarned, showAchievementUnlock]);
 }

@@ -77,8 +77,8 @@ export default function ChildHome() {
   const [postJournalAction, setPostJournalAction] = useState<{ type: string; link: string; label: string } | null>(null);
   const [lastTipDate, setLastTipDate] = useState<string | null>(null);
 
-  // Track achievement progress automatically
-  useAchievementProgress(childProfileId);
+  // Track achievement progress automatically (pass both userId and childProfileId)
+  useAchievementProgress(user?.id, childProfileId);
 
   // Check for daily tip reset and post-journal tips
   useEffect(() => {
