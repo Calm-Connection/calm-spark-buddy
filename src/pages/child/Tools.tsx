@@ -129,14 +129,14 @@ export default function Tools() {
           Try something gentle to help you feel calm and centered
         </p>
 
-        <div className="space-y-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {tools.map((tool, index) => {
             const Icon = tool.icon;
             const decorativeIcons = ['cloud', 'sparkles', 'leaf', 'star', 'flower', 'sun'] as const;
             return (
               <Card
                 key={tool.title}
-                className="relative overflow-hidden p-5 cursor-pointer transition-all hover:scale-[1.02] hover:shadow-soft-lg bg-gradient-to-br from-primary/5 via-accent/10 to-secondary/5 border-interactive-accent/20 group"
+                className="relative overflow-hidden p-4 sm:p-5 cursor-pointer transition-all hover:scale-[1.02] hover:shadow-soft-lg bg-gradient-to-br from-primary/5 via-accent/10 to-secondary/5 border-interactive-accent/20 group"
                 onClick={() => navigate(tool.path)}
               >
                 <DecorativeIcon 
@@ -145,13 +145,13 @@ export default function Tools() {
                   opacity={0.08} 
                   className="group-hover:opacity-15 transition-opacity"
                 />
-                <div className="flex items-center gap-4">
-                  <div className="h-12 w-12 rounded-full bg-gradient-to-br from-interactive-accent/10 to-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform shadow-sm">
-                    <Icon className="h-6 w-6 text-interactive-accent" />
+                <div className="flex items-center gap-3 sm:gap-4">
+                  <div className="h-14 w-14 rounded-full bg-gradient-to-br from-interactive-accent/10 to-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform shadow-sm flex-shrink-0">
+                    <Icon className="h-7 w-7 text-interactive-accent" />
                   </div>
-                  <div className="flex-1">
-                    <h3 className="font-bold text-lg">{tool.title}</h3>
-                    <p className="text-sm text-muted-foreground font-medium">{tool.description}</p>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-bold text-base sm:text-lg truncate">{tool.title}</h3>
+                    <p className="text-sm text-muted-foreground font-medium line-clamp-2">{tool.description}</p>
                   </div>
                 </div>
               </Card>

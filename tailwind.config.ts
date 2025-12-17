@@ -225,6 +225,16 @@ export default {
         "grow": {
           "0%": { height: "0%" },
           "100%": { height: "60%" }
+        },
+        "pulse-soft": {
+          "0%, 100%": { 
+            transform: "scale(1)",
+            opacity: "1"
+          },
+          "50%": { 
+            transform: "scale(1.05)",
+            opacity: "0.85"
+          }
         }
       },
       animation: {
@@ -245,7 +255,8 @@ export default {
         "breathe-out": "breathe-out 4s ease-in-out forwards",
         "float": "float 4s ease-in-out infinite",
         "glow-pulse": "glow-pulse 2s ease-in-out infinite",
-        "grow": "grow 4s ease-out forwards"
+        "grow": "grow 4s ease-out forwards",
+        "pulse-soft": "pulse-soft 3s ease-in-out infinite"
       },
     },
   },

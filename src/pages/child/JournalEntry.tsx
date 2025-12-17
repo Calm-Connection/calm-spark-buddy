@@ -399,13 +399,13 @@ export default function JournalEntry() {
           {!selectedMood && (
             <div className="space-y-3">
               <Label>How are you feeling today?</Label>
-              <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
+              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
                 {emotionalIcons.map((icon) => (
                   <button
                     key={icon.id}
                     type="button"
                     onClick={() => setMood(icon.id as MoodType)}
-                    className={`flex flex-col items-center gap-1 p-2 rounded-xl transition-all ${
+                    className={`flex flex-col items-center gap-1 p-2 rounded-xl transition-all min-w-0 ${
                       mood === icon.id 
                         ? 'bg-primary/20 ring-2 ring-primary scale-105' 
                         : 'bg-muted/50 hover:bg-muted'

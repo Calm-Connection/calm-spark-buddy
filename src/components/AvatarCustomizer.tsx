@@ -34,6 +34,14 @@ export function AvatarCustomizer({ open, onOpenChange, currentAvatar, onAvatarUp
     { id: 'flower', emoji: '🌸', label: 'Flower' },
     { id: 'tree', emoji: '🌳', label: 'Tree' },
     { id: 'sun', emoji: '☀️', label: 'Sun' },
+    { id: 'balloon', emoji: '🎈', label: 'Balloon' },
+    { id: 'butterfly', emoji: '🦋', label: 'Butterfly' },
+    { id: 'sunflower', emoji: '🌻', label: 'Sunflower' },
+    { id: 'apple', emoji: '🍎', label: 'Apple' },
+    { id: 'palette', emoji: '🎨', label: 'Palette' },
+    { id: 'music', emoji: '🎵', label: 'Music' },
+    { id: 'books', emoji: '📚', label: 'Books' },
+    { id: 'puzzle', emoji: '🧩', label: 'Puzzle' },
   ];
   
   useEffect(() => {
