@@ -233,7 +233,7 @@ export default function CarerHome() {
               </Card>}
 
             {/* Wendy's Wellbeing Overview - Supporting Your Child */}
-            {latestInsight && <Card className={`p-4 sm:p-6 bg-gradient-to-br ${getMoodColor(latestInsight.mood_score)}`}>
+            {latestInsight && <Card className={`p-4 sm:p-6 bg-gradient-to-br border border-border/30 ${getMoodColor(latestInsight.mood_score)}`}>
                 <div className="flex flex-col sm:flex-row items-start gap-3 sm:gap-4">
                   <WendyAvatar size="md" className="mx-auto sm:mx-0" />
                   <div className="flex-1 space-y-3 w-full">
@@ -267,7 +267,7 @@ export default function CarerHome() {
               </Card>}
 
             {/* The Week with Wendy - Understanding Your Child */}
-            {latestInsight && moodTrend.length > 0 && <Card className="p-6 bg-gradient-to-br from-primary/5 to-accent/5 border-primary/20">
+            {latestInsight && moodTrend.length > 0 && <Card className="p-6 bg-gradient-to-br from-primary/5 to-accent/5 border border-border/30">
                 <div className="space-y-4">
                   {/* Header */}
                   <div className="flex items-center gap-2">
@@ -358,7 +358,7 @@ export default function CarerHome() {
               </Card>}
 
             {/* Mood Tracker */}
-            {moodTrend.length > 0 && <Card className="p-6">
+            {moodTrend.length > 0 && <Card className="p-6 border border-border/30">
                 <div className="flex items-center gap-2 mb-4">
                   <TrendingUp className="h-5 w-5 text-primary" />
                   <h3 className="font-bold">Emotional Trend (Last 7 Days)</h3>

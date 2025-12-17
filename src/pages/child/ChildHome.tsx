@@ -297,7 +297,7 @@ export default function ChildHome() {
             <AvatarDisplay avatarData={avatarData} size="lg" className="mx-auto" />
             <div>
               <h1 className="text-3xl font-bold">Hello, {nickname || 'Friend'}! 👋</h1>
-              <Card className="p-4 bg-gradient-to-br from-accent/30 to-warm/30 border-0 mt-3">
+              <Card className="p-4 bg-gradient-to-br from-accent/30 to-warm/30 border border-border/40 backdrop-blur-sm mt-3">
                 <p className="text-lg font-medium">{affirmation}</p>
               </Card>
             </div>
@@ -306,14 +306,14 @@ export default function ChildHome() {
 
         {/* Achievements Preview */}
         {achievements.length > 0 && (
-          <div className="flex items-center justify-center gap-3 px-2">
+          <div className="flex items-center justify-center gap-4 px-2">
             {achievements.map((achievement) => {
               const isEarned = userAchievements.some(ua => ua.achievement_id === achievement.id);
               return (
                 <button
                   key={achievement.id}
                   onClick={() => navigate('/child/achievements')}
-                  className={`text-4xl transition-all hover:scale-110 ${!isEarned ? 'grayscale opacity-40' : ''}`}
+                  className={`text-4xl p-2 rounded-xl transition-all hover:scale-110 ${!isEarned ? 'grayscale opacity-40' : 'animate-pulse-soft'}`}
                   title={achievement.name}
                 >
                   {achievement.icon}
@@ -365,48 +365,48 @@ export default function ChildHome() {
               </TabsList>
 
               <TabsContent value="positive" className="mt-0">
-                <div className="grid grid-cols-4 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   {presetMoods.positive.map((mood) => (
                     <Button
                       key={mood.id}
                       variant="outline"
                       onClick={() => handleMoodSelect(mood.id)}
-                      className="h-auto flex flex-col items-center gap-2 p-3 hover:scale-105 transition-transform"
+                      className="h-auto flex flex-col items-center gap-2 p-3 hover:scale-105 transition-transform min-w-0"
                     >
                       <MoodIcon moodId={mood.id} size="sm" />
-                    <span className="text-xs text-foreground">{mood.label}</span>
+                      <span className="text-xs text-foreground truncate w-full text-center">{mood.label}</span>
                     </Button>
                   ))}
                 </div>
               </TabsContent>
 
               <TabsContent value="neutral" className="mt-0">
-                <div className="grid grid-cols-4 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   {presetMoods.neutral.map((mood) => (
                     <Button
                       key={mood.id}
                       variant="outline"
                       onClick={() => handleMoodSelect(mood.id)}
-                      className="h-auto flex flex-col items-center gap-2 p-3 hover:scale-105 transition-transform"
+                      className="h-auto flex flex-col items-center gap-2 p-3 hover:scale-105 transition-transform min-w-0"
                     >
                       <MoodIcon moodId={mood.id} size="sm" />
-                    <span className="text-xs text-foreground">{mood.label}</span>
+                      <span className="text-xs text-foreground truncate w-full text-center">{mood.label}</span>
                     </Button>
                   ))}
                 </div>
               </TabsContent>
 
               <TabsContent value="challenging" className="mt-0">
-                <div className="grid grid-cols-4 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   {presetMoods.challenging.map((mood) => (
                     <Button
                       key={mood.id}
                       variant="outline"
                       onClick={() => handleMoodSelect(mood.id)}
-                      className="h-auto flex flex-col items-center gap-2 p-3 hover:scale-105 transition-transform"
+                      className="h-auto flex flex-col items-center gap-2 p-3 hover:scale-105 transition-transform min-w-0"
                     >
                       <MoodIcon moodId={mood.id} size="sm" />
-                      <span className="text-xs text-foreground">{mood.label}</span>
+                      <span className="text-xs text-foreground truncate w-full text-center">{mood.label}</span>
                     </Button>
                   ))}
                 </div>
