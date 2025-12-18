@@ -14,11 +14,15 @@ import {
 } from '@/constants/avatarAssets';
 
 interface ObjectAvatarBuilderProps {
-  onAvatarGenerated: (avatarData: any) => void;
+  onAvatarGenerated?: (avatarData: any) => void;
+  onSaveAndContinue?: (avatarData: any) => Promise<void>;
+  buttonLabel?: string;
 }
 
 export function ObjectAvatarBuilder({
   onAvatarGenerated,
+  onSaveAndContinue,
+  buttonLabel = 'Save Avatar & Continue',
 }: ObjectAvatarBuilderProps) {
   const [objectType, setObjectType] = useState('teddyBear');
   const [mainColor, setMainColor] = useState('pink');
@@ -49,8 +53,7 @@ export function ObjectAvatarBuilder({
 
       if (error) throw error;
 
-      // Immediately call onAvatarGenerated - parent handles save & navigation
-      onAvatarGenerated({
+      const avatarData = {
         type: 'object_avatar',
         imageUrl: data.imageUrl,
         objectData: {
@@ -62,9 +65,16 @@ export function ObjectAvatarBuilder({
           accessory,
           comfortItem,
         }
-      });
-      
-      toast.success('Character created & saved!');
+      };
+
+      // If onSaveAndContinue provided, parent handles full save & navigation
+      if (onSaveAndContinue) {
+        await onSaveAndContinue(avatarData);
+      } else if (onAvatarGenerated) {
+        // Legacy: just notify parent
+        onAvatarGenerated(avatarData);
+        toast.success('Character created!');
+      }
     } catch (error: any) {
       console.error('Character generation error:', error);
       if (error.message?.includes('429')) {
@@ -270,7 +280,7 @@ export function ObjectAvatarBuilder({
           ) : (
             <>
               <Sparkles className="mr-2 h-5 w-5" />
-              Save Avatar & Continue
+              {buttonLabel}
             </>
           )}
         </Button>
