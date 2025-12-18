@@ -522,6 +522,10 @@ export default function JournalEntry() {
             </TabsContent>
           </Tabs>
 
+        </Card>
+
+        {/* Sticky Save Button */}
+        <div className="sticky bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border/30 p-4 -mx-6 mt-4 space-y-3">
           {childProfile?.linked_carer_id && (
             <div className="flex items-start space-x-2">
               <Checkbox
@@ -535,26 +539,24 @@ export default function JournalEntry() {
             </div>
           )}
 
-          <div className="flex gap-3">
-            <Button
-              onClick={handleSave}
-              disabled={loading || (inputMode === 'write' && !entryText.trim()) || (inputMode === 'voice' && !audioBlob) || (inputMode === 'draw' && !drawingData)}
-              className="flex-1 bg-secondary hover:bg-secondary/90"
-            >
-              {loading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Saving...
-                </>
-              ) : (
-                <>
-                  <Sparkles className="mr-2 h-4 w-4" />
-                  Save Entry
-                </>
-              )}
-            </Button>
-          </div>
-        </Card>
+          <Button
+            onClick={handleSave}
+            disabled={loading || (inputMode === 'write' && !entryText.trim()) || (inputMode === 'voice' && !audioBlob) || (inputMode === 'draw' && !drawingData)}
+            className="w-full bg-secondary hover:bg-secondary/90 py-6 text-lg"
+          >
+            {loading ? (
+              <>
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                Saving...
+              </>
+            ) : (
+              <>
+                <Sparkles className="mr-2 h-5 w-5" />
+                Save Entry
+              </>
+            )}
+          </Button>
+        </div>
       </div>
 
       <INeedHelpButton />
