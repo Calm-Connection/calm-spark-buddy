@@ -1,13 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { ObjectAvatarBuilder } from '@/components/children/ObjectAvatarBuilder';
-
-import { Loader2 } from 'lucide-react';
-import { useContentModeration } from '@/hooks/useContentModeration';
 
 interface AvatarCustomizerProps {
   open: boolean;
@@ -20,9 +17,7 @@ interface AvatarCustomizerProps {
 export function AvatarCustomizer({ open, onOpenChange, currentAvatar, onAvatarUpdate, context = 'settings' }: AvatarCustomizerProps) {
   const { user, userRole } = useAuth();
   const { toast } = useToast();
-  const { moderateContent } = useContentModeration();
   const [loading, setLoading] = useState(false);
-  const [newAvatarData, setNewAvatarData] = useState<any>(null);
 
   // Object-based avatars for carers (matching PickAvatar)
   const carerAvatarObjects = [
@@ -43,17 +38,6 @@ export function AvatarCustomizer({ open, onOpenChange, currentAvatar, onAvatarUp
     { id: 'books', emoji: '📚', label: 'Books' },
     { id: 'puzzle', emoji: '🧩', label: 'Puzzle' },
   ];
-  
-  useEffect(() => {
-    if (open) {
-      setNewAvatarData(null);
-    }
-  }, [open]);
-
-  const handleAvatarGenerated = async (data: any) => {
-    console.log('Avatar generated in customizer:', data);
-    setNewAvatarData(data);
-  };
 
   const updateAvatarHistory = async (avatarData: any) => {
     if (!user) return;
@@ -96,20 +80,20 @@ export function AvatarCustomizer({ open, onOpenChange, currentAvatar, onAvatarUp
     }
   };
 
-  const handleSaveAvatar = async () => {
-    if (!user || !newAvatarData) return;
+  // Single handler for child: generate → save → close modal (all in one click)
+  const handleSaveAndContinue = async (avatarData: any) => {
+    if (!user) return;
     
-    setLoading(true);
     try {
       const table = userRole === 'child' ? 'children_profiles' : 'carer_profiles';
       
       // IMMEDIATE optimistic update
-      onAvatarUpdate(newAvatarData);
+      onAvatarUpdate(avatarData);
       
       // Update profile - critical operation
       const { error: profileError } = await supabase
         .from(table)
-        .update({ avatar_json: newAvatarData })
+        .update({ avatar_json: avatarData })
         .eq('user_id', user.id);
 
       if (profileError) {
@@ -125,7 +109,7 @@ export function AvatarCustomizer({ open, onOpenChange, currentAvatar, onAvatarUp
       onOpenChange(false);
       
       // Handle history in background (non-blocking)
-      updateAvatarHistory(newAvatarData);
+      updateAvatarHistory(avatarData);
       
     } catch (error) {
       console.error('Error saving avatar:', error);
@@ -134,8 +118,7 @@ export function AvatarCustomizer({ open, onOpenChange, currentAvatar, onAvatarUp
         description: 'Failed to update avatar',
         variant: 'destructive',
       });
-    } finally {
-      setLoading(false);
+      throw error; // Re-throw so ObjectAvatarBuilder knows it failed
     }
   };
 
@@ -184,29 +167,10 @@ export function AvatarCustomizer({ open, onOpenChange, currentAvatar, onAvatarUp
 
         {userRole === 'child' ? (
           <div className="py-4">
-                <ObjectAvatarBuilder
-                  onAvatarGenerated={handleAvatarGenerated}
-                />
-            
-            {newAvatarData && (
-              <div className="mt-6">
-                <Button 
-                  onClick={handleSaveAvatar}
-                  disabled={loading}
-                  className="w-full"
-                  size="lg"
-                >
-                  {loading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Saving...
-                    </>
-                  ) : (
-                    'Save Avatar'
-                  )}
-                </Button>
-              </div>
-            )}
+            <ObjectAvatarBuilder
+              onSaveAndContinue={handleSaveAndContinue}
+              buttonLabel="Save Avatar"
+            />
           </div>
         ) : (
           <div className="py-4">

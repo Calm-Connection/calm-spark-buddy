@@ -1,6 +1,4 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { PageLayout } from '@/components/PageLayout';
 import { supabase } from '@/integrations/supabase/client';
@@ -9,33 +7,17 @@ import { useToast } from '@/hooks/use-toast';
 import { ObjectAvatarBuilder } from '@/components/children/ObjectAvatarBuilder';
 
 export default function CreateAvatarEnhanced() {
-  const [loading, setLoading] = useState(false);
-  const [avatarData, setAvatarData] = useState<any>(null);
   const navigate = useNavigate();
   const { user } = useAuth();
   const { toast } = useToast();
 
-  const handleAvatarGenerated = (data: any) => {
-    setAvatarData(data);
-  };
-
-  const handleSave = async () => {
-    if (!user || !avatarData) {
-      toast({
-        title: 'Oops',
-        description: 'Let\'s create your character first',
-        variant: 'destructive'
-      });
-      return;
-    }
+  // Single handler: generate → save → navigate (all in one click)
+  const handleSaveAndContinue = async (avatarData: any) => {
+    if (!user) return;
     
-    setLoading(true);
     try {
-      // Optimistic feedback
-      toast({ title: 'Just a moment...', duration: 1000 });
-      
       // Parallel operations for speed
-      const [profileUpdate, historyInsert] = await Promise.all([
+      const [profileUpdate] = await Promise.all([
         supabase
           .from('children_profiles')
           .update({ avatar_json: avatarData })
@@ -65,8 +47,7 @@ export default function CreateAvatarEnhanced() {
         description: 'Something didn\'t work quite right. Let\'s try again.',
         variant: 'destructive'
       });
-    } finally {
-      setLoading(false);
+      throw error; // Re-throw so ObjectAvatarBuilder knows it failed
     }
   };
 
@@ -82,18 +63,8 @@ export default function CreateAvatarEnhanced() {
           </div>
 
           <ObjectAvatarBuilder 
-            onAvatarGenerated={handleAvatarGenerated}
+            onSaveAndContinue={handleSaveAndContinue}
           />
-          
-          <Button 
-            onClick={handleSave}
-            variant="gradient"
-            size="lg"
-            className="w-full"
-            disabled={loading || !avatarData}
-          >
-            {loading ? 'Saving...' : 'Save Avatar & Continue'}
-          </Button>
         </CardContent>
       </Card>
     </PageLayout>
