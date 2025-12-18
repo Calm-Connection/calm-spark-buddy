@@ -1,12 +1,14 @@
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+import { useMemo } from 'react';
 
 interface AchievementBadgeProps {
   icon: string;
   name: string;
   description: string;
   earned?: boolean;
+  earnedAt?: string;
   progress?: number;
   requirementCount?: number;
   className?: string;
@@ -17,10 +19,19 @@ export function AchievementBadge({
   name,
   description,
   earned = false,
+  earnedAt,
   progress = 0,
   requirementCount = 1,
   className,
 }: AchievementBadgeProps) {
+  // Check if badge was earned recently (within last 5 seconds) for entrance animation
+  const isNewlyEarned = useMemo(() => {
+    if (!earned || !earnedAt) return false;
+    const earnedTime = new Date(earnedAt).getTime();
+    const now = Date.now();
+    return now - earnedTime < 5000; // 5 seconds
+  }, [earned, earnedAt]);
+
   return (
     <Card
       className={cn(
@@ -28,13 +39,15 @@ export function AchievementBadge({
         earned
           ? 'bg-gradient-to-br from-accent/30 to-primary/20 border-primary/30'
           : 'bg-muted/50 opacity-60',
+        isNewlyEarned && 'animate-scale-in',
         className
       )}
     >
       <div className="flex items-start gap-3">
         <div className={cn(
-          'text-4xl',
-          !earned && 'grayscale opacity-50'
+          'text-4xl transition-all',
+          !earned && 'grayscale opacity-50',
+          isNewlyEarned && 'animate-pulse-soft'
         )}>
           {icon}
         </div>

@@ -30,7 +30,7 @@ export function ObjectAvatarBuilder({
   const [generating, setGenerating] = useState(false);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
 
-  const handleGenerate = async () => {
+  const handleSaveAndContinue = async () => {
     setGenerating(true);
     try {
       const objectData = {
@@ -49,8 +49,22 @@ export function ObjectAvatarBuilder({
 
       if (error) throw error;
 
-      setGeneratedImage(data.imageUrl);
-      toast.success('Your character is ready!');
+      // Immediately call onAvatarGenerated - parent handles save & navigation
+      onAvatarGenerated({
+        type: 'object_avatar',
+        imageUrl: data.imageUrl,
+        objectData: {
+          objectType,
+          mainColor,
+          accentColor,
+          eyeStyle,
+          eyeColor,
+          accessory,
+          comfortItem,
+        }
+      });
+      
+      toast.success('Character created & saved!');
     } catch (error: any) {
       console.error('Character generation error:', error);
       if (error.message?.includes('429')) {
@@ -62,25 +76,6 @@ export function ObjectAvatarBuilder({
       }
     } finally {
       setGenerating(false);
-    }
-  };
-
-  const handleUseAvatar = () => {
-    if (generatedImage) {
-      onAvatarGenerated({
-        type: 'object_avatar',
-        imageUrl: generatedImage,
-        objectData: {
-          objectType,
-          mainColor,
-          accentColor,
-          eyeStyle,
-          eyeColor,
-          accessory,
-          comfortItem,
-        }
-      });
-      toast.success('Character saved!', { duration: 1500 });
     }
   };
 
@@ -109,29 +104,11 @@ export function ObjectAvatarBuilder({
       </Card>
 
       <p className="text-xs text-center text-muted-foreground px-2">
-        This is just a list of what you've chosen. Your actual avatar will be created when you press Create Avatar at the bottom.
+        This is a preview. Your actual avatar will be created when you tap the button below.
       </p>
 
-      {generatedImage ? (
-        <div className="space-y-4">
-          <Card className="p-4 sm:p-6">
-            <img
-              src={generatedImage}
-              alt="Generated character"
-              className="w-full max-w-sm mx-auto rounded-2xl"
-            />
-          </Card>
-          <div className="flex gap-3">
-            <Button onClick={() => setGeneratedImage(null)} variant="outline" className="flex-1">
-              Try Again
-            </Button>
-            <Button onClick={handleUseAvatar} className="flex-1">
-              Use This Character
-            </Button>
-          </div>
-        </div>
-      ) : (
-        <div className="space-y-4">
+      {/* Single flow - no intermediate state */}
+      <div className="space-y-4">
           {/* Step 1: Choose Object */}
           <Card className="p-3 sm:p-4">
             <h3 className="font-bold mb-3 text-sm sm:text-base">1. Choose Your Character</h3>
@@ -278,27 +255,26 @@ export function ObjectAvatarBuilder({
             </div>
           </Card>
 
-          {/* Generate Button */}
-          <Button
-            onClick={handleGenerate}
-            disabled={generating}
-            size="lg"
-            className="w-full"
-          >
-            {generating ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Creating Character...
-              </>
-            ) : (
-              <>
-                <Sparkles className="mr-2 h-4 w-4" />
-                Create My Character
-              </>
-            )}
-          </Button>
-        </div>
-      )}
+        {/* Single Save & Continue Button */}
+        <Button
+          onClick={handleSaveAndContinue}
+          disabled={generating}
+          size="lg"
+          className="w-full py-6 text-lg"
+        >
+          {generating ? (
+            <>
+              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+              Creating & Saving...
+            </>
+          ) : (
+            <>
+              <Sparkles className="mr-2 h-5 w-5" />
+              Save Avatar & Continue
+            </>
+          )}
+        </Button>
+      </div>
     </div>
   );
 }
