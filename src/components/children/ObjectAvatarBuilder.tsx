@@ -114,7 +114,7 @@ export function ObjectAvatarBuilder({
       </Card>
 
       <p className="text-xs text-center text-muted-foreground px-2">
-        This is a preview. Your actual avatar will be created when you tap the button below.
+        This is just a list of what you chose. Your actual avatar will be created when you press 'Save Avatar & Continue'.
       </p>
 
       {/* Single flow - no intermediate state */}

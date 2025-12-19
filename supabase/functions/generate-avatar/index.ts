@@ -64,12 +64,17 @@ serve(async (req) => {
       finalPrompt = `Create a young child-friendly Disney/Pixar-style ${objectDescriptions[objectType] || 'cute character'}.
 
 COLOR INSTRUCTIONS - FOLLOW PRECISELY:
-- The character's primary FUR/BODY/SURFACE should be ${mainColor} color
-- Add ${accentColor} ONLY as small accent details (like belly, inner ears, small highlights, or decorative elements)
-- KEEP the character's basic SHAPE, STRUCTURE, and PROPORTIONS consistent with a typical ${objectDescriptions[objectType]}
-- Eyes MUST be ${eyeColor} in ${eyeStyle} style - DO NOT change eye color based on body colors
-- DO NOT recolor the entire character - only apply colors to the body/surface layer
-- Background should be soft pastel gradient - DO NOT use character colors for background
+- The character's BODY/FUR/MAIN SURFACE ONLY should be ${mainColor} color
+- Add ${accentColor} ONLY to small accent details (belly patch, inner ears, small decorative elements - maximum 10% of character)
+- KEEP ALL OTHER PARTS THEIR NATURAL COLORS:
+  - Eyes MUST be ${eyeColor} in ${eyeStyle} style - NEVER change eye color based on body colors
+  - Nose should be natural/darker shade (brown, black, or pink)
+  - Background should be soft pastel gradient - NEVER match character colors
+- DO NOT apply mainColor or accentColor to:
+  - Eyes, eyebrows, or facial features
+  - The background or environment
+  - Any accessories (unless the accessory is specifically meant to match)
+- MAINTAIN the character's recognizable shape and features
 
 Features:
 ${accessory !== 'none' ? `Wearing or with: ${accessory}` : ''}
