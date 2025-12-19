@@ -622,6 +622,22 @@ textarea {
   outline-offset: 2px;
 }
 
+/* Remove extraneous borders from non-interactive elements in high contrast */
+.high-contrast .card,
+.high-contrast [class*="border"]:not(input):not(select):not(textarea):not(button):not([role="switch"]):not([role="checkbox"]) {
+  border-color: transparent !important;
+}
+
+/* Keep borders only on form elements and interactive components */
+.high-contrast input,
+.high-contrast select,
+.high-contrast textarea,
+.high-contrast button,
+.high-contrast [role="switch"],
+.high-contrast [role="checkbox"] {
+  border-color: hsl(var(--border)) !important;
+}
+
 /* Dark mode high contrast - Enhanced */
 .high-contrast-dark {
   --background: 0 0% 0%;
@@ -649,6 +665,22 @@ textarea {
 .high-contrast-dark textarea:focus {
   outline: 3px solid hsl(220 100% 60%) !important;
   outline-offset: 2px;
+}
+
+/* Remove extraneous borders from non-interactive elements in dark high contrast */
+.high-contrast-dark .card,
+.high-contrast-dark [class*="border"]:not(input):not(select):not(textarea):not(button):not([role="switch"]):not([role="checkbox"]) {
+  border-color: transparent !important;
+}
+
+/* Keep borders only on form elements and interactive components in dark high contrast */
+.high-contrast-dark input,
+.high-contrast-dark select,
+.high-contrast-dark textarea,
+.high-contrast-dark button,
+.high-contrast-dark [role="switch"],
+.high-contrast-dark [role="checkbox"] {
+  border-color: hsl(var(--border)) !important;
 }
 
 /* Calm mode - reduces animations and visual effects */

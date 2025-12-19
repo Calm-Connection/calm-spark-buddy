@@ -74,33 +74,21 @@ export function AccessibilityDialog() {
             />
           </div>
 
-          {/* Reduce Motion */}
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5 flex-1">
-              <Label htmlFor="reduce-motion">Reduce Motion</Label>
-              <p className="text-sm text-muted-foreground">
-                Turns off animations including background effects
-              </p>
-            </div>
-            <Switch
-              id="reduce-motion"
-              checked={settings.reduceMotion}
-              onCheckedChange={(checked) => updateSetting('reduceMotion', checked)}
-            />
-          </div>
-
-          {/* Calm Mode */}
+          {/* Calm Mode (includes reduced motion) */}
           <div className="flex items-center justify-between">
             <div className="space-y-0.5 flex-1">
               <Label htmlFor="calm-mode">Calm Mode</Label>
               <p className="text-sm text-muted-foreground">
-                Slows down animations for a gentler experience
+                Reduces animations and movement for a calmer experience
               </p>
             </div>
             <Switch
               id="calm-mode"
               checked={settings.calmMode}
-              onCheckedChange={(checked) => updateSetting('calmMode', checked)}
+              onCheckedChange={(checked) => {
+                updateSetting('calmMode', checked);
+                updateSetting('reduceMotion', checked);
+              }}
             />
           </div>
         </div>
