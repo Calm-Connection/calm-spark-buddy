@@ -538,29 +538,29 @@ export default function Settings() {
             Display Mode
           </h3>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-3">
             <Button
               variant={theme === 'light' ? 'default' : 'outline'}
               onClick={() => setTheme('light')}
-              className="w-full justify-start overflow-hidden min-h-[3rem]"
+              className="w-full justify-start min-h-[3.5rem] px-3"
             >
-              <Sun className="mr-2 h-5 w-5 flex-shrink-0" />
-              <span className="text-left truncate">
-                Light Mode
-                <span className="block text-xs opacity-70 mt-0.5">Bright & Cheerful</span>
-              </span>
+              <Sun className="h-5 w-5 flex-shrink-0 mr-2" />
+              <div className="flex flex-col items-start min-w-0">
+                <span className="text-sm font-medium whitespace-nowrap">Light</span>
+                <span className="text-xs opacity-70 whitespace-nowrap">Bright & Cheerful</span>
+              </div>
             </Button>
             
             <Button
               variant={theme === 'dark' ? 'default' : 'outline'}
               onClick={() => setTheme('dark')}
-              className="w-full justify-start overflow-hidden min-h-[3rem]"
+              className="w-full justify-start min-h-[3.5rem] px-3"
             >
-              <Moon className="mr-2 h-5 w-5 flex-shrink-0" />
-              <span className="text-left truncate">
-                Dark Mode
-                <span className="block text-xs opacity-70 mt-0.5">Calm & Cozy</span>
-              </span>
+              <Moon className="h-5 w-5 flex-shrink-0 mr-2" />
+              <div className="flex flex-col items-start min-w-0">
+                <span className="text-sm font-medium whitespace-nowrap">Dark</span>
+                <span className="text-xs opacity-70 whitespace-nowrap">Calm & Cozy</span>
+              </div>
             </Button>
           </div>
           
