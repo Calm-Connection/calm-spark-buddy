@@ -95,6 +95,7 @@ export function ChildAchievements() {
                 name={achievement.name}
                 description={achievement.description}
                 earned={!!earned}
+                earnedAt={userAch?.earned_at}
                 progress={userAch?.progress || 0}
                 requirementCount={achievement.requirement_count}
               />

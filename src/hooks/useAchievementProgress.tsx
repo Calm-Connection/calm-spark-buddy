@@ -157,7 +157,10 @@ export function useAchievementProgress(userId: string | undefined, childProfileI
           if (existingAchievement) {
             await supabase
               .from('user_achievements')
-              .update({ progress: currentProgress })
+              .update({ 
+                progress: currentProgress,
+                earned_at: new Date().toISOString()
+              })
               .eq('id', existingAchievement.id);
           } else {
             await supabase
@@ -166,6 +169,7 @@ export function useAchievementProgress(userId: string | undefined, childProfileI
                 user_id: userId,
                 achievement_id: achievement.id,
                 progress: currentProgress,
+                earned_at: new Date().toISOString()
               });
           }
 

@@ -235,6 +235,16 @@ export default {
             transform: "scale(1.05)",
             opacity: "0.85"
           }
+        },
+        "scale-in": {
+          "0%": { 
+            transform: "scale(0.8)",
+            opacity: "0"
+          },
+          "100%": { 
+            transform: "scale(1)",
+            opacity: "1"
+          }
         }
       },
       animation: {
@@ -256,7 +266,8 @@ export default {
         "float": "float 4s ease-in-out infinite",
         "glow-pulse": "glow-pulse 2s ease-in-out infinite",
         "grow": "grow 4s ease-out forwards",
-        "pulse-soft": "pulse-soft 3s ease-in-out infinite"
+        "pulse-soft": "pulse-soft 3s ease-in-out infinite",
+        "scale-in": "scale-in 0.3s ease-out forwards"
       },
     },
   },
