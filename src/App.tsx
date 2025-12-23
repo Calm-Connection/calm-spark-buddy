@@ -63,6 +63,7 @@ import ChildNotificationSettingsPage from "./pages/child/NotificationSettingsPag
 // Carer pages
 import CarerHome from "./pages/carer/CarerHome";
 import PickAvatar from "./pages/carer/PickAvatar";
+import ParentOnboarding from "./pages/carer/ParentOnboarding";
 import InviteCode from "./pages/carer/InviteCode";
 import CarerInsights from "./pages/carer/CarerInsights";
 import CarerResources from "./pages/carer/CarerResources";
@@ -184,6 +185,7 @@ function AppRoutes() {
       {/* Carer routes - protected */}
       <Route path="/carer/home" element={<ProtectedRoute role="carer"><CarerHome /></ProtectedRoute>} />
       <Route path="/carer/pick-avatar" element={<ProtectedRoute role="carer"><PickAvatar /></ProtectedRoute>} />
+      <Route path="/carer/parent-onboarding" element={<ProtectedRoute role="carer"><ParentOnboarding /></ProtectedRoute>} />
       <Route path="/carer/invite-code" element={<ProtectedRoute role="carer"><InviteCode /></ProtectedRoute>} />
       <Route path="/carer/insights" element={<ProtectedRoute role="carer"><CarerInsights /></ProtectedRoute>} />
       <Route path="/carer/resources" element={<ProtectedRoute role="carer"><CarerResources /></ProtectedRoute>} />
