@@ -86,7 +86,7 @@ export default function PickAvatar() {
         description: 'Let\'s continue with the tour',
       });
 
-      navigate('/quick-tour');
+      navigate('/carer/parent-onboarding');
     } catch (error) {
       console.error('Error saving avatar:', error);
       toast({
@@ -154,7 +154,7 @@ export default function PickAvatar() {
         description: 'Let\'s continue with the tour',
       });
 
-      navigate('/quick-tour');
+      navigate('/carer/parent-onboarding');
     } catch (error) {
       console.error('Error saving avatar:', error);
       toast({
