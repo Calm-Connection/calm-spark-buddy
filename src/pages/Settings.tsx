@@ -288,19 +288,20 @@ export default function Settings() {
   };
 
   return (
-    <div className="min-h-screen bg-background p-6 relative">
+    <div className="min-h-screen bg-background px-4 sm:px-6 py-4 sm:py-6 pb-8 relative">
       <FloatingElements theme={currentTheme} />
       
-      <div className="max-w-2xl mx-auto space-y-6 relative z-10">
+      <div className="max-w-2xl mx-auto space-y-4 sm:space-y-6 relative z-10">
         <div>
           <Button
             variant="ghost"
             onClick={() => navigate(userRole === 'child' ? '/child/home' : '/carer/home')}
+            className="h-10 px-3"
           >
             ← Back
           </Button>
-          <h1 className="text-3xl font-bold mt-2 flex items-center gap-2">
-            <SettingsIcon className="h-8 w-8" />
+          <h1 className="text-2xl sm:text-3xl font-bold mt-2 flex items-center gap-2">
+            <SettingsIcon className="h-7 w-7 sm:h-8 sm:w-8" />
             Settings
           </h1>
         </div>

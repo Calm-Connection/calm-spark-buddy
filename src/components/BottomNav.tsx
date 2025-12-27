@@ -39,8 +39,8 @@ export function BottomNav({ role }: BottomNavProps) {
 
   return (
     <>
-      <nav className="fixed bottom-0 left-0 right-0 bg-background border-t border-border z-50">
-        <div className="max-w-2xl mx-auto px-4 py-2">
+      <nav className="fixed bottom-0 left-0 right-0 bg-background border-t border-border z-50 safe-area-inset-bottom">
+        <div className="max-w-2xl mx-auto px-2 sm:px-4 py-1 sm:py-2">
           <div className="flex justify-around items-center">
           {navItems.map((item, index) => {
               const Icon = item.icon as any;
@@ -51,10 +51,10 @@ export function BottomNav({ role }: BottomNavProps) {
                   <button
                     key={index}
                     onClick={item.action}
-                    className="flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-colors text-destructive hover:bg-destructive/10"
+                    className="flex flex-col items-center justify-center gap-0.5 min-h-[44px] min-w-[44px] px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-colors text-destructive hover:bg-destructive/10"
                   >
                     <Icon className="h-5 w-5" />
-                    <span className="text-xs font-medium">{item.label}</span>
+                    <span className="text-[10px] sm:text-xs font-medium">{item.label}</span>
                   </button>
                 );
               }
@@ -65,8 +65,8 @@ export function BottomNav({ role }: BottomNavProps) {
                   to={item.path!}
                   className={({ isActive }) =>
                     cn(
-                      'flex flex-col items-center gap-0.5 sm:gap-1 rounded-lg transition-colors',
-                      role === 'carer' ? 'px-2 py-1.5 sm:px-3 sm:py-2' : 'px-3 py-2',
+                      'flex flex-col items-center justify-center gap-0.5 min-h-[44px] min-w-[44px] rounded-lg transition-colors',
+                      role === 'carer' ? 'px-1.5 sm:px-3 py-1.5 sm:py-2' : 'px-2 sm:px-3 py-1.5 sm:py-2',
                   isActive
                     ? 'text-foreground bg-secondary/20'
                     : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
@@ -78,7 +78,7 @@ export function BottomNav({ role }: BottomNavProps) {
                   ) : (
                     <Icon className={cn('h-5 w-5', role === 'carer' && 'h-4 w-4 sm:h-5 sm:w-5')} />
                   )}
-                  <span className={cn('text-xs font-medium', role === 'carer' && 'text-[10px] sm:text-xs')}>{item.label}</span>
+                  <span className={cn('text-[10px] sm:text-xs font-medium', role === 'carer' && 'text-[9px] sm:text-xs')}>{item.label}</span>
                 </NavLink>
               );
             })}

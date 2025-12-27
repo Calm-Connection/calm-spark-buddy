@@ -372,19 +372,19 @@ export default function JournalEntry() {
   };
 
   return (
-    <div className="min-h-screen bg-background p-6 pb-24">
-      <div className="max-w-2xl mx-auto space-y-6">
+    <div className="min-h-screen bg-background px-4 sm:px-6 py-4 sm:py-6 pb-24">
+      <div className="max-w-2xl mx-auto space-y-4 sm:space-y-6">
         <div>
-          <Button variant="ghost" onClick={() => navigate(-1)}>
+          <Button variant="ghost" onClick={() => navigate(-1)} className="h-10 px-3">
             ← Back
           </Button>
-          <h1 className="text-3xl font-bold mt-2">Write in Your Journal</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-2xl sm:text-3xl font-bold mt-2">Write in Your Journal</h1>
+          <p className="text-muted-foreground text-sm sm:text-base">
             Share what's on your mind. It's your safe space.
           </p>
         </div>
 
-        <Card className="p-6 space-y-6">
+        <Card className="p-4 sm:p-6 space-y-4 sm:space-y-6">
           {/* Display selected mood icon prominently */}
           {mood && (
             <div className="text-center space-y-2">
@@ -405,10 +405,10 @@ export default function JournalEntry() {
                     key={icon.id}
                     type="button"
                     onClick={() => setMood(icon.id as MoodType)}
-                    className={`flex flex-col items-center gap-1 p-2 rounded-xl transition-all min-w-0 ${
+                    className={`flex flex-col items-center gap-1 p-2 rounded-xl transition-all min-w-0 min-h-[56px] touch-manipulation ${
                       mood === icon.id 
                         ? 'bg-primary/20 ring-2 ring-primary scale-105' 
-                        : 'bg-muted/50 hover:bg-muted'
+                        : 'bg-muted/50 hover:bg-muted active:scale-95'
                     }`}
                   >
                     <MoodIcon moodId={icon.id} size="md" />

@@ -287,7 +287,7 @@ export default function WendyChat() {
       </div>
 
       {/* Input */}
-      <div className="border-t bg-background p-4 pb-6">
+      <div className="border-t bg-background px-4 sm:px-6 py-3 sm:py-4 pb-6 safe-area-inset-bottom">
         <div className="max-w-2xl mx-auto flex gap-2">
           <Input
             value={input}
@@ -295,11 +295,12 @@ export default function WendyChat() {
             onKeyPress={(e) => e.key === 'Enter' && handleSend()}
             placeholder="What's on your mind?"
             disabled={isLoading}
+            className="min-h-[44px]"
           />
           <Button
             onClick={handleSend}
             disabled={isLoading || !input.trim()}
-            className="bg-primary hover:bg-primary/90"
+            className="bg-primary hover:bg-primary/90 h-11 w-11"
             size="icon"
           >
             <Send className="h-4 w-4" />

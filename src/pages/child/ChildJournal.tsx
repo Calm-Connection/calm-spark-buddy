@@ -93,11 +93,11 @@ export default function ChildJournal() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-primary/5 via-accent/10 to-background pb-20 relative">
+    <div className="min-h-screen bg-gradient-to-b from-primary/5 via-accent/10 to-background pb-24 relative">
       <DecorativeIcon icon="leaf" position="top-right" opacity={0.08} />
-      <div className="max-w-2xl mx-auto p-6 space-y-6">
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={() => navigate('/child/home')} className="hover:bg-interactive-accent/10 transition-colors">
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-4 sm:space-y-6">
+        <div className="flex items-center gap-3">
+          <Button variant="ghost" size="icon" onClick={() => navigate('/child/home')} className="h-10 w-10 hover:bg-interactive-accent/10 transition-colors">
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <h1 className="text-2xl font-bold bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">

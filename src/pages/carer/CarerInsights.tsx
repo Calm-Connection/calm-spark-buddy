@@ -124,8 +124,8 @@ export default function CarerInsights() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-primary/10 to-background p-4 sm:p-6 pb-24">
       <div className="max-w-2xl mx-auto space-y-4 sm:space-y-6">
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={() => navigate('/carer/home')}>
+        <div className="flex items-center gap-3">
+          <Button variant="ghost" size="icon" onClick={() => navigate('/carer/home')} className="h-10 w-10">
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <div className="flex-1">
