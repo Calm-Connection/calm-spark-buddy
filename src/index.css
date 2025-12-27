@@ -28,7 +28,7 @@ All colors MUST be HSL.
     --secondary-foreground: 0 0% 10%;
 
     --muted: 255 25% 77%; /* Lavender Gray (#BEB8D1) */
-    --muted-foreground: 0 0% 71%; /* Charcoal Gray (#B4B4B4) */
+    --muted-foreground: 0 0% 45%; /* Improved contrast gray (#737373) - WCAG AA compliant */
 
     --accent: 31 97% 88%; /* Peachy Cream (#FEE0C2) */
     --accent-foreground: 0 0% 10%;
@@ -552,6 +552,24 @@ All colors MUST be HSL.
   .animate-soft-pulse {
     animation: soft-pulse 3.5s ease-in-out infinite;
   }
+}
+
+/* Gradient title visibility enhancement - subtle contrast for light mode */
+.bg-clip-text.text-transparent {
+  filter: drop-shadow(0 1px 1px hsl(0 0% 0% / 0.08));
+}
+
+.dark .bg-clip-text.text-transparent {
+  filter: drop-shadow(0 1px 1px hsl(0 0% 0% / 0.25));
+}
+
+/* Text contrast utility - for replacing opacity-based text */
+.text-secondary-readable {
+  color: hsl(0 0% 40%);
+}
+
+.dark .text-secondary-readable {
+  color: hsl(0 0% 75%);
 }
 
 /* Accessibility Classes */

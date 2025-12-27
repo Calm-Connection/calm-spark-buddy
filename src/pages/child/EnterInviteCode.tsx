@@ -133,7 +133,7 @@ export default function EnterInviteCode() {
               </div>
               <div className="space-y-2">
                 <h1 className="text-2xl font-bold text-foreground">Connected! 🎉</h1>
-                <p className="text-lg text-foreground/70 font-medium">
+                <p className="text-lg text-muted-foreground font-medium">
                   You're now linked with your grown-up
                 </p>
               </div>
@@ -151,7 +151,7 @@ export default function EnterInviteCode() {
                 <h1 className="text-foreground bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
                   Enter Invite Code
                 </h1>
-                <p className="text-lg text-foreground/70 font-medium">
+                <p className="text-lg text-muted-foreground font-medium">
                   Your grown-up should have shared a 6-character code with you
                 </p>
               </div>
@@ -167,7 +167,7 @@ export default function EnterInviteCode() {
                     className="text-center text-3xl font-black tracking-widest"
                     required
                   />
-                  <p className="text-sm text-center text-foreground/60">
+                  <p className="text-sm text-center text-muted-foreground">
                     Enter the 6-character code
                   </p>
                 </div>
