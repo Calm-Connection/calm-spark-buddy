@@ -142,7 +142,7 @@ export default function PickTheme() {
             <h1 className="text-2xl sm:text-3xl md:text-4xl text-foreground bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
               PICK YOUR THEME 🎨
             </h1>
-            <p className="text-base sm:text-lg text-foreground/70 font-medium">
+            <p className="text-base sm:text-lg text-muted-foreground font-medium">
               Choose colors that make you feel happy and calm
             </p>
           </div>

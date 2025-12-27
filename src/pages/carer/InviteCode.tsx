@@ -69,16 +69,16 @@ export default function InviteCode() {
               <DecorativeIcon icon="sparkles" position="top-right" opacity={0.15} />
               <div className="text-center space-y-3">
                 <h1 className="text-foreground bg-gradient-to-r from-interactive-accent to-primary bg-clip-text text-transparent">INVITE CODE</h1>
-                <p className="text-lg text-foreground/70">
+                <p className="text-lg text-muted-foreground">
                   Generate a code to connect with your child
                 </p>
               </div>
 
               <div className="space-y-4">
-                <p className="text-base text-foreground/80">
+                <p className="text-base text-muted-foreground">
                   Generate a unique invite code and share it with your child. They'll enter this code during their signup to connect your accounts.
                 </p>
-                <p className="text-sm text-foreground/60">
+                <p className="text-sm text-muted-foreground">
                   The code expires in 30 days ⏰
                 </p>
               </div>

@@ -54,7 +54,7 @@ export default function Welcome() {
               Welcome 💜
             </h1>
             
-            <p className="text-base md:text-xl text-foreground/80">
+            <p className="text-base md:text-xl text-muted-foreground">
               A gentle, nurturing space where children and carers grow emotionally together
             </p>
           </div>
@@ -70,7 +70,7 @@ export default function Welcome() {
           </Button>
 
           {/* Tagline */}
-          <p className="text-base text-foreground/60">
+          <p className="text-base text-muted-foreground">
             A safe space to share feelings, explore emotions, and connect
           </p>
           </CardContent>

@@ -24,7 +24,7 @@ export default function CreateAvatar() {
         <CardContent className="space-y-10">
           <div className="text-center space-y-3">
             <h1 className="bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">CREATE YOUR AVATAR</h1>
-            <p className="text-lg font-medium text-foreground/70">
+            <p className="text-lg font-medium text-muted-foreground">
               Pick your avatar look!
             </p>
           </div>

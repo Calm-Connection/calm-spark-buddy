@@ -57,7 +57,7 @@ export default function CreateAvatarEnhanced() {
         <CardContent className="space-y-8">
           <div className="text-center space-y-3">
             <h1 className="text-foreground">Create Your Character</h1>
-            <p className="text-lg text-foreground/70">
+            <p className="text-lg text-muted-foreground">
               Design a character that feels like you
             </p>
           </div>

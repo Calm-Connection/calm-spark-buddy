@@ -24,7 +24,7 @@ export default function RoleSelection() {
           <h1 className="text-foreground text-3xl md:text-5xl font-bold bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
             Who's Here Today?
           </h1>
-          <p className="text-base md:text-xl text-foreground/80 font-medium">Choose your role to get started</p>
+          <p className="text-base md:text-xl text-muted-foreground font-medium">Choose your role to get started</p>
         </div>
 
         <Button 
@@ -46,7 +46,7 @@ export default function RoleSelection() {
                 <span className="text-4xl md:text-6xl">👧</span>
               </div>
               <h2 className="text-foreground text-xl md:text-3xl font-semibold">CHILD</h2>
-              <p className="text-foreground/70 text-xs md:text-base leading-relaxed px-2">
+              <p className="text-muted-foreground text-xs md:text-base leading-relaxed px-2">
                 Express your feelings, journal, and chat with Wendy
               </p>
             </CardContent>
@@ -61,7 +61,7 @@ export default function RoleSelection() {
                 <span className="text-4xl md:text-6xl">👨‍👩‍👧</span>
               </div>
               <h2 className="text-foreground text-xl md:text-3xl font-semibold">CARER</h2>
-              <p className="text-foreground/70 text-xs md:text-base leading-relaxed px-2">
+              <p className="text-muted-foreground text-xs md:text-base leading-relaxed px-2">
                 Support, understand, and connect with your child
               </p>
             </CardContent>
@@ -74,7 +74,7 @@ export default function RoleSelection() {
           </Button>
         </div>
 
-        <p className="text-center text-xs md:text-sm text-foreground/60">
+        <p className="text-center text-xs md:text-sm text-muted-foreground">
           A safe space to grow emotionally together 💜
         </p>
         
