@@ -8,6 +8,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { BottomNav } from '@/components/BottomNav';
 import { toast } from 'sonner';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
+import { JournalIntroModal } from '@/components/JournalIntroModal';
+import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -109,6 +111,9 @@ export default function ChildJournal() {
           Write New Entry
         </Button>
 
+        {/* Short journal disclaimer */}
+        <DisclaimerCard variant="journal-short" size="small" />
+
         <div className="space-y-4">
           {entries.length === 0 ? (
             <Card className="p-8 text-center shadow-soft-lg border-interactive-accent/20">
@@ -161,6 +166,9 @@ export default function ChildJournal() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Journal intro modal - shows on first visit */}
+      <JournalIntroModal />
 
       <BottomNav role="child" />
     </div>

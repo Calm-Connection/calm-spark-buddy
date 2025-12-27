@@ -12,6 +12,7 @@ import { Separator } from '@/components/ui/separator';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
 import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
 import { CrisisSupportModal } from '@/components/CrisisSupportModal';
+import { WendyChatIntroModal } from '@/components/WendyChatIntroModal';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -288,23 +289,31 @@ export default function WendyChat() {
 
       {/* Input */}
       <div className="border-t bg-background px-4 sm:px-6 py-3 sm:py-4 pb-6 safe-area-inset-bottom">
-        <div className="max-w-2xl mx-auto flex gap-2">
-          <Input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-            placeholder="What's on your mind?"
-            disabled={isLoading}
-            className="min-h-[44px]"
-          />
-          <Button
-            onClick={handleSend}
-            disabled={isLoading || !input.trim()}
-            className="bg-primary hover:bg-primary/90 h-11 w-11"
-            size="icon"
-          >
-            <Send className="h-4 w-4" />
-          </Button>
+        <div className="max-w-2xl mx-auto space-y-2">
+          {/* Short AI + data privacy disclaimer */}
+          <div className="flex flex-wrap gap-x-3 gap-y-1 justify-center">
+            <DisclaimerCard variant="ai-short" size="small" />
+            <DisclaimerCard variant="data-privacy-short" size="small" />
+          </div>
+          
+          <div className="flex gap-2">
+            <Input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+              placeholder="What's on your mind?"
+              disabled={isLoading}
+              className="min-h-[44px]"
+            />
+            <Button
+              onClick={handleSend}
+              disabled={isLoading || !input.trim()}
+              className="bg-primary hover:bg-primary/90 h-11 w-11"
+              size="icon"
+            >
+              <Send className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -314,6 +323,9 @@ export default function WendyChat() {
         onOpenChange={setShowCrisisModal}
         triggerReason="keywords"
       />
+      
+      {/* AI intro modal - shows on first visit */}
+      <WendyChatIntroModal />
     </div>
   );
 }

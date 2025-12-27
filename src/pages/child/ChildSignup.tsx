@@ -200,6 +200,9 @@ export default function ChildSignup() {
         </form>
 
         <DisclaimerCard variant="privacy-sharing" size="small" className="mt-4" />
+        
+        {/* Crisis disclaimer before account creation */}
+        <DisclaimerCard variant="crisis-full" size="small" className="mt-4" />
 
         <Button 
           variant="ghost" 
