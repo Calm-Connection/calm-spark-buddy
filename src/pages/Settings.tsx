@@ -13,7 +13,8 @@ import { useToast } from '@/hooks/use-toast';
 import { useAccessibility, TextSize, FontFamily } from '@/hooks/useAccessibility';
 import { loadSavedTheme, ThemeName } from '@/hooks/useTheme';
 import { useTheme } from 'next-themes';
-import { Settings as SettingsIcon, User, Save, Palette, Accessibility, MessageSquareWarning, Link as LinkIcon, Edit, Bell, CheckCircle, AlertCircle, Loader2, Sun, Moon, FileText, Lock, Shield, UserX, Download, AlertTriangle } from 'lucide-react';
+import { Settings as SettingsIcon, User, Save, Palette, Accessibility, MessageSquareWarning, Link as LinkIcon, Edit, Bell, CheckCircle, AlertCircle, Loader2, Sun, Moon, FileText, Lock, Shield, UserX, Download, AlertTriangle, Heart } from 'lucide-react';
+import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { AvatarDisplay } from '@/components/AvatarDisplay';
@@ -661,7 +662,38 @@ export default function Settings() {
           </div>
         </Card>
 
-        {/* Support & Reporting */}
+        {/* Help & Safety */}
+        <Card className="p-6">
+          <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+            <Heart className="h-5 w-5" />
+            Help & Safety
+          </h2>
+          <div className="space-y-4">
+            {/* Crisis Support Disclaimer - Full Version */}
+            <DisclaimerCard variant="crisis-full" size="medium" />
+            
+            <div className="space-y-3">
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => navigate(userRole === 'child' ? '/child/safety-note' : '/carer/safeguarding-info')}
+              >
+                <Shield className="h-4 w-4 mr-2" />
+                Safeguarding Information
+              </Button>
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => setReportModalOpen(true)}
+              >
+                <MessageSquareWarning className="h-4 w-4 mr-2" />
+                Report a Concern
+              </Button>
+            </div>
+          </div>
+        </Card>
+
+        {/* Support & Feedback */}
         <Card className="p-6">
           <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
             <MessageSquareWarning className="h-5 w-5" />

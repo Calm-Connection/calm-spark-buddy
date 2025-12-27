@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
+import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
 
 interface Module {
   id: string;
@@ -227,6 +228,9 @@ export default function CarerResources() {
             </div>
           </div>
         </Card>
+
+        {/* Content disclaimer */}
+        <DisclaimerCard variant="content-full" size="small" />
       </div>
 
       <BottomNav role="carer" />

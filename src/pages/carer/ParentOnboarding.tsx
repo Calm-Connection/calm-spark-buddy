@@ -28,15 +28,15 @@ const slides = [
   },
   {
     icon: Users,
-    title: "You're not alone in this",
-    body: "Many parents feel the same way you do right now.\nIt's okay to feel unsure.\nWe're here to walk alongside you — not to tell you what to do.",
-    cta: "Thank you",
+    title: "Your role as carer",
+    body: "Calm Connection is designed to support families in exploring emotions and building resilience.\n\nIt does not replace active parental or carer involvement. Parents and carers remain responsible for their child's wellbeing and are encouraged to regularly check in and support app use.",
+    cta: "I understand",
     colorClass: "text-warm"
   },
   {
     icon: Shield,
     title: "A gentle note before we begin",
-    body: "Calm Connection offers gentle support and calming tools.\nIt's not therapy, and it's not medical advice.\nIf your child is in crisis, please reach out to a professional.",
+    body: "Calm Connection offers gentle support and calming tools.\nIt's not therapy, and it's not medical advice.\n\nIf you or your child are in crisis, feeling unsafe, or struggling to cope, please seek help from a qualified professional immediately.",
     cta: "I understand, let's begin",
     colorClass: "text-interactive-accent"
   }

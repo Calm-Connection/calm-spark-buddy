@@ -13,6 +13,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
 import { logConsent } from '@/lib/consentLogger';
 import { NicknameExplanation } from '@/components/NicknameExplanation';
+import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
 
 export default function CarerSignup() {
   const [nickname, setNickname] = useState('');
@@ -259,6 +260,11 @@ export default function CarerSignup() {
             )}
           </Button>
         </form>
+
+        {/* Crisis disclaimer before account creation */}
+        <div className="mt-4">
+          <DisclaimerCard variant="crisis-full" size="small" />
+        </div>
 
         <div className="text-center">
           <Button 
