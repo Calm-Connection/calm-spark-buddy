@@ -17,6 +17,7 @@ import { SectionTitle } from '@/components/SectionTitle';
 import { toast } from 'sonner';
 import { getEmotionalIconsByCategory } from '@/constants/emotionalIcons';
 import { MoodIcon } from '@/components/MoodIcon';
+import { PageTransition } from '@/components/PageTransition';
 
 // 30+ warm, gentle affirmations following Calm Connection brand voice
 const affirmations = [
@@ -282,6 +283,7 @@ export default function ChildHome() {
 
 
   return (
+    <PageTransition>
     <div className="min-h-screen bg-gradient-to-b from-primary/10 to-background px-4 sm:px-6 py-6 pb-24 relative">
       <FloatingElements theme={currentTheme} />
       <div className="max-w-2xl mx-auto space-y-6 relative z-10">
@@ -471,5 +473,6 @@ export default function ChildHome() {
 
       <BottomNav role="child" />
     </div>
+    </PageTransition>
   );
 }
