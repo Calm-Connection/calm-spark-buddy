@@ -364,7 +364,7 @@ export default function ChildHome() {
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent value="positive" className="mt-0">
+              <TabsContent value="positive" className="mt-0 animate-fade-in">
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   {presetMoods.positive.map((mood) => (
                     <Button
@@ -380,7 +380,7 @@ export default function ChildHome() {
                 </div>
               </TabsContent>
 
-              <TabsContent value="neutral" className="mt-0">
+              <TabsContent value="neutral" className="mt-0 animate-fade-in">
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   {presetMoods.neutral.map((mood) => (
                     <Button
@@ -396,7 +396,7 @@ export default function ChildHome() {
                 </div>
               </TabsContent>
 
-              <TabsContent value="challenging" className="mt-0">
+              <TabsContent value="challenging" className="mt-0 animate-fade-in">
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   {presetMoods.challenging.map((mood) => (
                     <Button

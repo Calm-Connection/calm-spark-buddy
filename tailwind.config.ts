@@ -267,7 +267,11 @@ export default {
         "glow-pulse": "glow-pulse 2s ease-in-out infinite",
         "grow": "grow 4s ease-out forwards",
         "pulse-soft": "pulse-soft 3s ease-in-out infinite",
-        "scale-in": "scale-in 0.3s ease-out forwards"
+        "scale-in": "scale-in 0.3s ease-out forwards",
+        "typing-dot": "typing-dot 1.4s ease-in-out infinite",
+        "fade-up": "fade-up 0.4s ease-out forwards",
+        "breathe-gentle": "breathe-gentle 4s ease-in-out infinite",
+        "fade-in": "fade-in 0.3s ease-out forwards"
       },
     },
   },

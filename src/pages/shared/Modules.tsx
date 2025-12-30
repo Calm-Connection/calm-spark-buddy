@@ -8,6 +8,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { BottomNav } from '@/components/BottomNav';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
+import { useReduceMotion } from '@/hooks/useReduceMotion';
 
 interface Module {
   id: string;
@@ -26,6 +27,7 @@ interface ModuleProgress {
 export default function Modules() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const reduceMotion = useReduceMotion();
   const [modules, setModules] = useState<Module[]>([]);
   const [progress, setProgress] = useState<Record<string, ModuleProgress>>({});
   const [userRole, setUserRole] = useState<'child' | 'carer'>('child');
@@ -111,6 +113,12 @@ export default function Modules() {
     if (!moduleProgress || moduleProgress.total_lessons === 0) return 0;
     return (moduleProgress.completed_lessons / moduleProgress.total_lessons) * 100;
   };
+  // Get stagger class for card animations
+  const getStaggerClass = (index: number) => {
+    if (reduceMotion) return '';
+    const staggerNum = Math.min(index + 1, 8);
+    return `animate-fade-up animate-stagger-${staggerNum}`;
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-primary/10 to-background pb-20">
@@ -135,14 +143,14 @@ export default function Modules() {
           </Card>
         ) : (
           <div className="space-y-4">
-            {modules.map((module) => {
+            {modules.map((module, index) => {
               const progressPercent = getProgressPercentage(module.id);
               const moduleProgress = progress[module.id];
 
               return (
                 <Card
                   key={module.id}
-                  className="relative p-6 cursor-pointer transition-all duration-200 hover:scale-[1.02] hover:shadow-soft-lg bg-gradient-to-br from-primary/5 to-accent/5 border-interactive-accent/20 shadow-soft"
+                  className={`relative p-6 cursor-pointer transition-all duration-200 hover:scale-[1.02] hover:shadow-soft-lg bg-gradient-to-br from-primary/5 to-accent/5 border-interactive-accent/20 shadow-soft ${getStaggerClass(index)}`}
                   onClick={() => navigate(`/${userRole}/modules/${module.id}`)}
                 >
                   <DecorativeIcon icon="sparkles" position="top-right" opacity={0.08} />

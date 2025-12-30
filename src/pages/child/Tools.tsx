@@ -4,6 +4,7 @@ import { Card } from '@/components/ui/card';
 import { ArrowLeft, Wind, Heart, Music, Palette, Sparkles, Home, CloudRain, Snowflake, Bug, Sliders, Hand, Move, CircleDot, Sun, Clock, Bell } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
+import { useReduceMotion } from '@/hooks/useReduceMotion';
 
 const tools = [
   {
@@ -112,6 +113,14 @@ const tools = [
 
 export default function Tools() {
   const navigate = useNavigate();
+  const reduceMotion = useReduceMotion();
+
+  // Get stagger class for card animations
+  const getStaggerClass = (index: number) => {
+    if (reduceMotion) return '';
+    const staggerNum = Math.min(index + 1, 8);
+    return `animate-fade-up animate-stagger-${staggerNum}`;
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-primary/10 via-accent/5 to-background pb-24">
@@ -136,7 +145,7 @@ export default function Tools() {
             return (
               <Card
                 key={tool.title}
-                className="relative overflow-hidden p-4 sm:p-5 cursor-pointer transition-all hover:scale-[1.02] hover:shadow-soft-lg bg-gradient-to-br from-primary/5 via-accent/10 to-secondary/5 border-interactive-accent/20 group"
+                className={`relative overflow-hidden p-4 sm:p-5 cursor-pointer transition-all hover:scale-[1.02] hover:shadow-soft-lg bg-gradient-to-br from-primary/5 via-accent/10 to-secondary/5 border-interactive-accent/20 group ${getStaggerClass(index)}`}
                 onClick={() => navigate(tool.path)}
               >
                 <DecorativeIcon 

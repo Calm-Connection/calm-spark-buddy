@@ -15,6 +15,7 @@ import { TechniqueGuideModal } from '@/components/TechniqueGuideModal';
 import { Checkbox } from '@/components/ui/checkbox';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
 import { MoodIcon } from '@/components/MoodIcon';
+import { SkeletonCard } from '@/components/SkeletonCard';
 
 interface Insight {
   id: string;
@@ -115,8 +116,26 @@ export default function CarerInsights() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-primary/10 to-background">
-        <p className="text-muted-foreground">Loading insights...</p>
+      <div className="min-h-screen bg-gradient-to-b from-primary/10 to-background p-4 sm:p-6 pb-24">
+        <div className="max-w-2xl mx-auto space-y-4 sm:space-y-6">
+          <div className="flex items-center gap-3">
+            <Button variant="ghost" size="icon" onClick={() => navigate('/carer/home')} className="h-10 w-10">
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+            <div className="flex-1">
+              <h1 className="text-3xl font-bold">Emotional Insights 🧠</h1>
+              <p className="text-muted-foreground">Loading insights...</p>
+            </div>
+          </div>
+          
+          {/* Skeleton loading cards */}
+          <div className="space-y-4">
+            <SkeletonCard variant="insight" className="animate-fade-up animate-stagger-1" />
+            <SkeletonCard variant="insight" className="animate-fade-up animate-stagger-2" />
+            <SkeletonCard variant="insight" className="animate-fade-up animate-stagger-3" />
+          </div>
+        </div>
+        <BottomNav role="carer" />
       </div>
     );
   }
