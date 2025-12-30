@@ -20,6 +20,7 @@ import {
 import { BottomNav } from '@/components/BottomNav';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
 import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
+import { PageTransition } from '@/components/PageTransition';
 
 interface Module {
   id: string;
@@ -135,6 +136,7 @@ export default function CarerResources() {
   }
 
   return (
+    <PageTransition>
     <div className="min-h-screen bg-gradient-to-b from-primary/10 to-background p-6 pb-24">
       <div className="max-w-2xl mx-auto space-y-6">
         <div className="flex items-center gap-4">
@@ -235,5 +237,6 @@ export default function CarerResources() {
 
       <BottomNav role="carer" />
     </div>
+    </PageTransition>
   );
 }

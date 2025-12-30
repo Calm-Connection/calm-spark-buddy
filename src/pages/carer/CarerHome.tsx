@@ -15,6 +15,7 @@ import { NotificationBell } from '@/components/NotificationBell';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
 import { SkeletonCard } from '@/components/SkeletonCard';
 import { Skeleton } from '@/components/ui/skeleton';
+import { PageTransition } from '@/components/PageTransition';
 interface MoodData {
   date: string;
   mood_score: number;
@@ -154,7 +155,7 @@ export default function CarerHome() {
     if (score >= 40) return 'from-warm/20 to-accent/10';
     return 'from-dusty-rose/20 to-accent/10';
   };
-  return <div className="min-h-screen bg-gradient-to-b from-primary/10 to-background p-4 sm:p-6 pb-24">
+  return <PageTransition><div className="min-h-screen bg-gradient-to-b from-primary/10 to-background p-4 sm:p-6 pb-24">
       <div className="max-w-2xl mx-auto space-y-4 sm:space-y-6">
         {/* Header */}
         <div className="flex flex-col items-center gap-4 mb-6">
@@ -486,5 +487,5 @@ export default function CarerHome() {
       </div>
 
       <BottomNav role="carer" />
-    </div>;
+    </div></PageTransition>;
 }

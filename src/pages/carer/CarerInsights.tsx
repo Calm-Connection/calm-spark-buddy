@@ -16,6 +16,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
 import { MoodIcon } from '@/components/MoodIcon';
 import { SkeletonCard } from '@/components/SkeletonCard';
+import { PageTransition } from '@/components/PageTransition';
 
 interface Insight {
   id: string;
@@ -141,6 +142,7 @@ export default function CarerInsights() {
   }
 
   return (
+    <PageTransition>
     <div className="min-h-screen bg-gradient-to-b from-primary/10 to-background p-4 sm:p-6 pb-24">
       <div className="max-w-2xl mx-auto space-y-4 sm:space-y-6">
         <div className="flex items-center gap-3">
@@ -336,6 +338,7 @@ export default function CarerInsights() {
       <TechniqueGuideModal open={showTechniqueGuide} onOpenChange={setShowTechniqueGuide} />
       <BottomNav role="carer" />
     </div>
+    </PageTransition>
   );
 }
 
