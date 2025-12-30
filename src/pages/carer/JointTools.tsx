@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ArrowLeft, Heart, MessageCircle, Music, Smile } from 'lucide-react';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
+import { BottomNav } from '@/components/BottomNav';
 
 export default function JointTools() {
   const navigate = useNavigate();
@@ -13,29 +14,33 @@ export default function JointTools() {
       title: 'Gratitude Circle',
       description: 'Take turns sharing three things you\'re grateful for today',
       color: 'bg-primary/20 hover:bg-primary/30 text-primary',
+      path: '/carer/tools/joint/gratitude-circle',
     },
     {
       icon: MessageCircle,
       title: 'Feelings Check-in',
       description: 'Use emotion cards to talk about how you\'re both feeling',
       color: 'bg-accent/30 hover:bg-accent/40 text-accent-foreground',
+      path: '/carer/tools/joint/feelings-checkin',
     },
     {
       icon: Smile,
       title: 'Happy Memory Jar',
       description: 'Write down a happy memory together and add it to your collection',
       color: 'bg-secondary/20 hover:bg-secondary/30 text-secondary',
+      path: '/carer/tools/joint/happy-memory-jar',
     },
     {
       icon: Music,
       title: 'Calm Down Corner',
       description: 'Create a cozy space together with calming activities',
       color: 'bg-warm/30 hover:bg-warm/40 text-foreground',
+      path: '/carer/tools/joint/calm-down-corner',
     },
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-primary/10 to-background p-6">
+    <div className="min-h-screen bg-gradient-to-b from-primary/10 to-background p-6 pb-24">
       <div className="max-w-2xl mx-auto space-y-6">
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="icon" onClick={() => navigate('/carer/home')}>
@@ -61,7 +66,8 @@ export default function JointTools() {
             return (
               <Card
                 key={tool.title}
-                className={`p-6 transition-all duration-200 hover:scale-[1.02] hover:shadow-soft ${tool.color} border-interactive-accent/10`}
+                className={`p-6 transition-all duration-200 hover:scale-[1.02] hover:shadow-soft ${tool.color} border-interactive-accent/10 cursor-pointer`}
+                onClick={() => navigate(tool.path)}
               >
                 <div className="flex items-start gap-4">
                   <Icon className="h-10 w-10 flex-shrink-0 mt-1" />
@@ -84,6 +90,8 @@ export default function JointTools() {
           </p>
         </Card>
       </div>
+
+      <BottomNav role="carer" />
     </div>
   );
 }
