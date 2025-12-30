@@ -13,6 +13,8 @@ import { BottomNav } from '@/components/BottomNav';
 import { format, subDays, startOfDay, endOfDay } from 'date-fns';
 import { NotificationBell } from '@/components/NotificationBell';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
+import { SkeletonCard } from '@/components/SkeletonCard';
+import { Skeleton } from '@/components/ui/skeleton';
 interface MoodData {
   date: string;
   mood_score: number;
@@ -40,6 +42,8 @@ export default function CarerHome() {
   const [suggestedAction, setSuggestedAction] = useState('');
   const [hasNewSharedEntry, setHasNewSharedEntry] = useState(false);
   const [safeguardingAlertCount, setSafeguardingAlertCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  
   // Load theme immediately on mount to prevent flash
   useEffect(() => {
     const savedTheme = loadSavedTheme();
@@ -47,7 +51,7 @@ export default function CarerHome() {
   }, []);
 
   useEffect(() => {
-    loadCarerData();
+    loadCarerData().finally(() => setIsLoading(false));
   }, [user]);
 
   const loadCarerData = async () => {
@@ -163,16 +167,38 @@ export default function CarerHome() {
               </Button>
             </div>
           </div>
-          <AvatarDisplay avatarData={avatarData} size="lg" />
-          <div className="text-center">
-            <h1 className="text-3xl font-bold">Welcome back, {nickname} 🌿</h1>
-            <p className="text-muted-foreground mt-1">
-              {childNickname ? `Supporting ${childNickname}'s wellbeing` : 'Supporting your child\'s emotional journey'}
-            </p>
-          </div>
+          {isLoading ? (
+            <>
+              <Skeleton className="h-24 w-24 rounded-full" />
+              <div className="text-center space-y-2">
+                <Skeleton className="h-8 w-48 mx-auto" />
+                <Skeleton className="h-4 w-64 mx-auto" />
+              </div>
+            </>
+          ) : (
+            <>
+              <AvatarDisplay avatarData={avatarData} size="lg" className="animate-fade-in" />
+              <div className="text-center animate-fade-in">
+                <h1 className="text-3xl font-bold">Welcome back, {nickname} 🌿</h1>
+                <p className="text-muted-foreground mt-1">
+                  {childNickname ? `Supporting ${childNickname}'s wellbeing` : 'Supporting your child\'s emotional journey'}
+                </p>
+              </div>
+            </>
+          )}
         </div>
 
-        {!linkedChildId ? <div className="space-y-4">
+        {isLoading ? (
+          <div className="space-y-4">
+            <SkeletonCard variant="insight" className="animate-stagger-1" />
+            <SkeletonCard variant="insight" className="animate-stagger-2" />
+            <div className="grid grid-cols-3 gap-3">
+              <SkeletonCard variant="stat" className="animate-stagger-3" />
+              <SkeletonCard variant="stat" className="animate-stagger-4" />
+              <SkeletonCard variant="stat" className="animate-stagger-5" />
+            </div>
+          </div>
+        ) : !linkedChildId ? <div className="space-y-4 animate-fade-in">
             {/* Primary CTA - Connect with Child */}
             <Card className="p-8 text-center">
               <Heart className="h-12 w-12 mx-auto mb-4 text-primary" />
@@ -215,7 +241,7 @@ export default function CarerHome() {
                 </Button>
               </div>
             </Card>
-          </div> : <>
+          </div> : <div className="animate-fade-in">
             {/* Notifications Panel */}
             {hasNewSharedEntry && <Card className="p-4 bg-gradient-to-r from-secondary/20 to-primary/20 border-primary/30">
                 <div className="flex items-center gap-3">
@@ -456,7 +482,7 @@ export default function CarerHome() {
                 </div>
               </Button>
             </div>
-          </>}
+          </div>}
       </div>
 
       <BottomNav role="carer" />

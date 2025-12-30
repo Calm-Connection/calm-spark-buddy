@@ -14,7 +14,8 @@ import { DecorativeIcon } from '@/components/DecorativeIcon';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Sparkles, Pencil, Mic, Palette, StopCircle } from 'lucide-react';
+import { Loader2, Sparkles, Pencil, Mic, Palette, StopCircle, Upload, Save } from 'lucide-react';
+import { useReduceMotion } from '@/hooks/useReduceMotion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useNotificationTrigger } from '@/hooks/useNotificationTrigger';
 import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
@@ -552,13 +553,16 @@ export default function JournalEntry() {
             className="w-full bg-secondary hover:bg-secondary/90 py-6 text-lg"
           >
             {loading ? (
-              <div className="flex items-center gap-2">
-                <Loader2 className="h-5 w-5 animate-spin" />
+              <div className="flex items-center gap-2 animate-fade-in" key={savingStage}>
+                {savingStage === 'uploading' && <Upload className="h-5 w-5 animate-pulse" />}
+                {savingStage === 'saving' && <Save className="h-5 w-5 animate-pulse" />}
+                {savingStage === 'analyzing' && <Sparkles className="h-5 w-5 animate-pulse" />}
+                {savingStage === 'idle' && <Loader2 className="h-5 w-5 animate-spin" />}
                 <span>
-                  {savingStage === 'uploading' && 'Uploading voice...'}
-                  {savingStage === 'saving' && 'Saving entry...'}
-                  {savingStage === 'analyzing' && 'Wendy is reading...'}
-                  {savingStage === 'idle' && 'Saving...'}
+                  {savingStage === 'uploading' && 'Uploading your voice note...'}
+                  {savingStage === 'saving' && 'Saving your thoughts...'}
+                  {savingStage === 'analyzing' && 'Wendy is reading your entry...'}
+                  {savingStage === 'idle' && 'Getting ready...'}
                 </span>
               </div>
             ) : (
