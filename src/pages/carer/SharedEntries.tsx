@@ -9,6 +9,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { format } from 'date-fns';
 import { BottomNav } from '@/components/BottomNav';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
+import { PageTransition } from '@/components/PageTransition';
 
 interface SharedEntryWithInsight {
   id: string;
@@ -118,6 +119,7 @@ export default function SharedEntries() {
   };
 
   return (
+    <PageTransition>
     <div className="min-h-screen bg-gradient-to-b from-primary/10 to-background px-4 sm:px-6 py-6 pb-24">
       <div className="max-w-2xl mx-auto space-y-6">
         <div className="flex items-center gap-4">
@@ -216,5 +218,6 @@ export default function SharedEntries() {
 
       <BottomNav role="carer" />
     </div>
+    </PageTransition>
   );
 }
