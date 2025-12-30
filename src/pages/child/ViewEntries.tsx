@@ -94,7 +94,7 @@ export default function ViewEntries() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-primary/5 via-accent/10 to-background p-6 pb-24 relative">
+    <div className="min-h-screen bg-gradient-to-b from-primary/5 via-accent/10 to-background px-4 sm:px-6 py-6 pb-24 relative">
       <DecorativeIcon icon="sparkles" position="top-right" opacity={0.08} />
       <div className="max-w-2xl mx-auto space-y-6">
         <div>

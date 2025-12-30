@@ -122,42 +122,55 @@ export default function Modules() {
           <h1 className="text-2xl font-bold">Learning Modules</h1>
         </div>
 
-        <div className="space-y-4">
-          {modules.map((module) => {
-            const progressPercent = getProgressPercentage(module.id);
-            const moduleProgress = progress[module.id];
+        {modules.length === 0 ? (
+          <Card className="p-12 text-center shadow-soft-lg border-interactive-accent/20">
+            <div className="text-6xl mb-4">📚</div>
+            <h3 className="text-xl font-bold mb-2">No Modules Yet</h3>
+            <p className="text-muted-foreground mb-4">
+              Learning modules will appear here when they become available. Check back soon!
+            </p>
+            <Button variant="outline" onClick={() => navigate(`/${userRole}/home`)}>
+              Back to Home
+            </Button>
+          </Card>
+        ) : (
+          <div className="space-y-4">
+            {modules.map((module) => {
+              const progressPercent = getProgressPercentage(module.id);
+              const moduleProgress = progress[module.id];
 
-            return (
-              <Card
-                key={module.id}
-                className="relative p-6 cursor-pointer transition-all duration-200 hover:scale-[1.02] hover:shadow-soft-lg bg-gradient-to-br from-primary/5 to-accent/5 border-interactive-accent/20 shadow-soft"
-                onClick={() => navigate(`/${userRole}/modules/${module.id}`)}
-              >
-                <DecorativeIcon icon="sparkles" position="top-right" opacity={0.08} />
-                <div className="flex items-start gap-4">
-                  <div className="text-4xl">{module.icon}</div>
-                  <div className="flex-1">
-                    <h3 className="text-lg font-bold mb-1">{module.title}</h3>
-                    <p className="text-sm text-muted-foreground mb-3">{module.description}</p>
-                    
-                    {moduleProgress && moduleProgress.total_lessons > 0 && (
-                      <div className="space-y-2">
-                        <div className="flex justify-between text-xs text-muted-foreground">
-                          <span>Progress</span>
-                          <span>
-                            {moduleProgress.completed_lessons} / {moduleProgress.total_lessons} lessons
-                          </span>
+              return (
+                <Card
+                  key={module.id}
+                  className="relative p-6 cursor-pointer transition-all duration-200 hover:scale-[1.02] hover:shadow-soft-lg bg-gradient-to-br from-primary/5 to-accent/5 border-interactive-accent/20 shadow-soft"
+                  onClick={() => navigate(`/${userRole}/modules/${module.id}`)}
+                >
+                  <DecorativeIcon icon="sparkles" position="top-right" opacity={0.08} />
+                  <div className="flex items-start gap-4">
+                    <div className="text-4xl">{module.icon}</div>
+                    <div className="flex-1">
+                      <h3 className="text-lg font-bold mb-1">{module.title}</h3>
+                      <p className="text-sm text-muted-foreground mb-3">{module.description}</p>
+                      
+                      {moduleProgress && moduleProgress.total_lessons > 0 && (
+                        <div className="space-y-2">
+                          <div className="flex justify-between text-xs text-muted-foreground">
+                            <span>Progress</span>
+                            <span>
+                              {moduleProgress.completed_lessons} / {moduleProgress.total_lessons} lessons
+                            </span>
+                          </div>
+                          <Progress value={progressPercent} className="h-2" />
                         </div>
-                        <Progress value={progressPercent} className="h-2" />
-                      </div>
-                    )}
+                      )}
+                    </div>
+                    <ArrowRight className="h-5 w-5 text-muted-foreground" />
                   </div>
-                  <ArrowRight className="h-5 w-5 text-muted-foreground" />
-                </div>
-              </Card>
-            );
-          })}
-        </div>
+                </Card>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       <BottomNav role={userRole} />

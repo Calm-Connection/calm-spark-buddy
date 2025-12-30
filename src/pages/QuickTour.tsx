@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { BookOpen, Sparkles, Shield, Heart, BarChart2, FileText, Users, UserX } from 'lucide-react';
+import { BookOpen, Sparkles, Shield, Heart, BarChart2, FileText, Users, UserX, ArrowLeft, X } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
 
@@ -114,7 +114,18 @@ export default function QuickTour() {
   const Icon = slide.icon;
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-background">
+    <div className="min-h-screen flex items-center justify-center p-6 bg-background relative">
+      {/* Exit button */}
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={handleSkip}
+        className="absolute top-4 right-4"
+        aria-label="Exit tour"
+      >
+        <X className="h-5 w-5" />
+      </Button>
+
       <Card className="relative max-w-md w-full p-8 space-y-6 bg-gradient-to-br from-primary/5 via-accent/10 to-secondary/5 border-interactive-accent/20 shadow-soft-lg">
         <DecorativeIcon icon="sparkles" position="top-right" opacity={0.12} />
         <div className="space-y-4">
