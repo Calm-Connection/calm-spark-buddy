@@ -233,6 +233,14 @@ function AppRoutes() {
 
 function ThemeObserver() {
   useEffect(() => {
+    // Apply saved theme immediately on app load to prevent flash
+    const savedTheme = loadSavedTheme();
+    if (savedTheme) {
+      applyTheme(savedTheme);
+    }
+  }, []);
+
+  useEffect(() => {
     // Reapply theme when dark mode is toggled
     const observer = new MutationObserver(() => {
       const savedTheme = loadSavedTheme();

@@ -7,13 +7,14 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAccessibility, TextSize, FontFamily } from '@/hooks/useAccessibility';
 import { loadSavedTheme, ThemeName } from '@/hooks/useTheme';
 import { useTheme } from 'next-themes';
-import { Settings as SettingsIcon, User, Save, Palette, Accessibility, MessageSquareWarning, Link as LinkIcon, Edit, Bell, CheckCircle, AlertCircle, Loader2, Sun, Moon, FileText, Lock, Shield, UserX, Download, AlertTriangle, Heart } from 'lucide-react';
+import { Settings as SettingsIcon, User, Save, Palette, Accessibility, MessageSquareWarning, Link as LinkIcon, Edit, Bell, CheckCircle, AlertCircle, Loader2, Sun, Moon, FileText, Lock, Shield, UserX, Download, AlertTriangle, Heart, ChevronDown } from 'lucide-react';
 import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -54,6 +55,16 @@ export default function Settings() {
   const [isExporting, setIsExporting] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [withdrawingConsent, setWithdrawingConsent] = useState<string | null>(null);
+  
+  // Collapsible section states
+  const [profileOpen, setProfileOpen] = useState(true);
+  const [themeOpen, setThemeOpen] = useState(false);
+  const [displayOpen, setDisplayOpen] = useState(false);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [accessibilityOpen, setAccessibilityOpen] = useState(false);
+  const [helpSafetyOpen, setHelpSafetyOpen] = useState(false);
+  const [dataPrivacyOpen, setDataPrivacyOpen] = useState(false);
+  const [legalOpen, setLegalOpen] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -308,12 +319,19 @@ export default function Settings() {
         </div>
 
         {/* Profile Section */}
-        <Card className="p-6">
-          <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-            <User className="h-5 w-5" />
-            Profile
-          </h2>
-          <div className="space-y-4">
+        <Collapsible open={profileOpen} onOpenChange={setProfileOpen}>
+          <Card className="p-4 sm:p-6">
+            <CollapsibleTrigger className="w-full">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-bold flex items-center gap-2">
+                  <User className="h-5 w-5" />
+                  Profile
+                </h2>
+                <ChevronDown className={`h-5 w-5 transition-transform ${profileOpen ? 'rotate-180' : ''}`} />
+              </div>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="pt-4">
+              <div className="space-y-4">
             <div className="flex flex-col sm:flex-row items-center gap-4">
               <div className="relative">
                 <AvatarDisplay avatarData={avatarData} size="lg" />
@@ -518,27 +536,45 @@ export default function Settings() {
                 </div>
               </div>
             )}
-          </div>
-        </Card>
+              </div>
+            </CollapsibleContent>
+          </Card>
+        </Collapsible>
 
         {/* Theme Selection */}
-        <Card className="p-6">
-          <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-            <Palette className="h-5 w-5" />
-            Theme
-          </h2>
-          <ThemeSelector 
-            currentTheme={currentTheme} 
-            onThemeChange={(theme) => setCurrentTheme(theme)}
-          />
-        </Card>
+        <Collapsible open={themeOpen} onOpenChange={setThemeOpen}>
+          <Card className="p-4 sm:p-6">
+            <CollapsibleTrigger className="w-full">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-bold flex items-center gap-2">
+                  <Palette className="h-5 w-5" />
+                  Theme
+                </h2>
+                <ChevronDown className={`h-5 w-5 transition-transform ${themeOpen ? 'rotate-180' : ''}`} />
+              </div>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="pt-4">
+              <ThemeSelector 
+                currentTheme={currentTheme} 
+                onThemeChange={(theme) => setCurrentTheme(theme)}
+              />
+            </CollapsibleContent>
+          </Card>
+        </Collapsible>
 
         {/* Display Mode - Dark/Light */}
-        <Card className="p-6">
-          <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-            {theme === 'dark' ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
-            Display Mode
-          </h3>
+        <Collapsible open={displayOpen} onOpenChange={setDisplayOpen}>
+          <Card className="p-4 sm:p-6">
+            <CollapsibleTrigger className="w-full">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xl font-bold flex items-center gap-2">
+                  {theme === 'dark' ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
+                  Display Mode
+                </h3>
+                <ChevronDown className={`h-5 w-5 transition-transform ${displayOpen ? 'rotate-180' : ''}`} />
+              </div>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="pt-4">
           
           <div className="grid grid-cols-2 gap-3">
             <Button
@@ -569,132 +605,161 @@ export default function Settings() {
           <p className="text-sm text-muted-foreground mt-4">
             Choose the display mode that feels most comfortable for you. Both modes are designed to be gentle on your eyes.
           </p>
-        </Card>
+            </CollapsibleContent>
+          </Card>
+        </Collapsible>
 
         {/* Notifications */}
-        <Card className="p-6">
-          <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-            <Bell className="h-5 w-5" />
-            Notifications
-          </h2>
-          <p className="text-sm text-muted-foreground mb-4">
-            Manage your notification preferences
-          </p>
-          <Button
-            variant="outline"
-            className="w-full"
-            onClick={() => navigate(userRole === 'child' ? '/child/notification-settings' : '/carer/notification-settings')}
-          >
-            <Bell className="h-4 w-4 mr-2" />
-            Notification Settings
-          </Button>
-        </Card>
+        <Collapsible open={notificationsOpen} onOpenChange={setNotificationsOpen}>
+          <Card className="p-4 sm:p-6">
+            <CollapsibleTrigger className="w-full">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-bold flex items-center gap-2">
+                  <Bell className="h-5 w-5" />
+                  Notifications
+                </h2>
+                <ChevronDown className={`h-5 w-5 transition-transform ${notificationsOpen ? 'rotate-180' : ''}`} />
+              </div>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="pt-4">
+              <p className="text-sm text-muted-foreground mb-4">
+                Manage your notification preferences
+              </p>
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => navigate(userRole === 'child' ? '/child/notification-settings' : '/carer/notification-settings')}
+              >
+                <Bell className="h-4 w-4 mr-2" />
+                Notification Settings
+              </Button>
+            </CollapsibleContent>
+          </Card>
+        </Collapsible>
 
         {/* Accessibility Settings */}
-        <Card className="p-6">
-          <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-            <Accessibility className="h-5 w-5" />
-            Accessibility
-          </h2>
-          <div className="space-y-6">
-            {/* Text Size */}
-            <div className="space-y-2">
-              <Label>Text Size</Label>
-              <Select
-                value={settings.textSize}
-                onValueChange={(value) => updateSetting('textSize', value as TextSize)}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="small">Small</SelectItem>
-                  <SelectItem value="medium">Medium</SelectItem>
-                  <SelectItem value="large">Large</SelectItem>
-                  <SelectItem value="extra-large">Extra Large</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Font Family */}
-            <div className="space-y-2">
-              <Label>Font Style</Label>
-              <Select
-                value={settings.fontFamily}
-                onValueChange={(value) => updateSetting('fontFamily', value as FontFamily)}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="default">Default</SelectItem>
-                  <SelectItem value="dyslexia-friendly">Dyslexia-Friendly</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* High Contrast */}
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label>High Contrast</Label>
-                <p className="text-sm text-muted-foreground">Increase color contrast for better visibility</p>
+        <Collapsible open={accessibilityOpen} onOpenChange={setAccessibilityOpen}>
+          <Card className="p-4 sm:p-6">
+            <CollapsibleTrigger className="w-full">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-bold flex items-center gap-2">
+                  <Accessibility className="h-5 w-5" />
+                  Accessibility
+                </h2>
+                <ChevronDown className={`h-5 w-5 transition-transform ${accessibilityOpen ? 'rotate-180' : ''}`} />
               </div>
-              <Switch
-                checked={settings.highContrast}
-                onCheckedChange={(checked) => updateSetting('highContrast', checked)}
-              />
-            </div>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="pt-4">
+              <div className="space-y-6">
+                {/* Text Size */}
+                <div className="space-y-2">
+                  <Label>Text Size</Label>
+                  <Select
+                    value={settings.textSize}
+                    onValueChange={(value) => updateSetting('textSize', value as TextSize)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="small">Small</SelectItem>
+                      <SelectItem value="medium">Medium</SelectItem>
+                      <SelectItem value="large">Large</SelectItem>
+                      <SelectItem value="extra-large">Extra Large</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
 
-            {/* Calm Mode (merged with Reduce Motion) */}
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label>Calm Mode</Label>
-                <p className="text-sm text-muted-foreground">Reduce animations and movement for a calmer experience</p>
+                {/* Font Family */}
+                <div className="space-y-2">
+                  <Label>Font Style</Label>
+                  <Select
+                    value={settings.fontFamily}
+                    onValueChange={(value) => updateSetting('fontFamily', value as FontFamily)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="default">Default</SelectItem>
+                      <SelectItem value="dyslexia-friendly">Dyslexia-Friendly</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* High Contrast */}
+                <div className="flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <Label>High Contrast</Label>
+                    <p className="text-sm text-muted-foreground">Increase color contrast for better visibility</p>
+                  </div>
+                  <Switch
+                    checked={settings.highContrast}
+                    onCheckedChange={(checked) => updateSetting('highContrast', checked)}
+                  />
+                </div>
+
+                {/* Calm Mode (merged with Reduce Motion) */}
+                <div className="flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <Label>Calm Mode</Label>
+                    <p className="text-sm text-muted-foreground">Reduce animations and movement for a calmer experience</p>
+                  </div>
+                  <Switch
+                    checked={settings.calmMode}
+                    onCheckedChange={(checked) => {
+                      updateSetting('calmMode', checked);
+                      updateSetting('reduceMotion', checked);
+                    }}
+                  />
+                </div>
               </div>
-              <Switch
-                checked={settings.calmMode}
-                onCheckedChange={(checked) => {
-                  updateSetting('calmMode', checked);
-                  updateSetting('reduceMotion', checked);
-                }}
-              />
-            </div>
-          </div>
-        </Card>
+            </CollapsibleContent>
+          </Card>
+        </Collapsible>
 
         {/* Help & Safety */}
-        <Card className="p-6">
-          <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-            <Heart className="h-5 w-5" />
-            Help & Safety
-          </h2>
-          <div className="space-y-4">
-            {/* Crisis Support Disclaimer - Full Version */}
-            <DisclaimerCard variant="crisis-full" size="medium" />
-            
-            <div className="space-y-3">
-              <Button
-                variant="outline"
-                className="w-full"
-                onClick={() => navigate(userRole === 'child' ? '/child/safety-note' : '/carer/safeguarding-info')}
-              >
-                <Shield className="h-4 w-4 mr-2" />
-                Safeguarding Information
-              </Button>
-              <Button
-                variant="outline"
-                className="w-full"
-                onClick={() => setReportModalOpen(true)}
-              >
-                <MessageSquareWarning className="h-4 w-4 mr-2" />
-                Report a Concern
-              </Button>
-            </div>
-          </div>
-        </Card>
+        <Collapsible open={helpSafetyOpen} onOpenChange={setHelpSafetyOpen}>
+          <Card className="p-4 sm:p-6">
+            <CollapsibleTrigger className="w-full">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-bold flex items-center gap-2">
+                  <Heart className="h-5 w-5" />
+                  Help & Safety
+                </h2>
+                <ChevronDown className={`h-5 w-5 transition-transform ${helpSafetyOpen ? 'rotate-180' : ''}`} />
+              </div>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="pt-4">
+              <div className="space-y-4">
+                {/* Crisis Support Disclaimer - Full Version */}
+                <DisclaimerCard variant="crisis-full" size="medium" />
+                
+                <div className="space-y-3">
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => navigate(userRole === 'child' ? '/child/safety-note' : '/carer/safeguarding-info')}
+                  >
+                    <Shield className="h-4 w-4 mr-2" />
+                    Safeguarding Information
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => setReportModalOpen(true)}
+                  >
+                    <MessageSquareWarning className="h-4 w-4 mr-2" />
+                    Report a Concern
+                  </Button>
+                </div>
+              </div>
+            </CollapsibleContent>
+          </Card>
+        </Collapsible>
 
         {/* Support & Feedback */}
-        <Card className="p-6">
+        <Card className="p-4 sm:p-6">
           <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
             <MessageSquareWarning className="h-5 w-5" />
             Support
