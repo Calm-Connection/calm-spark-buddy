@@ -41,6 +41,7 @@ export default function JournalEntry() {
   const [suggestedTools, setSuggestedTools] = useState<string[]>([]);
   const [savedEntryId, setSavedEntryId] = useState<string | null>(null);
   const [inputMode, setInputMode] = useState<'write' | 'voice' | 'draw'>('write');
+  const [savingStage, setSavingStage] = useState<'idle' | 'uploading' | 'saving' | 'analyzing'>('idle');
   
   // Voice recording state
   const [isRecording, setIsRecording] = useState(false);
@@ -192,12 +193,14 @@ export default function JournalEntry() {
     if (inputMode === 'draw' && !drawingData) return;
 
     setLoading(true);
+    setSavingStage('idle');
 
     try {
       let voiceUrl = null;
       
       // Upload voice recording if exists
       if (audioBlob && inputMode === 'voice') {
+        setSavingStage('uploading');
         const fileName = `voice-${Date.now()}.webm`;
         const { data: uploadData, error: uploadError } = await supabase.storage
           .from('journal-voice-notes')
@@ -211,6 +214,8 @@ export default function JournalEntry() {
         
         voiceUrl = publicUrl;
       }
+
+      setSavingStage('saving');
 
       // Save journal entry
       const { data: entry, error: entryError } = await supabase
@@ -227,6 +232,8 @@ export default function JournalEntry() {
         .single();
 
       if (entryError) throw entryError;
+
+      setSavingStage('analyzing');
 
       // Analyze with Wendy AI
       const { data: analysisData, error: analysisError } = await supabase.functions.invoke(
@@ -545,10 +552,15 @@ export default function JournalEntry() {
             className="w-full bg-secondary hover:bg-secondary/90 py-6 text-lg"
           >
             {loading ? (
-              <>
-                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                Saving...
-              </>
+              <div className="flex items-center gap-2">
+                <Loader2 className="h-5 w-5 animate-spin" />
+                <span>
+                  {savingStage === 'uploading' && 'Uploading voice...'}
+                  {savingStage === 'saving' && 'Saving entry...'}
+                  {savingStage === 'analyzing' && 'Wendy is reading...'}
+                  {savingStage === 'idle' && 'Saving...'}
+                </span>
+              </div>
             ) : (
               <>
                 <Sparkles className="mr-2 h-5 w-5" />

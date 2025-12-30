@@ -57,18 +57,27 @@ export function AchievementBadge({
             {earned && <Badge variant="secondary">Earned!</Badge>}
           </div>
           <p className="text-sm text-muted-foreground">{description}</p>
-          {!earned && requirementCount > 1 && (
-            <div className="mt-2">
-              <div className="flex justify-between text-xs text-muted-foreground mb-1">
-                <span>Progress</span>
-                <span>{progress} / {requirementCount}</span>
-              </div>
-              <div className="h-2 bg-muted rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-primary transition-all"
-                  style={{ width: `${(progress / requirementCount) * 100}%` }}
-                />
-              </div>
+          {!earned && (
+            <div className="mt-2 space-y-1">
+              {requirementCount > 1 && (
+                <>
+                  <div className="flex justify-between text-xs text-muted-foreground mb-1">
+                    <span>Progress</span>
+                    <span>{progress} / {requirementCount}</span>
+                  </div>
+                  <div className="h-2 bg-muted rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-primary transition-all"
+                      style={{ width: `${(progress / requirementCount) * 100}%` }}
+                    />
+                  </div>
+                </>
+              )}
+              <p className="text-xs text-muted-foreground/70 italic mt-2">
+                💡 {requirementCount > 1 
+                  ? `Complete ${requirementCount} times to earn this badge` 
+                  : 'Keep using the app to unlock this badge'}
+              </p>
             </div>
           )}
         </div>
