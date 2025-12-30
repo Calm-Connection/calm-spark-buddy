@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
 import { JournalIntroModal } from '@/components/JournalIntroModal';
 import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
+import { PageTransition } from '@/components/PageTransition';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -95,6 +96,7 @@ export default function ChildJournal() {
   };
 
   return (
+    <PageTransition>
     <div className="min-h-screen bg-gradient-to-b from-primary/5 via-accent/10 to-background pb-24 relative">
       <DecorativeIcon icon="leaf" position="top-right" opacity={0.08} />
       <div className="max-w-2xl mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-4 sm:space-y-6">
@@ -172,5 +174,6 @@ export default function ChildJournal() {
 
       <BottomNav role="child" />
     </div>
+    </PageTransition>
   );
 }

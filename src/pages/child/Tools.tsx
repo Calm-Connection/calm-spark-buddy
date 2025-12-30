@@ -5,6 +5,7 @@ import { ArrowLeft, Wind, Heart, Music, Palette, Sparkles, Home, CloudRain, Snow
 import { BottomNav } from '@/components/BottomNav';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
 import { useReduceMotion } from '@/hooks/useReduceMotion';
+import { PageTransition } from '@/components/PageTransition';
 
 const tools = [
   {
@@ -123,6 +124,7 @@ export default function Tools() {
   };
 
   return (
+    <PageTransition>
     <div className="min-h-screen bg-gradient-to-b from-primary/10 via-accent/5 to-background pb-24">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-4 sm:space-y-6">
         <div className="flex items-center gap-3">
@@ -171,5 +173,6 @@ export default function Tools() {
 
       <BottomNav role="child" />
     </div>
+    </PageTransition>
   );
 }
