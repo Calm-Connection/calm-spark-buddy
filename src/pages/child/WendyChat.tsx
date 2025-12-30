@@ -6,7 +6,8 @@ import { INeedHelpButton } from '@/components/INeedHelpButton';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { WendyAvatar } from '@/components/WendyAvatar';
-import { Sparkles, Send, Loader2, Lightbulb } from 'lucide-react';
+import { Sparkles, Send, Lightbulb } from 'lucide-react';
+import { TypingIndicator } from '@/components/TypingIndicator';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
@@ -278,11 +279,7 @@ export default function WendyChat() {
           </div>
         ))}
         {isLoading && (
-          <div className="flex justify-start">
-            <Card className="p-4 bg-accent/30">
-              <Loader2 className="h-4 w-4 animate-spin" />
-            </Card>
-          </div>
+          <TypingIndicator showAvatar={true} className="animate-fade-in" />
         )}
         <div ref={messagesEndRef} />
       </div>

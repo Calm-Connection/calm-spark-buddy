@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Loader2, Sparkles } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
+import { BreathingLoader } from '@/components/BreathingLoader';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import {
@@ -266,24 +267,24 @@ export function ObjectAvatarBuilder({
           </Card>
 
         {/* Single Save & Continue Button */}
-        <Button
-          onClick={handleSaveAndContinue}
-          disabled={generating}
-          size="lg"
-          className="w-full py-6 text-lg"
-        >
-          {generating ? (
-            <>
-              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-              Creating & Saving...
-            </>
-          ) : (
-            <>
-              <Sparkles className="mr-2 h-5 w-5" />
-              {buttonLabel}
-            </>
-          )}
-        </Button>
+        {generating ? (
+          <Card className="p-6 animate-fade-in">
+            <BreathingLoader 
+              message="Creating your character..." 
+              subMessage="This might take a moment"
+            />
+          </Card>
+        ) : (
+          <Button
+            onClick={handleSaveAndContinue}
+            disabled={generating}
+            size="lg"
+            className="w-full py-6 text-lg"
+          >
+            <Sparkles className="mr-2 h-5 w-5" />
+            {buttonLabel}
+          </Button>
+        )}
       </div>
     </div>
   );
