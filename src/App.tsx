@@ -14,6 +14,7 @@ import LearnMore from "./pages/LearnMore";
 import RoleSelection from "./pages/RoleSelection";
 import Login from "./pages/Login";
 import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import ChildSignup from "./pages/child/ChildSignup";
 import CarerSignup from "./pages/carer/CarerSignup";
 import QuickTour from "./pages/QuickTour";
@@ -69,6 +70,10 @@ import CarerInsights from "./pages/carer/CarerInsights";
 import CarerResources from "./pages/carer/CarerResources";
 import SharedEntries from "./pages/carer/SharedEntries";
 import JointTools from "./pages/carer/JointTools";
+import GratitudeCircle from "./pages/carer/tools/joint/GratitudeCircle";
+import FeelingsCheckin from "./pages/carer/tools/joint/FeelingsCheckin";
+import HappyMemoryJar from "./pages/carer/tools/joint/HappyMemoryJar";
+import CalmDownCorner from "./pages/carer/tools/joint/CalmDownCorner";
 import BreathingTogether from "./pages/carer/tools/BreathingTogether";
 import CalmMoment from "./pages/carer/tools/CalmMoment";
 import ReflectionPrompts from "./pages/carer/tools/ReflectionPrompts";
@@ -93,9 +98,6 @@ import ModuleDetail from "./pages/shared/ModuleDetail";
 
 // Admin pages
 import GenerateAvatarAssets from "./pages/admin/GenerateAvatarAssets";
-
-// Mockup pages
-import MoodSelectionMockup from "./pages/MoodSelectionMockup";
 
 const queryClient = new QueryClient();
 
@@ -137,6 +139,7 @@ function AppRoutes() {
       <Route path="/role-selection" element={user && userRole ? <Navigate to={homePath} replace /> : <RoleSelection />} />
       <Route path="/login" element={user && userRole ? <Navigate to={homePath} replace /> : <Login />} />
       <Route path="/forgot-password" element={user && userRole ? <Navigate to={homePath} replace /> : <ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/child/signup" element={user && userRole ? <Navigate to={homePath} replace /> : <ChildSignup />} />
       <Route path="/carer/signup" element={user && userRole ? <Navigate to={homePath} replace /> : <CarerSignup />} />
       
@@ -191,6 +194,10 @@ function AppRoutes() {
       <Route path="/carer/resources" element={<ProtectedRoute role="carer"><CarerResources /></ProtectedRoute>} />
       <Route path="/carer/shared-entries" element={<ProtectedRoute role="carer"><SharedEntries /></ProtectedRoute>} />
       <Route path="/carer/joint-tools" element={<ProtectedRoute role="carer"><JointTools /></ProtectedRoute>} />
+      <Route path="/carer/tools/joint/gratitude-circle" element={<ProtectedRoute role="carer"><GratitudeCircle /></ProtectedRoute>} />
+      <Route path="/carer/tools/joint/feelings-checkin" element={<ProtectedRoute role="carer"><FeelingsCheckin /></ProtectedRoute>} />
+      <Route path="/carer/tools/joint/happy-memory-jar" element={<ProtectedRoute role="carer"><HappyMemoryJar /></ProtectedRoute>} />
+      <Route path="/carer/tools/joint/calm-down-corner" element={<ProtectedRoute role="carer"><CalmDownCorner /></ProtectedRoute>} />
       <Route path="/carer/tools/breathing-together" element={<ProtectedRoute role="carer"><BreathingTogether /></ProtectedRoute>} />
       <Route path="/carer/tools/calm-moment" element={<ProtectedRoute role="carer"><CalmMoment /></ProtectedRoute>} />
       <Route path="/carer/tools/reflection-prompts" element={<ProtectedRoute role="carer"><ReflectionPrompts /></ProtectedRoute>} />
@@ -217,9 +224,6 @@ function AppRoutes() {
       
       {/* Admin routes - protected */}
       <Route path="/admin/generate-assets" element={<ProtectedRoute><GenerateAvatarAssets /></ProtectedRoute>} />
-      
-      {/* Mockup/Demo routes - public */}
-      <Route path="/mood-mockup" element={<MoodSelectionMockup />} />
       
       {/* 404 catch-all */}
       <Route path="*" element={<NotFound />} />
