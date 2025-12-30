@@ -316,7 +316,16 @@ export default function SafeguardingDashboard() {
             </p>
           </Card>
         ) : (
-          <div className="grid lg:grid-cols-3 gap-6">
+          <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6">
+            {/* Sidebar - appears first on mobile for important info */}
+            <div className="order-first lg:order-last space-y-6">
+              {/* Safeguarding Principles */}
+              <SafeguardingPrinciples />
+              
+              {/* Resource Library */}
+              <ResourceLibrary activeThemes={activeThemes} />
+            </div>
+
             {/* Main Content Area */}
             <div className="lg:col-span-2 space-y-6">
               {/* Carer Action Guidance */}
@@ -357,19 +366,19 @@ export default function SafeguardingDashboard() {
                 <TabsContent value="summary" className="mt-6">
                   <Card className="p-6">
                     <h3 className="text-xl font-bold mb-4">Quick Summary</h3>
-                    <div className="space-y-4">
-                      <div>
+                    <div className="grid grid-cols-3 gap-4">
+                      <div className="text-center">
                         <div className="text-sm text-muted-foreground mb-1">Total Entries</div>
                         <div className="text-2xl font-bold">{logs.length}</div>
                       </div>
-                      <div>
+                      <div className="text-center">
                         <div className="text-sm text-muted-foreground mb-1">Needs Attention</div>
                         <div className="text-2xl font-bold text-accent">
                           {logs.filter(l => (l.escalation_tier || 0) >= 3).length}
                         </div>
                       </div>
-                      <div>
-                        <div className="text-sm text-muted-foreground mb-1">Positive Entries</div>
+                      <div className="text-center">
+                        <div className="text-sm text-muted-foreground mb-1">Positive</div>
                         <div className="text-2xl font-bold text-interactive-accent">
                           {logs.filter(l => (l.wendy_insight?.mood_score || 0) >= 7).length}
                         </div>
@@ -378,15 +387,6 @@ export default function SafeguardingDashboard() {
                   </Card>
                 </TabsContent>
               </Tabs>
-            </div>
-
-            {/* Sidebar */}
-            <div className="space-y-6">
-              {/* Safeguarding Principles */}
-              <SafeguardingPrinciples />
-              
-              {/* Resource Library */}
-              <ResourceLibrary activeThemes={activeThemes} />
             </div>
           </div>
         )}

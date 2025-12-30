@@ -9,6 +9,16 @@ import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
 import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 const breathingExercises = [
   {
@@ -82,6 +92,8 @@ export default function BreathingSpace() {
   const { toast } = useToast();
   const [customSpaces, setCustomSpaces] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [spaceToDelete, setSpaceToDelete] = useState<{ id: string; name: string } | null>(null);
 
   useEffect(() => {
     loadCustomSpaces();
@@ -145,18 +157,25 @@ export default function BreathingSpace() {
     }
   };
 
-  const deleteCustomSpace = async (id: string, name: string) => {
+  const handleDeleteClick = (id: string, name: string) => {
+    setSpaceToDelete({ id, name });
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!spaceToDelete) return;
+    
     try {
       const { error } = await supabase
         .from('custom_breathing_spaces')
         .delete()
-        .eq('id', id);
+        .eq('id', spaceToDelete.id);
 
       if (error) throw error;
 
       toast({
         title: "Space deleted",
-        description: `"${name}" has been removed`
+        description: `"${spaceToDelete.name}" has been removed`
       });
 
       loadCustomSpaces();
@@ -166,6 +185,9 @@ export default function BreathingSpace() {
         description: error.message,
         variant: "destructive"
       });
+    } finally {
+      setDeleteDialogOpen(false);
+      setSpaceToDelete(null);
     }
   };
 
@@ -270,9 +292,7 @@ export default function BreathingSpace() {
                       size="icon"
                       onClick={(e) => {
                         e.stopPropagation();
-                        if (confirm(`Delete "${space.name}"?`)) {
-                          deleteCustomSpace(space.id, space.name);
-                        }
+                        handleDeleteClick(space.id, space.name);
                       }}
                     >
                       <Trash2 className="h-4 w-4 text-destructive" />
@@ -283,6 +303,26 @@ export default function BreathingSpace() {
             </div>
           </div>
         )}
+
+        <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete Breathing Space?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to delete "{spaceToDelete?.name}"? This cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction 
+                onClick={handleDeleteConfirm}
+                className="bg-destructive hover:bg-destructive/90"
+              >
+                Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
 
         <h3 className="text-lg font-semibold">Preset Breathing Worlds 🌍</h3>
 
