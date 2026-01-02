@@ -57,9 +57,9 @@ export function CrisisSupportModal({ open, onOpenChange, triggerReason = 'manual
               <div className="flex items-start gap-3">
                 <Phone className="h-6 w-6 text-destructive mt-1 flex-shrink-0" />
                 <div className="flex-1">
-                  <h3 className="font-bold text-lg mb-1">🚨 Immediate Danger</h3>
+                  <h3 className="font-bold text-lg mb-1">🆘 Need Help Right Now?</h3>
                   <p className="text-sm text-muted-foreground mb-3">
-                    If you or someone else is in immediate danger of harm, call emergency services right now.
+                    If you or someone else is hurt or in danger, call 999 straight away. They're there to help.
                   </p>
                   <a
                     href="tel:999"
@@ -156,7 +156,7 @@ export function CrisisSupportModal({ open, onOpenChange, triggerReason = 'manual
               <h3 className="font-bold text-lg mb-2">🤗 Talk to Someone You Trust</h3>
               <ul className="text-sm text-muted-foreground space-y-2 list-disc list-inside">
                 <li>Your parent, carer, or guardian</li>
-                <li>A teacher or school counselor</li>
+                <li>A teacher or school counsellor</li>
                 <li>A family member you feel safe with</li>
                 <li>Your GP or doctor</li>
                 <li>Youth worker or sports coach</li>

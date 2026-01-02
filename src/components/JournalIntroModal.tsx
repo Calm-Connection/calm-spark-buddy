@@ -45,18 +45,16 @@ export function JournalIntroModal({ onDismiss }: JournalIntroModalProps) {
           <AlertDialogDescription asChild>
             <div className="space-y-4 text-sm text-muted-foreground">
               <p>
-                This journal is a private space for reflection and emotional expression.
-                It is not a substitute for professional advice, diagnosis, or treatment.
+                This is your private journal — a safe place to write about your feelings. 
+                Only you can see what you write (unless you choose to share).
               </p>
               <p>
-                We do not routinely read journal entries. Analysis only occurs if you explicitly 
-                opt in to AI insights or sharing features, except where safeguarding concerns 
-                require action in line with our Safeguarding Policy.
+                We don't read your journal. Wendy might help spot if you're having a hard time, 
+                so she can suggest ways to feel better.
               </p>
               <p>
-                Entries are confidential, but no digital platform can guarantee complete security. 
-                Please avoid including highly sensitive personal details such as addresses, 
-                phone numbers, or names of others.
+                Try not to include things like your address, phone number, or other people's 
+                real names — that helps keep everyone safe.
               </p>
             </div>
           </AlertDialogDescription>

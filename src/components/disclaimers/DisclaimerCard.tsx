@@ -65,9 +65,9 @@ const disclaimerContent: Record<DisclaimerVariant, DisclaimerContent> = {
   },
   'ai-limitation': {
     icon: AlertCircle,
-    title: 'This Is Not Professional Advice',
+    title: 'Here to Help, Not Replace',
     description:
-      'Calm Connection provides emotional support tools but is not a substitute for professional medical, therapeutic, or psychiatric care. If you need clinical help, please speak to your GP, school counselor, or contact NHS services.',
+      'Calm Connection is here to help you feel calmer and understand your feelings. If you ever need extra help, please talk to a grown-up you trust — they can find the right person to support you.',
     severity: 'default',
   },
   'wendy-ai': {
