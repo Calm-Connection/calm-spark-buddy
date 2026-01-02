@@ -63,8 +63,8 @@ export function useNotificationTrigger() {
         body: 'Calm Connection has detected a reflection that may need your attention. Please check your dashboard for more information.',
       },
       critical: {
-        title: 'Urgent: Please check in',
-        body: 'Calm Connection has flagged concerning content that requires your immediate attention. Please review the safeguarding dashboard.',
+        title: 'Your attention is needed',
+        body: 'Calm Connection has noticed something that may need your support. Please check the safeguarding dashboard when you can.',
       },
     };
 

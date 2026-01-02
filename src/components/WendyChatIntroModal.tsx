@@ -45,15 +45,15 @@ export function WendyChatIntroModal({ onDismiss }: WendyChatIntroModalProps) {
           <AlertDialogDescription asChild>
             <div className="space-y-4 text-sm text-muted-foreground">
               <p>
-                AI tools in Calm Connection provide supportive suggestions and prompts.
-                They are not a replacement for professional care or advice from a qualified health provider.
+                Wendy is here to listen and suggest things that might help. She's not a real person, 
+                so if you ever need proper help, please talk to a grown-up you trust.
               </p>
               <p>
-                AI responses are generated automatically and may not always be accurate or suitable 
-                for every situation. Use your own judgment and seek professional guidance if unsure.
+                Sometimes Wendy might not get things quite right — that's okay! If something doesn't 
+                feel helpful, you can always talk to a real person instead.
               </p>
               <p>
-                AI analysis only occurs with your consent, in line with your Privacy settings.
+                Wendy only looks at what you share with her, and you're always in control.
               </p>
             </div>
           </AlertDialogDescription>
