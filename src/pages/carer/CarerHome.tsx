@@ -13,6 +13,7 @@ import { BottomNav } from '@/components/BottomNav';
 import { format, subDays, startOfDay, endOfDay } from 'date-fns';
 import { NotificationBell } from '@/components/NotificationBell';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
+import { CalmMomentCard } from '@/components/CalmMomentCard';
 import { SkeletonCard } from '@/components/SkeletonCard';
 import { Skeleton } from '@/components/ui/skeleton';
 import { PageTransition } from '@/components/PageTransition';
@@ -242,6 +243,9 @@ export default function CarerHome() {
                 </Button>
               </div>
             </Card>
+
+            {/* Today's Calm Moment */}
+            <CalmMomentCard />
           </div> : <div className="animate-fade-in">
             {/* Notifications Panel */}
             {hasNewSharedEntry && <Card className="p-4 bg-gradient-to-r from-secondary/20 to-primary/20 border-primary/30">
@@ -292,6 +296,9 @@ export default function CarerHome() {
                   </div>
                 </div>
               </Card>}
+
+            {/* Today's Calm Moment */}
+            <CalmMomentCard />
 
             {/* The Week with Wendy - Understanding Your Child */}
             {latestInsight && moodTrend.length > 0 && <Card className="p-6 bg-gradient-to-br from-primary/5 to-accent/5 border border-border/30">

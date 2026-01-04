@@ -13,6 +13,7 @@ import { FloatingElements } from '@/components/FloatingElements';
 import { BottomNav } from '@/components/BottomNav';
 import { NotificationBell } from '@/components/NotificationBell';
 import { WendyTipCard } from '@/components/WendyTipCard';
+import { CalmMomentCard } from '@/components/CalmMomentCard';
 import { SectionTitle } from '@/components/SectionTitle';
 import { toast } from 'sonner';
 import { getEmotionalIconsByCategory } from '@/constants/emotionalIcons';
@@ -344,6 +345,9 @@ export default function ChildHome() {
             actionLabel="Explore Tools"
           />
         )}
+
+        {/* Today's Calm Moment */}
+        <CalmMomentCard />
 
         {/* Daily Check-in */}
         {!hasCheckedInToday && (
