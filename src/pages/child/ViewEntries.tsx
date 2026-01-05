@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { INeedHelpButton } from '@/components/INeedHelpButton';
+import { BottomNav } from '@/components/BottomNav';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { format } from 'date-fns';
@@ -179,6 +180,7 @@ export default function ViewEntries() {
       </AlertDialog>
 
       <INeedHelpButton />
+      <BottomNav role="child" />
     </div>
   );
 }
