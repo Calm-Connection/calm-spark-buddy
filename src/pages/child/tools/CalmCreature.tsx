@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ArrowLeft, Check } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 
 type Creature = 'firefly' | 'turtle' | 'fox';
 type Movement = 'stretch' | 'wiggle' | 'breathe' | 'hug';
@@ -24,11 +26,25 @@ const movements: { value: Movement; label: string; instruction: string; emoji: s
 
 export default function CalmCreature() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [selectedCreature, setSelectedCreature] = useState<Creature | null>(null);
   const [currentMovement, setCurrentMovement] = useState(0);
   const [completedMovements, setCompletedMovements] = useState<number[]>([]);
+  const [hasTracked, setHasTracked] = useState(false);
 
   const isComplete = completedMovements.length === movements.length;
+
+  useEffect(() => {
+    if (isComplete && !hasTracked && user) {
+      setHasTracked(true);
+      supabase.from('tool_usage').insert({
+        user_id: user.id,
+        tool_name: 'Calm Creature',
+        duration_minutes: 2,
+        completed: true
+      }).then(() => {});
+    }
+  }, [isComplete, hasTracked, user]);
   const currentMove = movements[currentMovement];
 
   const handleCreatureSelect = (creature: Creature) => {

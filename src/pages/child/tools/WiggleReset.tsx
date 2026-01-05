@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ArrowLeft, Check } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 
 const resetSteps = [
   { id: 1, action: 'Wiggle Toes', emoji: '👣', instruction: 'Wiggle your toes - left, right, all together!' },
@@ -15,8 +17,22 @@ const resetSteps = [
 
 export default function WiggleReset() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [currentStep, setCurrentStep] = useState(0);
+  const [hasTracked, setHasTracked] = useState(false);
   const isComplete = currentStep >= resetSteps.length;
+
+  useEffect(() => {
+    if (isComplete && !hasTracked && user) {
+      setHasTracked(true);
+      supabase.from('tool_usage').insert({
+        user_id: user.id,
+        tool_name: 'Wiggle Reset',
+        duration_minutes: 1,
+        completed: true
+      }).then(() => {});
+    }
+  }, [isComplete, hasTracked, user]);
 
   const handleNext = () => {
     if (currentStep < resetSteps.length) {

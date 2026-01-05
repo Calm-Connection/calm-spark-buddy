@@ -6,6 +6,8 @@ import { ArrowLeft, Heart, Sparkles } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
 import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 
 const calmColors = [
   { name: 'Ocean Blue', hsl: 'hsl(200, 70%, 75%)', emoji: '🌊' },
@@ -20,10 +22,24 @@ type VisualizationStep = 'intro' | 'choose' | 'visualize' | 'complete';
 
 export default function ColourCalm() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [step, setStep] = useState<VisualizationStep>('intro');
   const [selectedColor, setSelectedColor] = useState(calmColors[0]);
   const [visualizing, setVisualizing] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [hasTracked, setHasTracked] = useState(false);
+
+  useEffect(() => {
+    if (step === 'complete' && !hasTracked && user) {
+      setHasTracked(true);
+      supabase.from('tool_usage').insert({
+        user_id: user.id,
+        tool_name: 'Colour Calm',
+        duration_minutes: 2,
+        completed: true
+      }).then(() => {});
+    }
+  }, [step, hasTracked, user]);
 
   useEffect(() => {
     if (visualizing && progress < 100) {

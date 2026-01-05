@@ -1,19 +1,35 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ArrowLeft, Bell } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function GentleReminderBell() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [isRinging, setIsRinging] = useState(false);
   const [ringCount, setRingCount] = useState(0);
+  const hasTrackedRef = useRef(false);
 
   const handleRing = () => {
     setIsRinging(true);
-    setRingCount(prev => prev + 1);
+    const newCount = ringCount + 1;
+    setRingCount(newCount);
+    
+    // Track on first ring
+    if (!hasTrackedRef.current && user) {
+      hasTrackedRef.current = true;
+      supabase.from('tool_usage').insert({
+        user_id: user.id,
+        tool_name: 'Gentle Reminder Bell',
+        duration_minutes: 1,
+        completed: true
+      }).then(() => {});
+    }
     
     // Play a simple chime sound (browser-based)
     const audioContext = new AudioContext();

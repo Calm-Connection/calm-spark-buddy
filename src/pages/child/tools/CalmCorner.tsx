@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -7,6 +7,8 @@ import { BottomNav } from '@/components/BottomNav';
 import { WendyTipCard } from '@/components/WendyTipCard';
 import { useBreathingAudio } from '@/hooks/useBreathingAudio';
 import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 
 type LightingType = 'warm' | 'cool' | 'rainbow';
 type SoundType = 'rain' | 'ocean' | 'wind' | 'chimes';
@@ -34,11 +36,25 @@ const comfortItems: { value: ComfortItem; label: string; emoji: string }[] = [
 
 export default function CalmCorner() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [step, setStep] = useState<'lighting' | 'sound' | 'item' | 'complete'>('lighting');
   const [lighting, setLighting] = useState<LightingType | null>(null);
   const [sound, setSound] = useState<SoundType | null>(null);
   const [item, setItem] = useState<ComfortItem | null>(null);
   const [audioEnabled, setAudioEnabled] = useState(false);
+  const [hasTracked, setHasTracked] = useState(false);
+
+  useEffect(() => {
+    if (step === 'complete' && !hasTracked && user) {
+      setHasTracked(true);
+      supabase.from('tool_usage').insert({
+        user_id: user.id,
+        tool_name: 'Calm Corner',
+        duration_minutes: 2,
+        completed: true
+      }).then(() => {});
+    }
+  }, [step, hasTracked, user]);
 
   useBreathingAudio({ 
     theme: sound || 'chimes', 

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -9,6 +9,8 @@ import { DecorativeIcon } from '@/components/DecorativeIcon';
 import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
 import { WendyAvatar } from '@/components/WendyAvatar';
 import confetti from 'canvas-confetti';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 
 interface ThoughtCloud {
   id: number;
@@ -50,10 +52,27 @@ const reframeQuestions = {
 
 export default function ThoughtClouds() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [clouds, setClouds] = useState<ThoughtCloud[]>(initialClouds);
   const [selectedCloud, setSelectedCloud] = useState<ThoughtCloud | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [reflections, setReflections] = useState<string[]>([]);
+  const [hasTracked, setHasTracked] = useState(false);
+
+  const clearedCount = clouds.filter(c => c.cleared).length;
+  const allCleared = clearedCount === clouds.length;
+
+  useEffect(() => {
+    if (allCleared && !hasTracked && user) {
+      setHasTracked(true);
+      supabase.from('tool_usage').insert({
+        user_id: user.id,
+        tool_name: 'Thought Clouds',
+        duration_minutes: 3,
+        completed: true
+      }).then(() => {});
+    }
+  }, [allCleared, hasTracked, user]);
 
   const handleCloudClick = (cloud: ThoughtCloud) => {
     if (cloud.cleared) return;
@@ -90,8 +109,6 @@ export default function ThoughtClouds() {
     }
   };
 
-  const clearedCount = clouds.filter(c => c.cleared).length;
-  const allCleared = clearedCount === clouds.length;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-primary/10 to-background pb-20">

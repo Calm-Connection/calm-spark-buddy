@@ -1,17 +1,33 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ArrowLeft } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function HandTraceBreathing() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [currentFinger, setCurrentFinger] = useState(0);
   const [isInhaling, setIsInhaling] = useState(true);
   const [isActive, setIsActive] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
+  const hasTrackedRef = useRef(false);
+
+  useEffect(() => {
+    if (isComplete && !hasTrackedRef.current && user) {
+      hasTrackedRef.current = true;
+      supabase.from('tool_usage').insert({
+        user_id: user.id,
+        tool_name: 'Hand Trace Breathing',
+        duration_minutes: 2,
+        completed: true
+      }).then(() => {});
+    }
+  }, [isComplete, user]);
 
   const fingers = ['thumb', 'index', 'middle', 'ring', 'pinky'];
   const breathDuration = 4000; // 4 seconds per breath phase

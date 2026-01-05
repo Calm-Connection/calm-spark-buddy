@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -7,13 +7,38 @@ import { ArrowLeft, Play, Pause } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { useBreathingAudio } from '@/hooks/useBreathingAudio';
 import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function MoodMusicMixer() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [isPlaying, setIsPlaying] = useState(false);
   const [calmLevel, setCalmLevel] = useState([50]);
   const [happyLevel, setHappyLevel] = useState([50]);
   const [focusLevel, setFocusLevel] = useState([50]);
+  const hasTrackedRef = useRef(false);
+  const playStartRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (isPlaying && !playStartRef.current) {
+      playStartRef.current = Date.now();
+    }
+    
+    if (!isPlaying && playStartRef.current && !hasTrackedRef.current && user) {
+      const playDuration = (Date.now() - playStartRef.current) / 1000;
+      if (playDuration >= 30) {
+        hasTrackedRef.current = true;
+        supabase.from('tool_usage').insert({
+          user_id: user.id,
+          tool_name: 'Mood Music Mixer',
+          duration_minutes: Math.ceil(playDuration / 60),
+          completed: true
+        }).then(() => {});
+      }
+      playStartRef.current = null;
+    }
+  }, [isPlaying, user]);
 
   // Use multiple audio instances for mixing (simplified version)
   useBreathingAudio({ 

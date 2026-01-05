@@ -1,17 +1,35 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ArrowLeft } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function WarmHandsTrick() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [sunPosition, setSunPosition] = useState({ x: 50, y: 20 });
   const [isDragging, setIsDragging] = useState(false);
   const [leftHandWarmed, setLeftHandWarmed] = useState(false);
   const [rightHandWarmed, setRightHandWarmed] = useState(false);
+  const [hasTracked, setHasTracked] = useState(false);
+
+  const bothWarmed = leftHandWarmed && rightHandWarmed;
+
+  useEffect(() => {
+    if (bothWarmed && !hasTracked && user) {
+      setHasTracked(true);
+      supabase.from('tool_usage').insert({
+        user_id: user.id,
+        tool_name: 'Warm Hands Trick',
+        duration_minutes: 1,
+        completed: true
+      }).then(() => {});
+    }
+  }, [bothWarmed, hasTracked, user]);
 
   const leftHandPos = { x: 25, y: 60 };
   const rightHandPos = { x: 75, y: 60 };
@@ -62,8 +80,6 @@ export default function WarmHandsTrick() {
       }
     }
   };
-
-  const bothWarmed = leftHandWarmed && rightHandWarmed;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-primary/10 via-accent/5 to-background pb-20">
