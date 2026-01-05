@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ArrowLeft, Check } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
+import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
 
 type Creature = 'firefly' | 'turtle' | 'fox';
 type Movement = 'stretch' | 'wiggle' | 'breathe' | 'hug';
@@ -91,6 +92,9 @@ export default function CalmCreature() {
               </Card>
             ))}
           </div>
+          <div className="mt-4">
+            <DisclaimerCard variant="tool-limitation" size="small" />
+          </div>
         </div>
         <BottomNav role="child" />
       </div>
@@ -141,6 +145,9 @@ export default function CalmCreature() {
                 Done
               </Button>
             </div>
+          </div>
+          <div className="mt-4">
+            <DisclaimerCard variant="tool-limitation" size="small" />
           </div>
         </div>
         <BottomNav role="child" />
@@ -204,6 +211,10 @@ export default function CalmCreature() {
               }`}
             />
           ))}
+        </div>
+
+        <div className="mt-4">
+          <DisclaimerCard variant="tool-limitation" size="small" />
         </div>
       </div>
 

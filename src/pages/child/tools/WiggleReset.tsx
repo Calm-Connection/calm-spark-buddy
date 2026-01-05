@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ArrowLeft, Check } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
+import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
 
 const resetSteps = [
   { id: 1, action: 'Wiggle Toes', emoji: '👣', instruction: 'Wiggle your toes - left, right, all together!' },
@@ -74,6 +75,9 @@ export default function WiggleReset() {
               </Button>
             </div>
           </div>
+          <div className="mt-4">
+            <DisclaimerCard variant="tool-limitation" size="small" />
+          </div>
         </div>
         <BottomNav role="child" />
       </div>
@@ -135,6 +139,10 @@ export default function WiggleReset() {
               }`}
             />
           ))}
+        </div>
+
+        <div className="mt-4">
+          <DisclaimerCard variant="tool-limitation" size="small" />
         </div>
       </div>
 

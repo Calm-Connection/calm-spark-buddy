@@ -6,6 +6,7 @@ import { ArrowLeft, Check } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { WendyTipCard } from '@/components/WendyTipCard';
 import { useBreathingAudio } from '@/hooks/useBreathingAudio';
+import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
 
 type LightingType = 'warm' | 'cool' | 'rainbow';
 type SoundType = 'rain' | 'ocean' | 'wind' | 'chimes';
@@ -201,6 +202,10 @@ export default function CalmCorner() {
             </div>
           </div>
         )}
+
+        <div className="mt-4">
+          <DisclaimerCard variant="tool-limitation" size="small" />
+        </div>
       </div>
 
       <BottomNav role="child" />

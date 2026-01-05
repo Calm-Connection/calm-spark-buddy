@@ -6,6 +6,7 @@ import { Slider } from '@/components/ui/slider';
 import { ArrowLeft, Play, Pause } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { useBreathingAudio } from '@/hooks/useBreathingAudio';
+import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
 
 export default function MoodMusicMixer() {
   const navigate = useNavigate();
@@ -130,6 +131,10 @@ export default function MoodMusicMixer() {
             </>
           )}
         </Button>
+
+        <div className="mt-4">
+          <DisclaimerCard variant="tool-limitation" size="small" />
+        </div>
       </div>
 
       <BottomNav role="child" />

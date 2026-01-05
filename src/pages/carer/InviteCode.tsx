@@ -117,6 +117,15 @@ export default function InviteCode() {
                   >
                     Generate New Code
                   </Button>
+
+                  <Button
+                    onClick={() => navigate('/carer/home')}
+                    variant="gradient"
+                    size="lg"
+                    className="w-full transition-all duration-200 hover:scale-[1.02] hover:shadow-soft"
+                  >
+                    Continue to Dashboard
+                  </Button>
                 </div>
               ) : (
                 <Button

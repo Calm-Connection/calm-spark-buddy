@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ArrowLeft, Play } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
+import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
 
 export default function SlowMoMode() {
   const navigate = useNavigate();
@@ -149,6 +150,10 @@ export default function SlowMoMode() {
             </div>
           </div>
         )}
+
+        <div className="mt-4">
+          <DisclaimerCard variant="tool-limitation" size="small" />
+        </div>
       </div>
 
       <BottomNav role="child" />

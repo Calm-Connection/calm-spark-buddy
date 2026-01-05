@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ArrowLeft, Bell } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
+import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
 
 export default function GentleReminderBell() {
   const navigate = useNavigate();
@@ -115,6 +116,10 @@ export default function GentleReminderBell() {
             💡 This bell is just for you. It's a gentle reminder to pause, breathe, and find your calm.
           </p>
         </Card>
+
+        <div className="mt-4">
+          <DisclaimerCard variant="tool-limitation" size="small" />
+        </div>
       </div>
 
       <BottomNav role="child" />

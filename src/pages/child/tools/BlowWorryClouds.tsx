@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/card';
 import { ArrowLeft, Sparkles } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { WendyTipCard } from '@/components/WendyTipCard';
+import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
 
 const worryWords = [
   { id: 1, text: 'School', emoji: '📚' },
@@ -116,6 +117,10 @@ export default function BlowWorryClouds() {
             </div>
           </div>
         )}
+
+        <div className="mt-4">
+          <DisclaimerCard variant="tool-limitation" size="small" />
+        </div>
       </div>
 
       <BottomNav role="child" />
