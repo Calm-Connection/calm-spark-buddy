@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -6,6 +6,8 @@ import { ArrowLeft, RotateCw } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { WendyTipCard } from '@/components/WendyTipCard';
 import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 
 const activities = [
   { id: 1, name: 'Sensory Reset', emoji: '👁️', instruction: 'Name 3 things you can see right now', color: 'from-pink-300 to-pink-400' },
@@ -17,9 +19,23 @@ const activities = [
 
 export default function CalmWheel() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [isSpinning, setIsSpinning] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState<typeof activities[0] | null>(null);
   const [isDone, setIsDone] = useState(false);
+  const [hasTracked, setHasTracked] = useState(false);
+
+  useEffect(() => {
+    if (isDone && !hasTracked && user) {
+      setHasTracked(true);
+      supabase.from('tool_usage').insert({
+        user_id: user.id,
+        tool_name: 'Calm Wheel',
+        duration_minutes: 1,
+        completed: true
+      }).then(() => {});
+    }
+  }, [isDone, hasTracked, user]);
 
   const handleSpin = () => {
     setIsSpinning(true);

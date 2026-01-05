@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -6,6 +6,8 @@ import { ArrowLeft, Sparkles } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { WendyTipCard } from '@/components/WendyTipCard';
 import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 
 const worryWords = [
   { id: 1, text: 'School', emoji: '📚' },
@@ -17,8 +19,22 @@ const worryWords = [
 
 export default function BlowWorryClouds() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [clearedClouds, setClearedClouds] = useState<number[]>([]);
+  const [hasTracked, setHasTracked] = useState(false);
   const allCleared = clearedClouds.length === worryWords.length;
+
+  useEffect(() => {
+    if (allCleared && !hasTracked && user) {
+      setHasTracked(true);
+      supabase.from('tool_usage').insert({
+        user_id: user.id,
+        tool_name: 'Blow Worry Clouds',
+        duration_minutes: 2,
+        completed: true
+      }).then(() => {});
+    }
+  }, [allCleared, hasTracked, user]);
 
   const handleCloudClick = (id: number) => {
     if (!clearedClouds.includes(id)) {

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -8,6 +8,8 @@ import { DecorativeIcon } from '@/components/DecorativeIcon';
 import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
 import { ConnectionBadge } from '@/components/ConnectionBadge';
 import confetti from 'canvas-confetti';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 
 type Step = 'intro' | 'see' | 'touch' | 'hear' | 'smell' | 'taste' | 'complete';
 
@@ -29,9 +31,23 @@ const sampleObjects = {
 
 export default function GroundingGame() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [currentStep, setCurrentStep] = useState<Step>('intro');
   const [selectedItems, setSelectedItems] = useState<number>(0);
   const [completedSteps, setCompletedSteps] = useState<string[]>([]);
+  const [hasTracked, setHasTracked] = useState(false);
+
+  useEffect(() => {
+    if (currentStep === 'complete' && !hasTracked && user) {
+      setHasTracked(true);
+      supabase.from('tool_usage').insert({
+        user_id: user.id,
+        tool_name: 'Grounding Game',
+        duration_minutes: 3,
+        completed: true
+      }).then(() => {});
+    }
+  }, [currentStep, hasTracked, user]);
 
   const getCurrentStepData = () => steps.find(s => s.id === currentStep);
 

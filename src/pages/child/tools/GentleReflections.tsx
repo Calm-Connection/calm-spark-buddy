@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -8,6 +8,8 @@ import { toast } from 'sonner';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
 import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
 import { ConnectionBadge } from '@/components/ConnectionBadge';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 
 const reflectionPrompts = [
   { prompt: "What made you smile today?", emoji: "😊", type: "positive" },
@@ -29,10 +31,24 @@ const emojiResponses = [
 
 export default function GentleReflections() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [currentPromptIndex, setCurrentPromptIndex] = useState(0);
   const [responses, setResponses] = useState<Array<{ prompt: string; response: string }>>([]);
   const [textResponse, setTextResponse] = useState("");
   const [complete, setComplete] = useState(false);
+  const [hasTracked, setHasTracked] = useState(false);
+
+  useEffect(() => {
+    if (complete && !hasTracked && user) {
+      setHasTracked(true);
+      supabase.from('tool_usage').insert({
+        user_id: user.id,
+        tool_name: 'Gentle Reflections',
+        duration_minutes: 3,
+        completed: true
+      }).then(() => {});
+    }
+  }, [complete, hasTracked, user]);
 
   const currentPrompt = reflectionPrompts[currentPromptIndex];
 

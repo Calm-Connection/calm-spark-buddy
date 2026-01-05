@@ -1,17 +1,33 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ArrowLeft } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function CoolDownCube() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [position, setPosition] = useState({ x: 50, y: 50 });
   const [size, setSize] = useState(100);
   const [isDragging, setIsDragging] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
+  const hasTrackedRef = useRef(false);
+
+  useEffect(() => {
+    if (isComplete && !hasTrackedRef.current && user) {
+      hasTrackedRef.current = true;
+      supabase.from('tool_usage').insert({
+        user_id: user.id,
+        tool_name: 'Cool Down Cube',
+        duration_minutes: 2,
+        completed: true
+      }).then(() => {});
+    }
+  }, [isComplete, user]);
 
   useEffect(() => {
     if (size > 0 && !isComplete) {
