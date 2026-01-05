@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ArrowLeft } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
+import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
 
 export default function WarmHandsTrick() {
   const navigate = useNavigate();
@@ -181,6 +182,10 @@ export default function WarmHandsTrick() {
             </Button>
           </div>
         )}
+
+        <div className="mt-4">
+          <DisclaimerCard variant="tool-limitation" size="small" />
+        </div>
       </div>
 
       <BottomNav role="child" />

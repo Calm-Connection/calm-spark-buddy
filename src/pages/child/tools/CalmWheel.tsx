@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/card';
 import { ArrowLeft, RotateCw } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { WendyTipCard } from '@/components/WendyTipCard';
+import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
 
 const activities = [
   { id: 1, name: 'Sensory Reset', emoji: '👁️', instruction: 'Name 3 things you can see right now', color: 'from-pink-300 to-pink-400' },
@@ -147,6 +148,10 @@ export default function CalmWheel() {
             </div>
           </div>
         )}
+
+        <div className="mt-4">
+          <DisclaimerCard variant="tool-limitation" size="small" />
+        </div>
       </div>
 
       <BottomNav role="child" />
