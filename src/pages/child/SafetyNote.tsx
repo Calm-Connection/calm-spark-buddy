@@ -1,11 +1,48 @@
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Shield, Heart, Lock } from 'lucide-react';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function SafetyNote() {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const [checking, setChecking] = useState(true);
+
+  // Check if tour already completed - skip to home if so
+  useEffect(() => {
+    const checkTourStatus = async () => {
+      if (!user) {
+        setChecking(false);
+        return;
+      }
+      
+      const { data } = await supabase
+        .from('children_profiles')
+        .select('has_completed_tour')
+        .eq('user_id', user.id)
+        .single();
+      
+      if (data?.has_completed_tour) {
+        navigate('/child/home', { replace: true });
+      } else {
+        setChecking(false);
+      }
+    };
+    
+    checkTourStatus();
+  }, [user, navigate]);
+
+  if (checking) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-primary/10 via-accent/5 to-background">
+        <div className="animate-pulse text-muted-foreground">Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center p-6 bg-gradient-to-b from-primary/10 via-accent/5 to-background">

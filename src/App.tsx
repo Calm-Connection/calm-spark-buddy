@@ -207,14 +207,21 @@ function AppRoutes() {
       <Route path="/carer/tools/grounding-together" element={<ProtectedRoute role="carer"><GroundingTogether /></ProtectedRoute>} />
       <Route path="/carer/journal" element={<ProtectedRoute role="carer"><CarerJournal /></ProtectedRoute>} />
       <Route path="/carer/notification-settings" element={<ProtectedRoute role="carer"><CarerNotificationSettings /></ProtectedRoute>} />
-            <Route path="/carer/safeguarding" element={<ProtectedRoute role="carer"><SafeguardingDashboard /></ProtectedRoute>} />
-            <Route path="/carer/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/carer/terms-of-use" element={<TermsOfUse />} />
-          <Route path="/carer/safeguarding-info" element={<SafeguardingInfo />} />
-          <Route path="/carer/trust-safety-faq" element={<TrustAndSafetyFAQ />} />
-          <Route path="/carer/policy-hub" element={<PolicyHub />} />
-          <Route path="/child/safety-privacy" element={<SafetyAndPrivacy />} />
-            <Route path="/carer/pseudonym-policy" element={<PseudonymPolicy />} />
+      <Route path="/carer/safeguarding" element={<ProtectedRoute role="carer"><SafeguardingDashboard /></ProtectedRoute>} />
+      
+      {/* 
+        PUBLIC POLICY ROUTES
+        These routes are intentionally unprotected to allow prospective users
+        to read privacy, terms, and safeguarding information before signing up.
+        This is a deliberate design decision for transparency and trust.
+      */}
+      <Route path="/carer/privacy-policy" element={<PrivacyPolicy />} />
+      <Route path="/carer/terms-of-use" element={<TermsOfUse />} />
+      <Route path="/carer/safeguarding-info" element={<SafeguardingInfo />} />
+      <Route path="/carer/trust-safety-faq" element={<TrustAndSafetyFAQ />} />
+      <Route path="/carer/policy-hub" element={<PolicyHub />} />
+      <Route path="/child/safety-privacy" element={<SafetyAndPrivacy />} />
+      <Route path="/carer/pseudonym-policy" element={<PseudonymPolicy />} />
       <Route path="/carer/modules" element={<ProtectedRoute role="carer"><Modules /></ProtectedRoute>} />
       <Route path="/carer/modules/:moduleId" element={<ProtectedRoute role="carer"><ModuleDetail /></ProtectedRoute>} />
       

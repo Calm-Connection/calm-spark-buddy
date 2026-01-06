@@ -119,12 +119,12 @@ export default function InviteCode() {
                   </Button>
 
                   <Button
-                    onClick={() => navigate('/carer/home')}
+                    onClick={() => navigate('/quick-tour')}
                     variant="gradient"
                     size="lg"
                     className="w-full transition-all duration-200 hover:scale-[1.02] hover:shadow-soft"
                   >
-                    Continue to Dashboard
+                    Continue to Quick Tour
                   </Button>
                 </div>
               ) : (
