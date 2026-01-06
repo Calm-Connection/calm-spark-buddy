@@ -362,11 +362,11 @@ function InsightCard({ insight, childNickname, toolDetails, getMoodIconId, getMo
         <div className="flex-1 space-y-2 sm:space-y-3 w-full">
           {/* Mood Score with Explanation */}
           <div className="flex flex-wrap items-center gap-2">
-            <MoodIcon moodId={getMoodIconId(insight.mood_score)} size="sm" />
+            <MoodIcon moodId={getMoodIconId(insight.mood_score * 10)} size="sm" />
             <HoverCard>
               <HoverCardTrigger asChild>
                 <Badge variant="secondary" className="text-xs cursor-help flex items-center gap-1">
-                  {getMoodLabel(insight.mood_score)} ({insight.mood_score}/100)
+                  {getMoodLabel(insight.mood_score * 10)} ({insight.mood_score * 10}/100)
                   <Info className="h-3 w-3" />
                 </Badge>
               </HoverCardTrigger>

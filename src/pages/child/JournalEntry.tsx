@@ -362,13 +362,33 @@ export default function JournalEntry() {
   };
 
   const handleToolSelection = (toolName: string) => {
-    // Map tool names to routes
+    // Map tool names to routes (all 17+ child tools)
     const toolRoutes: Record<string, string> = {
+      // Breathing exercises
       'Breathing Space': '/child/tools/breathing-space',
+      'Ocean Breathing': '/child/tools/breathing-space/ocean',
+      'Cloud Breathing': '/child/tools/breathing-space/cloud',
+      'Animal Breathing': '/child/tools/breathing-space/animal',
+      'Forest Breathing': '/child/tools/breathing-space/forest',
+      'Star Breathing': '/child/tools/breathing-space/star',
+      'Garden Breathing': '/child/tools/breathing-space/garden',
+      'Rainbow Breathing': '/child/tools/breathing-space/rainbow',
+      // Calming tools
       'Colour Calm': '/child/tools/colour-calm',
       'Grounding Game': '/child/tools/grounding-game',
       'Thought Clouds': '/child/tools/thought-clouds',
       'Gentle Reflections': '/child/tools/gentle-reflections',
+      'Blow Worry Clouds': '/child/tools/blow-worry-clouds',
+      'Calm Corner': '/child/tools/calm-corner',
+      'Calm Creature': '/child/tools/calm-creature',
+      'Calm Wheel': '/child/tools/calm-wheel',
+      'Cool Down Cube': '/child/tools/cool-down-cube',
+      'Gentle Reminder Bell': '/child/tools/gentle-reminder-bell',
+      'Hand Trace Breathing': '/child/tools/hand-trace-breathing',
+      'Mood Music Mixer': '/child/tools/mood-music-mixer',
+      'Slow-Mo Mode': '/child/tools/slow-mo-mode',
+      'Warm Hands Trick': '/child/tools/warm-hands-trick',
+      'Wiggle Reset': '/child/tools/wiggle-reset',
     };
     
     const route = toolRoutes[toolName];
