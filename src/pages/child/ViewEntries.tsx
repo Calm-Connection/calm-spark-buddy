@@ -12,6 +12,7 @@ import { BookOpen, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
 import { MoodIcon } from '@/components/MoodIcon';
+import { PageTransition } from '@/components/PageTransition';
 import { getEmotionalIcon } from '@/constants/emotionalIcons';
 import {
   AlertDialog,
@@ -95,6 +96,7 @@ export default function ViewEntries() {
   }
 
   return (
+    <PageTransition>
     <div className="min-h-screen bg-gradient-to-b from-primary/5 via-accent/10 to-background px-4 sm:px-6 py-6 pb-24 relative">
       <DecorativeIcon icon="sparkles" position="top-right" opacity={0.08} />
       <div className="max-w-2xl mx-auto space-y-6">
@@ -182,5 +184,6 @@ export default function ViewEntries() {
       <INeedHelpButton />
       <BottomNav role="child" />
     </div>
+    </PageTransition>
   );
 }

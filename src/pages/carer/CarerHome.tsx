@@ -112,8 +112,8 @@ export default function CarerHome() {
     if (latestInsightData) {
       setLatestInsight(latestInsightData as LatestInsight);
 
-      // Generate suggested action based on mood score
-      const moodScore = latestInsightData.mood_score || 50;
+      // Generate suggested action based on mood score (AI returns 0-10, multiply by 10 for 0-100 scale)
+      const moodScore = (latestInsightData.mood_score || 5) * 10;
       if (moodScore < 40) {
         setSuggestedAction('Try a calming activity together 🌿');
       } else if (moodScore < 60) {
@@ -264,16 +264,16 @@ export default function CarerHome() {
               </Card>}
 
             {/* Wendy's Wellbeing Overview - Supporting Your Child */}
-            {latestInsight && <Card className={`p-4 sm:p-6 bg-gradient-to-br border border-border/30 ${getMoodColor(latestInsight.mood_score)}`}>
+            {latestInsight && <Card className={`p-4 sm:p-6 bg-gradient-to-br border border-border/30 ${getMoodColor(latestInsight.mood_score * 10)}`}>
                 <div className="flex flex-col sm:flex-row items-start gap-3 sm:gap-4">
                   <WendyAvatar size="md" className="mx-auto sm:mx-0" />
                   <div className="flex-1 space-y-3 w-full">
                     <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 flex-wrap">
                       <h3 className="font-bold text-base sm:text-lg">Wendy's Wellbeing Overview</h3>
                       <div className="flex items-center gap-2">
-                        <span className="text-xl sm:text-2xl">{getMoodEmoji(latestInsight.mood_score)}</span>
+                        <span className="text-xl sm:text-2xl">{getMoodEmoji(latestInsight.mood_score * 10)}</span>
                         <Badge variant="secondary" className="text-xs">
-                          {latestInsight.mood_score}/100
+                          {latestInsight.mood_score * 10}/100
                         </Badge>
                       </div>
                     </div>
@@ -330,7 +330,7 @@ export default function CarerHome() {
                       <div className="flex-1">
                         <p className="text-sm font-semibold">Emotional Trends</p>
                         <p className="text-xs text-muted-foreground">
-                          {moodTrend.filter(m => m.mood_score >= 60).length >= 5 ? `${childNickname} has had mostly positive days - they're doing well emotionally.` : moodTrend.filter(m => m.mood_score < 40).length >= 3 ? `${childNickname} has experienced some challenging days. Extra support may be helpful.` : `${childNickname}'s mood has been balanced this week with both ups and downs.`}
+                          {moodTrend.filter(m => m.mood_score * 10 >= 60).length >= 5 ? `${childNickname} has had mostly positive days - they're doing well emotionally.` : moodTrend.filter(m => m.mood_score * 10 < 40).length >= 3 ? `${childNickname} has experienced some challenging days. Extra support may be helpful.` : `${childNickname}'s mood has been balanced this week with both ups and downs.`}
                         </p>
                       </div>
                     </div>
@@ -354,13 +354,13 @@ export default function CarerHome() {
                     </div>
                     <div className="text-center p-3 bg-background/50 rounded-lg">
                       <p className="text-2xl font-bold text-secondary">
-                        {moodTrend.filter(m => m.mood_score >= 60).length}
+                        {moodTrend.filter(m => m.mood_score * 10 >= 60).length}
                       </p>
                       <p className="text-xs text-muted-foreground">Calm Days</p>
                     </div>
                     <div className="text-center p-3 bg-background/50 rounded-lg">
                       <p className="text-2xl font-bold text-accent">
-                        {Math.round(moodTrend.reduce((sum, m) => sum + m.mood_score, 0) / moodTrend.length)}%
+                        {Math.round(moodTrend.reduce((sum, m) => sum + m.mood_score * 10, 0) / moodTrend.length)}%
                       </p>
                       <p className="text-xs text-muted-foreground">Avg Mood</p>
                     </div>
@@ -371,14 +371,14 @@ export default function CarerHome() {
                     <p className="text-xs font-semibold text-muted-foreground mb-2">7-Day Emotional Journey</p>
                     <div className="flex items-end gap-1 h-16">
                       {moodTrend.map((data, idx) => {
-                  const height = data.mood_score / 100 * 100;
+                  const height = data.mood_score * 10;
                   return <div key={idx} className="flex-1 flex flex-col items-center gap-1">
                             <div className="w-full bg-muted rounded-t relative" style={{
                       height: '100%'
                     }}>
                               <div className="absolute bottom-0 w-full bg-gradient-to-t from-primary to-secondary rounded-t transition-all" style={{
                         height: `${height}%`
-                      }} title={`${data.date}: ${data.mood_score}%`} />
+                      }} title={`${data.date}: ${data.mood_score * 10}%`} />
                             </div>
                           </div>;
                 })}
@@ -399,7 +399,7 @@ export default function CarerHome() {
                 </div>
                 <div className="flex items-end gap-2 h-32">
                   {moodTrend.map((data, idx) => {
-              const height = data.mood_score / 100 * 100;
+              const height = data.mood_score * 10;
               return <div key={idx} className="flex-1 flex flex-col items-center gap-1">
                         <div className="w-full bg-primary/20 rounded-t-lg relative" style={{
                   height: '100%'
