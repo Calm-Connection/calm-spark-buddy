@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { BookOpen, Sparkles, Shield, Heart, BarChart2, FileText, Users, UserX, ArrowLeft, X } from 'lucide-react';
+import { BookOpen, Sparkles, Shield, Heart, BarChart2, FileText, Users, UserX, X } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
+import { supabase } from '@/integrations/supabase/client';
 
 const childSlides = [
   {
@@ -85,15 +86,27 @@ const carerSlides = [
 export default function QuickTour() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const navigate = useNavigate();
-  const { userRole } = useAuth();
+  const { userRole, user } = useAuth();
 
   const slides = userRole === 'child' ? childSlides : carerSlides;
 
-  const handleNext = () => {
+  // Mark tour as completed in the database
+  const markTourComplete = async () => {
+    if (!user) return;
+    
+    const table = userRole === 'child' ? 'children_profiles' : 'carer_profiles';
+    await supabase
+      .from(table)
+      .update({ has_completed_tour: true })
+      .eq('user_id', user.id);
+  };
+
+  const handleNext = async () => {
     if (currentSlide < slides.length - 1) {
       setCurrentSlide(currentSlide + 1);
     } else {
-      // Tour complete - navigate based on role
+      // Tour complete - mark as completed and navigate based on role
+      await markTourComplete();
       if (userRole === 'child') {
         navigate('/child/first-mood-checkin');
       } else {
@@ -102,7 +115,9 @@ export default function QuickTour() {
     }
   };
 
-  const handleSkip = () => {
+  const handleSkip = async () => {
+    // Mark tour as completed even when skipping
+    await markTourComplete();
     if (userRole === 'child') {
       navigate('/child/first-mood-checkin');
     } else {

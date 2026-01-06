@@ -113,6 +113,7 @@ export type Database = {
         Row: {
           avatar_json: Json | null
           created_at: string
+          has_completed_tour: boolean | null
           id: string
           nickname: string | null
           updated_at: string
@@ -121,6 +122,7 @@ export type Database = {
         Insert: {
           avatar_json?: Json | null
           created_at?: string
+          has_completed_tour?: boolean | null
           id?: string
           nickname?: string | null
           updated_at?: string
@@ -129,6 +131,7 @@ export type Database = {
         Update: {
           avatar_json?: Json | null
           created_at?: string
+          has_completed_tour?: boolean | null
           id?: string
           nickname?: string | null
           updated_at?: string
@@ -142,6 +145,7 @@ export type Database = {
           avatar_json: Json | null
           created_at: string
           gender: string | null
+          has_completed_tour: boolean | null
           id: string
           linked_carer_id: string | null
           nickname: string
@@ -154,6 +158,7 @@ export type Database = {
           avatar_json?: Json | null
           created_at?: string
           gender?: string | null
+          has_completed_tour?: boolean | null
           id?: string
           linked_carer_id?: string | null
           nickname: string
@@ -166,6 +171,7 @@ export type Database = {
           avatar_json?: Json | null
           created_at?: string
           gender?: string | null
+          has_completed_tour?: boolean | null
           id?: string
           linked_carer_id?: string | null
           nickname?: string
