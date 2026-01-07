@@ -235,12 +235,12 @@ HISTORICAL CONTEXT FOR THIS CHILD:
 ${historicalContext.activePatterns.length > 0 ? `
 Active Patterns Detected:
 ${historicalContext.activePatterns.map((p: any) => 
-  `- ${p.pattern_type}: ${JSON.stringify(p.detected_themes)} (${p.severity_trend} trend, ${p.entry_count} entries)`
+  `- ${p.pattern_type}: ${JSON.stringify(p.detected_themes)} (${p.severity_trend === 'declining' ? 'decreasing' : p.severity_trend} over ${p.entry_count} entries)`
 ).join('\n')}
 ` : ''}
 
 ${historicalContext.recentMoods.length > 0 ? `
-Recent Mood Trajectory:
+Recent Mood Patterns:
 ${historicalContext.recentMoods.slice(0, 5).map((m: any) => 
   `${m.mood_emoji} ${m.mood_type} (${m.intensity}/10) - ${new Date(m.created_at).toLocaleDateString()}`
 ).join('\n')}
@@ -256,16 +256,28 @@ ${historicalContext.protectiveFactors.slice(0, 3).map((f: any) =>
 CONTEXTUAL ANALYSIS INSTRUCTIONS:
 Based on this history, determine:
 1. Is this a NEW concern or RECURRING pattern?
-2. Is emotional state IMPROVING, STABLE, or DECLINING?
+2. Is emotional state IMPROVING, STABLE, or DECREASING?
 3. Are SUPPORT SYSTEMS active and helpful?
 4. Is child ENGAGING with coping tools?
-5. What is the TRAJECTORY over time?
+5. What has been the general PATTERN over time?
 
 Escalation Guidelines with Context:
 - First mention + stable mood + support = NO escalation
-- Recurring concern + declining mood = ESCALATE
+- Recurring concern + decreasing mood = ESCALATE
 - High-risk keywords + no support = IMMEDIATE escalation
 - Moderate distress + active coping + support = Tool recommendation only
+
+PARENT SUMMARY LANGUAGE RULES:
+- Use descriptive, observational language only
+- Say "Recently, your child has shared more worries about..." NOT "This suggests increasing anxiety"
+- Avoid: "trend", "trajectory", "risk", "indicates", "likely", "suggests worsening", "predicts"
+- Use: "has been", "seems to be", "has shared", "has mentioned", "recently"
+
+EVIDENCE & AUTHORITY RULES:
+- You may suggest general support options (GP, school, trusted adult, helplines)
+- You must NOT cite named research, statistics, clinical frameworks, or studies
+- You must NOT use "evidence shows", "research indicates", "studies suggest"
+- Keep tone supportive without expert authority framing
 ` : 'No historical context available - this may be their first entry or recent sign-up.'}
 
 CORE PRINCIPLES:

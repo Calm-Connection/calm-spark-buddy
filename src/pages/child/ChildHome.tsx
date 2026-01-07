@@ -113,7 +113,7 @@ export default function ChildHome() {
     const today = new Date().toISOString().split('T')[0];
     
     if (moodScore < 40) {
-      setWendyTip("I'm really proud of you for sharing how you're feeling. It takes courage! Remember, difficult feelings don't last forever. Would a calming activity help right now?");
+      setWendyTip("I'm really proud of you for sharing how you're feeling. It takes courage! Feelings can change, even when they feel stuck. Would a calming activity help right now?");
       setPostJournalAction({ type: 'tool', link: '/child/tools', label: 'Try a Calming Tool' });
     } else if (moodScore < 60) {
       setWendyTip("Thanks for checking in with your feelings today. You're doing a great job taking care of yourself. A gentle activity might help you feel even better!");
@@ -197,7 +197,7 @@ export default function ChildHome() {
         .limit(1);
       
       if (data && data.length > 0) {
-        setWendyTip("How are you feeling today? Did you get a chance to talk to someone? 💜");
+        setWendyTip("I'm really glad you're here today. How are you feeling right now? 💜");
       }
     } catch (error) {
       console.error('Error checking escalations:', error);
