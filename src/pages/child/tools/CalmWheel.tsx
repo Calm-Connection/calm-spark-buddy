@@ -144,7 +144,7 @@ export default function CalmWheel() {
               </p>
             </Card>
 
-            <WendyTipCard tip="These quick activities are perfect when you need a fast reset. Even 20 seconds can make a big difference! 🌟" />
+            <WendyTipCard tip="These quick activities can help when you need a moment. 🌟" />
 
             <div className="flex gap-3">
               <Button 

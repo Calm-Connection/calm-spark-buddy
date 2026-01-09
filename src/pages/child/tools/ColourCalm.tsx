@@ -189,7 +189,7 @@ export default function ColourCalm() {
               <Sparkles className="w-20 h-20 mx-auto mb-4 text-primary animate-gentle-pulse" />
               <h2 className="text-2xl font-bold mb-3">Beautiful Work! 🌟</h2>
               <p className="text-lg mb-2">
-                You used the power of your imagination to create calm.
+                You used your imagination gently.
               </p>
               <p className="text-muted-foreground">
                 Whenever you need to feel calm, you can imagine your special color spreading through your body. 💙

@@ -52,7 +52,7 @@ const affirmations = [
   "You matter more than you know 💫",
   "Being gentle with yourself is important 🌸",
   "You have so much to be proud of 🏆",
-  "Every breath you take is a tiny victory 🌬️",
+  "Every breath counts 🌬️",
 ];
 
 // Get consistent daily quote based on date
