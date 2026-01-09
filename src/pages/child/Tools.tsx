@@ -1,13 +1,15 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { ArrowLeft, Wind, Heart, Music, Palette, Sparkles, Home, CloudRain, Snowflake, Bug, Sliders, Hand, Move, CircleDot, Sun, Clock, Bell } from 'lucide-react';
+import { ArrowLeft, Wind, Heart, Music, Palette, Sparkles, Home, CloudRain, Snowflake, Bug, Sliders, Hand, Move, CircleDot, Sun, Clock, Bell, Lock } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
 import { useReduceMotion } from '@/hooks/useReduceMotion';
 import { PageTransition } from '@/components/PageTransition';
+import { Badge } from '@/components/ui/badge';
 
-const tools = [
+// MVP Tools - accessible in January MVP
+const mvpTools = [
   {
     icon: Wind,
     title: 'Breathing Space',
@@ -21,12 +23,6 @@ const tools = [
     path: '/child/tools/grounding-game',
   },
   {
-    icon: Music,
-    title: 'Thought Clouds',
-    description: 'Work through big feelings gently',
-    path: '/child/tools/thought-clouds',
-  },
-  {
     icon: Palette,
     title: 'Colour Calm',
     description: 'Visualize peace with calming colors',
@@ -35,7 +31,7 @@ const tools = [
   {
     icon: Heart,
     title: 'Gentle Reflections',
-    description: 'Check in with how you\'re feeling',
+    description: "Check in with how you're feeling",
     path: '/child/tools/gentle-reflections',
   },
   {
@@ -43,18 +39,6 @@ const tools = [
     title: 'Talk to Wendy',
     description: 'Chat with your AI friend',
     path: '/child/wendy-chat',
-  },
-  {
-    icon: Home,
-    title: 'Create My Calm Corner',
-    description: 'Design your own peaceful space',
-    path: '/child/tools/calm-corner',
-  },
-  {
-    icon: CloudRain,
-    title: 'Blow Away Worry Clouds',
-    description: 'Clear your worries gently',
-    path: '/child/tools/blow-worry-clouds',
   },
   {
     icon: Snowflake,
@@ -67,12 +51,6 @@ const tools = [
     title: 'Follow the Calm Creature',
     description: 'Copy calming movements',
     path: '/child/tools/calm-creature',
-  },
-  {
-    icon: Sliders,
-    title: 'Mood Music Mixer',
-    description: 'Mix your own calming sounds',
-    path: '/child/tools/mood-music-mixer',
   },
   {
     icon: Hand,
@@ -104,10 +82,38 @@ const tools = [
     description: 'Slow down and breathe',
     path: '/child/tools/slow-mo-mode',
   },
+];
+
+// Coming Soon Tools - parked for future release (content preserved)
+const comingSoonTools = [
+  {
+    icon: Music,
+    title: 'Thought Clouds',
+    description: 'Coming soon!',
+    path: '/child/tools/thought-clouds',
+  },
+  {
+    icon: CloudRain,
+    title: 'Blow Away Worry Clouds',
+    description: 'Coming soon!',
+    path: '/child/tools/blow-worry-clouds',
+  },
+  {
+    icon: Home,
+    title: 'Create My Calm Corner',
+    description: 'Coming soon!',
+    path: '/child/tools/calm-corner',
+  },
+  {
+    icon: Sliders,
+    title: 'Mood Music Mixer',
+    description: 'Coming soon!',
+    path: '/child/tools/mood-music-mixer',
+  },
   {
     icon: Bell,
     title: 'Gentle Reminder Bell',
-    description: 'Ring the calming bell',
+    description: 'Coming soon!',
     path: '/child/tools/gentle-bell',
   },
 ];
@@ -140,8 +146,9 @@ export default function Tools() {
           Try something gentle to help you feel calm and centered
         </p>
 
+        {/* MVP Tools Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {tools.map((tool, index) => {
+          {mvpTools.map((tool, index) => {
             const Icon = tool.icon;
             const decorativeIcons = ['cloud', 'sparkles', 'leaf', 'star', 'flower', 'sun'] as const;
             return (
@@ -169,6 +176,41 @@ export default function Tools() {
             );
           })}
         </div>
+
+        {/* Coming Soon Section */}
+        {comingSoonTools.length > 0 && (
+          <div className="space-y-3 mt-8">
+            <div className="flex items-center gap-2">
+              <h2 className="text-lg font-semibold text-muted-foreground">Coming Soon 🔜</h2>
+              <Badge variant="secondary" className="text-xs">More tools on the way!</Badge>
+            </div>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {comingSoonTools.map((tool) => {
+                const Icon = tool.icon;
+                return (
+                  <Card
+                    key={tool.title}
+                    className="relative overflow-hidden p-4 sm:p-5 opacity-50 cursor-not-allowed bg-muted/30 border-muted"
+                  >
+                    <div className="absolute top-2 right-2">
+                      <Lock className="h-4 w-4 text-muted-foreground" />
+                    </div>
+                    <div className="flex items-center gap-3 sm:gap-4">
+                      <div className="h-14 w-14 rounded-full bg-muted/50 flex items-center justify-center flex-shrink-0">
+                        <Icon className="h-7 w-7 text-muted-foreground" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-bold text-base sm:text-lg truncate text-muted-foreground">{tool.title}</h3>
+                        <p className="text-sm text-muted-foreground font-medium">{tool.description}</p>
+                      </div>
+                    </div>
+                  </Card>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
 
       <BottomNav role="child" />

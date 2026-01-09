@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { ArrowLeft, Heart, Hand, Sparkles } from 'lucide-react';
+import { ArrowLeft, Heart, Hand, Sparkles, Lock } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
 
@@ -15,6 +15,7 @@ const modes = {
     icon: Heart,
     color: 'hsl(25, 60%, 70%)',
     duration: 60,
+    isComingSoon: false,
   },
   tapping: {
     name: 'Release Tension',
@@ -22,6 +23,8 @@ const modes = {
     icon: Hand,
     color: 'hsl(280, 50%, 75%)',
     duration: 120,
+    isComingSoon: true,
+    comingSoonLabel: 'Coming Soon',
   },
   stillness: {
     name: 'Find Stillness',
@@ -29,6 +32,7 @@ const modes = {
     icon: Sparkles,
     color: 'hsl(200, 60%, 75%)',
     duration: 90,
+    isComingSoon: false,
   },
 };
 
@@ -240,22 +244,36 @@ export default function CalmMoment() {
               return (
                 <Card
                   key={modeKey}
-                  className="p-6 cursor-pointer hover:bg-accent/10 transition-all"
-                  onClick={() => setSelectedMode(modeKey)}
+                  className={`p-6 transition-all ${
+                    m.isComingSoon 
+                      ? 'opacity-50 cursor-not-allowed bg-muted/30' 
+                      : 'cursor-pointer hover:bg-accent/10'
+                  }`}
+                  onClick={() => !m.isComingSoon && setSelectedMode(modeKey)}
                 >
                   <div className="flex items-center gap-4">
                     <div
                       className="h-14 w-14 rounded-full flex items-center justify-center flex-shrink-0"
-                      style={{ backgroundColor: m.color, opacity: 0.3 }}
+                      style={{ backgroundColor: m.isComingSoon ? 'hsl(var(--muted))' : m.color, opacity: 0.3 }}
                     >
-                      <Icon size={28} style={{ color: m.color }} />
+                      <Icon size={28} style={{ color: m.isComingSoon ? 'hsl(var(--muted-foreground))' : m.color }} />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-semibold text-lg mb-1">{m.name}</h3>
+                      <div className="flex items-center gap-2">
+                        <h3 className={`font-semibold text-lg mb-1 ${m.isComingSoon ? 'text-muted-foreground' : ''}`}>{m.name}</h3>
+                        {m.isComingSoon && (
+                          <span className="flex items-center gap-1 text-xs bg-muted px-2 py-0.5 rounded-full text-muted-foreground">
+                            <Lock className="h-3 w-3" />
+                            Coming Soon
+                          </span>
+                        )}
+                      </div>
                       <p className="text-sm text-muted-foreground">{m.description}</p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {Math.floor(m.duration / 60)} min {m.duration % 60 > 0 ? `${m.duration % 60}s` : ''}
-                      </p>
+                      {!m.isComingSoon && (
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {Math.floor(m.duration / 60)} min {m.duration % 60 > 0 ? `${m.duration % 60}s` : ''}
+                        </p>
+                      )}
                     </div>
                   </div>
                 </Card>

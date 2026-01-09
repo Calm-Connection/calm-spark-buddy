@@ -110,7 +110,7 @@ export default function BlowWorryClouds() {
                 All Clear! 🌤️
               </h2>
               <p className="text-muted-foreground font-medium">
-                You cleared all your worry clouds. You've made space for calmer thoughts.
+                You cleared all your worry clouds. You've created some space.
               </p>
             </Card>
 

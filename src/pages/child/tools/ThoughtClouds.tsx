@@ -103,7 +103,7 @@ export default function ThoughtClouds() {
         });
       }
       
-      toast.success("Cloud cleared! 🌤️ You're learning to work through tough feelings.");
+      toast.success("Cloud cleared! 🌤️ You're practising with tough feelings.");
       setSelectedCloud(null);
       setCurrentQuestion(0);
     }
