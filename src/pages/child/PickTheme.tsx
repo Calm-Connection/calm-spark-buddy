@@ -139,7 +139,7 @@ export default function PickTheme() {
         <DecorativeIcon icon="leaf" position="bottom-left" opacity={0.08} />
         <CardContent className="space-y-8">
           <div className="text-center space-y-2">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl text-foreground bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+<h1 className="text-2xl sm:text-3xl md:text-4xl title-gradient-underline">
               PICK YOUR THEME 🎨
             </h1>
             <p className="text-base sm:text-lg text-muted-foreground font-medium">

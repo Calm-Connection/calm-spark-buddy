@@ -68,7 +68,7 @@ export default function InviteCode() {
             <CardContent className="space-y-8">
               <DecorativeIcon icon="sparkles" position="top-right" opacity={0.15} />
               <div className="text-center space-y-3">
-                <h1 className="text-foreground bg-gradient-to-r from-interactive-accent to-primary bg-clip-text text-transparent">INVITE CODE</h1>
+                <h1 className="text-2xl title-gradient-underline">INVITE CODE</h1>
                 <p className="text-lg text-muted-foreground">
                   Generate a code to connect with your child
                 </p>
@@ -87,7 +87,7 @@ export default function InviteCode() {
                 <div className="space-y-6">
                   <div className="bg-gradient-to-br from-primary/20 to-interactive-accent/20 p-8 rounded-3xl text-center border-2 border-interactive-accent/30 shadow-soft">
                     <p className="text-base text-muted-foreground mb-3 font-medium">Your Invite Code</p>
-                    <p className="text-5xl font-black tracking-widest bg-gradient-to-r from-interactive-accent to-primary bg-clip-text text-transparent">{code}</p>
+                    <p className="text-5xl font-black tracking-widest title-gradient-pill">{code}</p>
                   </div>
 
                   <Button

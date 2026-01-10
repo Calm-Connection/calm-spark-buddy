@@ -112,7 +112,7 @@ export default function CarerJournal() {
         </Card>
 
         <div className="space-y-4">
-          <h2 className="text-lg font-semibold bg-gradient-to-r from-primary to-interactive-accent bg-clip-text text-transparent">Previous Entries</h2>
+          <h2 className="text-lg font-semibold title-accessible">Previous Entries</h2>
           {entries.length === 0 ? (
             <Card className="relative p-8 text-center bg-gradient-to-br from-primary/5 to-accent/5 border-interactive-accent/10 shadow-soft">
               <DecorativeIcon icon="sparkles" position="top-right" opacity={0.08} />

@@ -102,7 +102,7 @@ export default function ChildSignup() {
             ← Back
           </Button>
           <div className="text-center space-y-2">
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">Hello! 👋</h1>
+            <h1 className="text-3xl title-gradient-underline">Hello! 👋</h1>
             <p className="text-muted-foreground font-medium">Do you have a parent or carer who will use this app with you?</p>
           </div>
 
@@ -136,7 +136,7 @@ export default function ChildSignup() {
         <DecorativeIcon icon="star" position="top-right" opacity={0.1} />
         <DecorativeIcon icon="flower" position="bottom-left" opacity={0.08} />
         <div className="text-center space-y-2">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">Create Your Account</h1>
+          <h1 className="text-3xl title-gradient-underline">Create Your Account</h1>
           <p className="text-muted-foreground font-medium">Let's get you set up!</p>
         </div>
 

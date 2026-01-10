@@ -54,7 +54,7 @@ export default function JointTools() {
 
         <Card className="relative p-6 bg-gradient-to-br from-primary/5 via-accent/10 to-secondary/5 border-interactive-accent/20 shadow-soft">
           <DecorativeIcon icon="sparkles" position="top-right" opacity={0.12} />
-          <h2 className="text-xl font-bold mb-2 bg-gradient-to-r from-interactive-accent to-primary bg-clip-text text-transparent">Strengthen Your Bond</h2>
+          <h2 className="text-xl title-accessible mb-2">Strengthen Your Bond</h2>
           <p className="text-muted-foreground">
             These activities help you connect, communicate, and build emotional resilience together.
           </p>

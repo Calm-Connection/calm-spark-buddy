@@ -50,7 +50,7 @@ export default function Welcome() {
           
           <CardContent className="p-8 md:p-12 space-y-8">
             <div className="space-y-4">
-            <h1 className="text-foreground text-3xl md:text-5xl bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+<h1 className="text-3xl md:text-5xl title-gradient-underline">
               Welcome 💜
             </h1>
             

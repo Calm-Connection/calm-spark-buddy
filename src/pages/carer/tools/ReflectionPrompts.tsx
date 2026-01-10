@@ -183,7 +183,7 @@ export default function ReflectionPrompts() {
           <DecorativeIcon icon="sparkles" position="top-right" opacity={0.12} />
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold bg-gradient-to-r from-interactive-accent to-primary bg-clip-text text-transparent">{currentPrompt.question}</h2>
+              <h2 className="text-lg font-semibold title-accessible">{currentPrompt.question}</h2>
               <span className="text-xs text-muted-foreground">
                 {currentPromptIndex + 1} / {prompts.length}
               </span>

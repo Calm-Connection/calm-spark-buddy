@@ -60,7 +60,7 @@ export default function ForgotPassword() {
         </Button>
 
         <div className="text-center space-y-2">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-interactive-accent bg-clip-text text-transparent">Reset Password</h1>
+          <h1 className="text-3xl title-gradient-underline">Reset Password</h1>
           <p className="text-muted-foreground">
             {sent 
               ? "We've sent you an email with instructions to reset your password"

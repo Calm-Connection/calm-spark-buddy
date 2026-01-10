@@ -90,7 +90,7 @@ export default function RainbowBreathing() {
         <div className="max-w-2xl mx-auto space-y-8 pb-24">
           <Card className="p-8 text-center space-y-6 bg-gradient-to-br from-red-50 via-yellow-50 via-green-50 via-blue-50 to-purple-50 dark:from-red-950/20 dark:to-purple-950/20 border-purple-200">
             <div className="text-6xl">🌈</div>
-            <h2 className="text-2xl font-bold bg-gradient-to-r from-red-600 via-yellow-600 via-green-600 via-blue-600 to-purple-600 bg-clip-text text-transparent">
+<h2 className="text-2xl font-bold bg-gradient-to-r from-red-700 via-amber-700 via-green-700 via-blue-700 to-purple-700 bg-clip-text text-transparent drop-shadow-sm">
               Every color belongs — and so do you
             </h2>
             <p className="text-lg text-purple-700 dark:text-purple-400">

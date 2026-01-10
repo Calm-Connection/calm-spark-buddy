@@ -211,7 +211,7 @@ export default function BreathingSpace() {
           <Button variant="ghost" size="icon" onClick={() => navigate('/child/tools')} className="hover:bg-interactive-accent/10 transition-colors">
             <ArrowLeft className="h-5 w-5" />
           </Button>
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+<h1 className="text-2xl title-gradient-underline">
             Breathing Space 🌬️
           </h1>
         </div>

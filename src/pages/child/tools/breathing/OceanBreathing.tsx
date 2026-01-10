@@ -89,7 +89,7 @@ export default function OceanBreathing() {
         {!isBreathing && !showAffirmation && (
           <Card className="relative p-6 bg-gradient-to-br from-primary/5 via-accent/10 to-secondary/5 border-interactive-accent/20 shadow-soft animate-fade-in">
             <DecorativeIcon icon="cloud" position="top-right" opacity={0.12} />
-            <h3 className="font-bold mb-4 text-center bg-gradient-to-r from-interactive-accent to-primary bg-clip-text text-transparent">
+<h3 className="font-bold mb-4 text-center title-accessible">
               How long would you like to breathe?
             </h3>
             <div className="grid grid-cols-3 gap-3">

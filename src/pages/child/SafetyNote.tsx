@@ -52,7 +52,7 @@ export default function SafetyNote() {
           <div className="h-16 w-16 mx-auto rounded-full bg-gradient-to-br from-interactive-accent/10 to-warm/30 flex items-center justify-center mb-4 shadow-sm">
             <Shield className="h-8 w-8 text-interactive-accent" />
           </div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+<h1 className="text-3xl title-gradient-underline">
             You're Safe Here 💛
           </h1>
           <p className="text-muted-foreground font-medium">

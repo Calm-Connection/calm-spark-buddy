@@ -126,7 +126,7 @@ export default function LearnMore() {
             </div>
             
             <div className="space-y-4">
-              <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+<h1 className="text-4xl md:text-6xl title-gradient-underline">
                 Learn More
               </h1>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto">

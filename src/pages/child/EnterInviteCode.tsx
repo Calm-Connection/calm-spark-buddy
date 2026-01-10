@@ -148,7 +148,7 @@ export default function EnterInviteCode() {
                 <div className="h-24 w-24 mx-auto rounded-full bg-gradient-to-br from-interactive-accent/10 to-primary/10 flex items-center justify-center shadow-soft">
                   <span className="text-5xl">🔐</span>
                 </div>
-                <h1 className="text-foreground bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+<h1 className="text-2xl title-gradient-underline">
                   Enter Invite Code
                 </h1>
                 <p className="text-lg text-muted-foreground font-medium">

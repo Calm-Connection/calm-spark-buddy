@@ -81,7 +81,7 @@ export default function CloudBreathing() {
         {!isBreathing && !showAffirmation && (
           <Card className="relative p-6 bg-gradient-to-br from-primary/5 via-accent/10 to-secondary/5 border-interactive-accent/20 shadow-soft animate-fade-in">
             <DecorativeIcon icon="cloud" position="top-right" opacity={0.12} />
-            <h3 className="font-bold mb-4 text-center bg-gradient-to-r from-primary to-interactive-accent bg-clip-text text-transparent">How long would you like to breathe?</h3>
+            <h3 className="font-bold mb-4 text-center title-accessible">How long would you like to breathe?</h3>
             <div className="grid grid-cols-3 gap-3">
               {[1, 3, 5].map((min) => (
                 <Button
@@ -159,7 +159,7 @@ export default function CloudBreathing() {
             <DecorativeIcon icon="cloud" position="top-left" opacity={0.15} />
             <DecorativeIcon icon="sparkles" position="bottom-right" opacity={0.15} />
             <div className="text-5xl mb-4">☁️✨</div>
-            <p className="text-xl font-bold bg-gradient-to-r from-primary to-interactive-accent bg-clip-text text-transparent">
+<p className="text-xl font-bold title-accessible">
               Your worries drift away, like clouds in the breeze
             </p>
             <p className="text-muted-foreground">You feel lighter and calmer now!</p>

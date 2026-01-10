@@ -77,7 +77,7 @@ export default function HandTraceBreathing() {
           >
             <ArrowLeft className="h-5 w-5" />
           </Button>
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+<h1 className="text-2xl title-gradient-underline">
             Hand Trace Breathing ✋
           </h1>
         </div>
