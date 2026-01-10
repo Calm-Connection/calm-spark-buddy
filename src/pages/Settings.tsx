@@ -14,7 +14,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useAccessibility, TextSize, FontFamily } from '@/hooks/useAccessibility';
 import { loadSavedTheme, ThemeName } from '@/hooks/useTheme';
 import { useTheme } from 'next-themes';
-import { Settings as SettingsIcon, User, Save, Palette, Accessibility, MessageSquareWarning, Link as LinkIcon, Edit, Bell, CheckCircle, AlertCircle, Loader2, Sun, Moon, FileText, Lock, Shield, UserX, Download, AlertTriangle, Heart, ChevronDown } from 'lucide-react';
+import { Settings as SettingsIcon, User, Save, Palette, Accessibility, MessageSquareWarning, Link as LinkIcon, Edit, Bell, CheckCircle, AlertCircle, Loader2, Sun, Moon, FileText, Lock, Shield, UserX, Download, AlertTriangle, Heart, ChevronDown, HelpCircle, Compass } from 'lucide-react';
 import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -58,11 +58,11 @@ export default function Settings() {
   
   // Collapsible section states
   const [profileOpen, setProfileOpen] = useState(true);
-  const [themeOpen, setThemeOpen] = useState(false);
+  const [themeOpen, setThemeOpen] = useState(true);
   const [displayOpen, setDisplayOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [accessibilityOpen, setAccessibilityOpen] = useState(false);
-  const [helpSafetyOpen, setHelpSafetyOpen] = useState(false);
+  const [helpSupportOpen, setHelpSupportOpen] = useState(false);
   const [dataPrivacyOpen, setDataPrivacyOpen] = useState(false);
   const [legalOpen, setLegalOpen] = useState(false);
 
@@ -718,24 +718,26 @@ export default function Settings() {
           </Card>
         </Collapsible>
 
-        {/* Help & Safety */}
-        <Collapsible open={helpSafetyOpen} onOpenChange={setHelpSafetyOpen}>
+        {/* Help & Support (merged from Help & Safety + Support) */}
+        <Collapsible open={helpSupportOpen} onOpenChange={setHelpSupportOpen}>
           <Card className="p-4 sm:p-6">
             <CollapsibleTrigger className="w-full">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-bold flex items-center gap-2">
-                  <Heart className="h-5 w-5" />
-                  Help & Safety
+                  <HelpCircle className="h-5 w-5" />
+                  Help & Support
                 </h2>
-                <ChevronDown className={`h-5 w-5 transition-transform ${helpSafetyOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown className={`h-5 w-5 transition-transform ${helpSupportOpen ? 'rotate-180' : ''}`} />
               </div>
             </CollapsibleTrigger>
             <CollapsibleContent className="pt-4">
-              <div className="space-y-4">
-                {/* Crisis Support Disclaimer - Full Version */}
-                <DisclaimerCard variant="crisis-full" size="medium" />
-                
+              <div className="space-y-6">
+                {/* If you need help now */}
                 <div className="space-y-3">
+                  <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+                    If you need help now
+                  </h3>
+                  <DisclaimerCard variant="crisis-full" size="medium" />
                   <Button
                     variant="outline"
                     className="w-full"
@@ -753,31 +755,28 @@ export default function Settings() {
                     Report a Concern
                   </Button>
                 </div>
+
+                {/* Learn about the app */}
+                <div className="space-y-3 pt-2 border-t">
+                  <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide pt-2">
+                    Learn about the app
+                  </h3>
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => navigate('/quick-tour')}
+                  >
+                    <Compass className="h-4 w-4 mr-2" />
+                    Quick Tour
+                  </Button>
+                  <p className="text-sm text-muted-foreground text-center">
+                    Found a bug or have feedback? Use "Report a Concern" above to let us know.
+                  </p>
+                </div>
               </div>
             </CollapsibleContent>
           </Card>
         </Collapsible>
-
-        {/* Support & Feedback */}
-        <Card className="p-4 sm:p-6">
-          <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-            <MessageSquareWarning className="h-5 w-5" />
-            Support
-          </h2>
-          <div className="space-y-3">
-            <p className="text-sm text-muted-foreground">
-              Found a bug or have feedback? Let us know so we can make Calm Connection better for everyone.
-            </p>
-            <Button
-              variant="outline"
-              className="w-full"
-              onClick={() => setReportModalOpen(true)}
-            >
-              <MessageSquareWarning className="h-4 w-4 mr-2" />
-              Report a Concern
-            </Button>
-          </div>
-        </Card>
 
         {/* Data & Privacy (GDPR Compliance) */}
         <Card className="p-6">
@@ -1033,14 +1032,24 @@ export default function Settings() {
                   const isMandatory = isMandatoryConsent(consentType);
                   const latestRecord = records[0];
 
-                  return (
+                    const consentLabelMap: Record<string, string> = {
+                      'privacy_policy': 'Privacy rules',
+                      'terms_of_use': 'How the app works',
+                      'data_processing': 'How we use your information',
+                      'safeguarding_policy': 'Keeping you safe',
+                      'notifications': 'Notification choices',
+                      'journal_sharing': 'Sharing your journal',
+                      'ai_insights': "Wendy's helpful summaries",
+                    };
+
+                    return (
                     <Card key={consentType} className="p-4">
                       <div className="space-y-4">
                         <div className="flex items-start justify-between gap-4">
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-2">
-                              <h3 className="font-bold capitalize">
-                                {consentType.replace(/_/g, ' ')}
+                              <h3 className="font-bold">
+                                {consentLabelMap[consentType] || consentType.replace(/_/g, ' ')}
                               </h3>
                               <Badge variant={status === 'active' ? 'default' : 'secondary'}>
                                 {status === 'active' ? '✓ Active' : 'Withdrawn'}
@@ -1081,7 +1090,7 @@ export default function Settings() {
 
                           {isMandatory && (
                             <p className="text-xs text-muted-foreground text-right max-w-[200px]">
-                              Required for app functionality
+                              This is needed for the app to work
                             </p>
                           )}
                         </div>

@@ -46,7 +46,7 @@ export default function CarerNotificationSettings() {
         <Alert className="border-accent bg-accent/10">
           <Shield className="h-4 w-4 text-accent-foreground" />
           <AlertDescription>
-            Safeguarding alerts are always enabled to ensure your child's safety. These critical notifications cannot be turned off.
+            Safety alerts are always on so you're gently informed if your child may need extra support. This is part of how we keep children safe together.
           </AlertDescription>
         </Alert>
 
@@ -233,7 +233,7 @@ export default function CarerNotificationSettings() {
               )}
 
               <p className="text-xs text-muted-foreground">
-                Note: Safeguarding alerts will still be delivered during quiet hours
+                Safety alerts will always reach you, even during quiet hours.
               </p>
             </div>
           </div>
