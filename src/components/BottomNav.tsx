@@ -69,7 +69,7 @@ export function BottomNav({ role }: BottomNavProps) {
                       role === 'carer' ? 'px-1.5 sm:px-3 py-1.5 sm:py-2' : 'px-2 sm:px-3 py-1.5 sm:py-2',
                   isActive
                     ? 'text-foreground bg-secondary/20'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                    : 'text-foreground/70 hover:text-foreground hover:bg-muted/50'
                     )
                   }
                 >

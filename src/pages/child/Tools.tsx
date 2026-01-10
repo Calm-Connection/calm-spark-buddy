@@ -181,7 +181,7 @@ export default function Tools() {
         {comingSoonTools.length > 0 && (
           <div className="space-y-3 mt-8">
             <div className="flex items-center gap-2">
-              <h2 className="text-lg font-semibold text-muted-foreground">Coming Soon 🔜</h2>
+              <h2 className="text-lg font-semibold text-foreground/70">Coming Soon 🔜</h2>
               <Badge variant="secondary" className="text-xs">More tools on the way!</Badge>
             </div>
             
