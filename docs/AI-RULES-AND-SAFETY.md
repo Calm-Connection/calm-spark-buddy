@@ -334,32 +334,101 @@ Provide a single, optional calming activity.
 
 Any mention of self-harm, suicide, or desire to harm oneself or others is classified as **Tier 4 - Immediate Safety Risk** and triggers immediate escalation protocols.
 
-### 6.2 Detection Keywords
+### 6.2 Detection Keywords - Tiered System
 
-Wendy must detect the following categories of language:
+Wendy uses a **tiered trigger system** for consistent detection across the app:
 
-#### Direct Self-Harm References
-- "hurt myself"
-- "cut myself"
-- "hurting myself"
-- "want to die"
-- "kill myself"
-- "end my life"
-- "don't want to be here anymore"
-- "wish I wasn't alive"
+#### TIER C: High Risk (Immediate Escalation)
 
-#### Indirect or Coded References
-- "disappear"
-- "make it stop forever"
-- "better off without me"
-- "won't be a problem soon"
-- "what's the point"
-- "no reason to keep going"
+**Direct Self-Harm & Suicidal Ideation:**
+- "hurt myself", "kill myself", "want to die", "suicidal", "end it all"
+- "cutting myself", "burning myself", "hitting myself", "self-harm"
+- "wish i was dead", "better off dead", "nobody would miss me"
 
-#### Harm to Others References
-- "want to hurt someone"
-- "make them pay"
-- "they deserve to be hurt"
+**Passive Suicidal Ideation:**
+- "don't want to wake up", "go to sleep forever"
+- "tired of everything", "tired of living"
+- "no point anymore", "no point in living"
+- "everyone would be happier without me"
+- "nobody would care if i was gone"
+
+**Coded/Subtle Self-Harm:**
+- "scratching myself", "picking my skin", "banging my head"
+- "pulling my hair out", "biting myself", "hurting my body"
+
+**Abuse & Safety Concerns:**
+- "abuse", "touched me", "touched inappropriately"
+- "hits me", "hurts me", "unsafe at home", "scared to go home"
+- "someone hurt me", "they're hurting me"
+
+**Domestic Distress:**
+- "mum and dad fight", "they shout every night"
+- "hear them hurting each other", "they hit each other"
+- "scared when they argue", "hide when they fight"
+
+**Grooming Indicators:**
+- "secret friend", "special relationship"
+- "don't tell anyone about us", "our secret"
+- "they said not to tell", "keep it between us"
+
+**Severe Bullying:**
+- "they won't stop", "everyone hates me"
+- "scared to go to school", "they hurt me every day"
+- "they won't leave me alone"
+
+**Cyberbullying:**
+- "they shared my messages", "they shared my photos"
+- "everyone is laughing at me online", "they posted about me"
+- "they made a group about me"
+
+**Harm to Others:**
+- "want to hurt someone", "going to hurt them"
+- "make them pay", "want to kill them"
+
+**Eating Crisis:**
+- "starving myself", "making myself sick", "purging"
+- "haven't eaten in days", "throwing up my food"
+
+#### TIER B: Concern (Gentle Support, Possible Carer Notification)
+
+**Persistent Distress:**
+- "nobody cares", "feel so alone", "hate myself"
+- "worthless", "useless", "I'm a failure"
+
+**Anxiety:**
+- "can't breathe", "heart racing", "panic"
+- "too scared", "terrified"
+
+**School Anxiety:**
+- "can't face school", "feel sick before school"
+- "too scared to go in", "dread going to school"
+
+**Body Image:**
+- "hate my body", "too fat", "too ugly"
+- "need to lose weight"
+
+**Sleep Distress:**
+- "can't sleep", "nightmares every night"
+- "scared to sleep"
+
+**Substances:**
+- "been drinking", "tried drugs", "smoking", "vaping"
+
+#### TIER A: Monitor (Normal Emotions, No Escalation)
+
+**Sadness:** "feel sad", "feeling down", "unhappy today"
+**Frustration:** "so annoyed", "frustrated", "makes me mad"
+**Worry:** "bit worried", "nervous about", "anxious about"
+**Normal expressions:** "bad day", "rough day", "tough day"
+
+#### Context-Sensitive Words
+
+These words require context checking - they may be concerning OR innocent:
+- "hate" - safe: "hate homework", "hate mondays"
+- "hurt" - safe: "feelings were hurt", "hurt my knee"
+- "die/died" - safe: "pet died", "dying of boredom"
+- "kill" - safe: "killing it", "killed the game"
+- "blood" - safe: "blood test", "nosebleed"
 
 ### 6.3 Immediate Response Script
 

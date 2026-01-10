@@ -123,39 +123,25 @@ serve(async (req) => {
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // High-risk keywords including child-language equivalents
-    // Note: Semantic AI detection is also used - this is not just exact keyword matching
-    const highRiskKeywords = [
-      // Self-harm & suicidal ideation
-      'hurt myself', 'kill myself', 'want to die', 'suicidal', 'end it all',
-      'cutting', 'burning myself', 'hitting myself', 'self-harm', 'hate myself', 
-      'worthless', 'better off dead', 'can\'t do this anymore', 'nobody would miss me',
-      'want to disappear', 'wish I wasn\'t here', 'wish I was dead',
-      // Child-language equivalents for distress
-      'i want to disappear', 'i wish i wasnt here', 'feel invisible', 'nobody sees me',
-      'nobody listens', 'im so alone', 'nobody would care if i was gone',
-      'i feel invisible', 'no one cares about me', 'everyone would be happier without me',
-      // Abuse & safety concerns
-      'abuse', 'touched me', 'hurt me', 'scared of', 'unsafe', 'hits me', 
-      'someone hurt me', 'unsafe at home', 'scared to go home',
-      // Bullying - child language
-      'theyre mean to me every day', 'they wont leave me alone', 'they hurt me',
-      'scared to go to school', 'they won\'t stop', 'everyone picks on me',
-      // Emotional crisis
-      'nobody cares', 'everyone hates me', 'can\'t go on', 'too much', 'can\'t cope', 
-      'can\'t breathe', 'going to die', 'heart won\'t stop',
-      // Eating concerns
-      'starving myself', 'hate my body', 'need to lose weight', 'can\'t eat',
-      'making myself sick', 'purging',
-      // Violence & substances
-      'want to hurt someone', 'going to hurt', 'do something bad', 
-      'drinking', 'drugs', 'getting high', 'smoking', 'vaping'
-    ];
-
-    const detectedKeywords = highRiskKeywords.filter(keyword => 
-      entryText.toLowerCase().includes(keyword.toLowerCase())
-    );
-    const hasHighRiskContent = detectedKeywords.length > 0;
+    // Import shared trigger system for unified detection
+    // Using the centralized tiered trigger system for consistent detection across the app
+    const { detectTriggers, normalizeForMatching, TRIGGERS, CONTEXT_SENSITIVE_WORDS, isWordInSafeContext } = await import('../_shared/triggers.ts');
+    
+    // Detect triggers using the unified system
+    const triggerResult = detectTriggers(entryText);
+    const hasHighRiskContent = triggerResult.tier === 'C';
+    const detectedKeywords = triggerResult.keywords;
+    
+    // Also check context-sensitive words that weren't in safe contexts
+    const contextConcerns = triggerResult.contextSensitiveFlags;
+    
+    console.log('Trigger detection result:', {
+      tier: triggerResult.tier,
+      category: triggerResult.category,
+      keywords: detectedKeywords,
+      contextConcerns,
+      requiresEscalation: triggerResult.requiresEscalation
+    });
 
     // PHASE 1: Query historical context
     console.log('Querying historical context for child:', childId);
