@@ -30,14 +30,16 @@ const COMMON_SURNAMES = new Set([
   'ward', 'morris', 'moore', 'clark', 'lee', 'king', 'baker', 'harrison', 'morgan', 'allen'
 ]);
 
-// Unsafe keywords (from moderate-content function)
+// Refined unsafe keywords for username validation
+// More focused to reduce false positives while maintaining safety
 const UNSAFE_KEYWORDS = {
-  profanity: ['fuck', 'shit', 'damn', 'cunt', 'bitch', 'arse', 'dick', 'cock', 'piss', 'bastard', 'wanker', 'bollocks'],
-  sexual: ['sex', 'porn', 'nude', 'xxx', 'horny', 'sexy'],
-  violence: ['kill', 'die', 'hurt', 'blood', 'rape', 'murder', 'stab', 'gun'],
-  drugs: ['weed', 'cocaine', 'meth', 'heroin', 'drug'],
-  hate: ['nazi', 'terrorist', 'isis'],
-  contact: ['phone', 'email', 'address', 'whatsapp', 'snapchat', 'insta', 'facebook']
+  profanity: ['fuck', 'shit', 'cunt', 'bitch', 'wanker', 'bollocks', 'twat'],
+  sexual: ['porn', 'xxx', 'horny', 'sexting'],
+  // Removed 'kill', 'die', 'hurt', 'blood' - these could be innocent gaming/avatar names
+  violence: ['murder', 'stab', 'rape'],
+  drugs: ['cocaine', 'meth', 'heroin'],
+  hate: ['nazi', 'terrorist'],
+  contact: ['phone', 'email', 'whatsapp', 'snapchat', 'insta', 'tiktok', 'discord']
 };
 
 // School indicators

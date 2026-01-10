@@ -6,13 +6,20 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// Comprehensive child safety keyword lists
+// Refined child safety keyword lists
+// Reduced false positives while maintaining safety
+// Context-sensitive words removed - handled separately by AI moderation
 const UNSAFE_KEYWORDS = {
-  profanity: ['fuck', 'shit', 'damn', 'hell', 'bitch', 'ass', 'bastard', 'crap', 'piss'],
-  sexual: ['sex', 'sexy', 'nude', 'naked', 'porn', 'penis', 'vagina', 'boobs', 'breast', 'dick', 'cock', 'pussy', 'ass', 'butt', 'underwear', 'bikini', 'lingerie'],
-  violence: ['kill', 'murder', 'stab', 'shoot', 'gun', 'weapon', 'blood', 'dead', 'death', 'hurt', 'attack', 'fight', 'punch', 'hit', 'beat', 'wound', 'gore'],
-  hate_speech: ['hate', 'racist', 'nazi', 'nigger', 'fag', 'retard', 'stupid', 'ugly', 'fat', 'loser', 'idiot', 'dumb'],
-  drugs: ['drug', 'weed', 'cocaine', 'heroin', 'meth', 'beer', 'alcohol', 'drunk', 'smoke', 'cigarette', 'vape'],
+  // Only strong profanity - removed mild words that cause false positives
+  profanity: ['fuck', 'shit', 'cunt', 'bitch', 'wanker', 'bollocks', 'twat'],
+  // Made more specific - removed 'sex' (too broad), 'underwear', 'bikini'
+  sexual: ['porn', 'xxx', 'nude photos', 'naked pics', 'sexting', 'horny'],
+  // Removed context-dependent words: 'kill', 'dead', 'death', 'hurt', 'blood', 'fight', 'hit'
+  violence: ['murder', 'stab', 'shoot someone', 'gun violence', 'weapon', 'gore'],
+  // Made more specific, removed 'hate', 'stupid', 'ugly', 'fat', 'loser', 'idiot', 'dumb'
+  hate_speech: ['nazi', 'n*gger', 'f*ggot', 'racist slur'],
+  // Removed 'drug', 'beer', 'alcohol' - too broad
+  drugs: ['cocaine', 'heroin', 'meth'],
 };
 
 // Pattern matching for bypass attempts (l33t speak, spacing, etc.)
@@ -241,14 +248,15 @@ Be STRICT about inappropriate content while respecting dignity and proportionali
 
   } catch (error) {
     console.error('Moderation error:', error);
-    // If moderation fails, the text is rechecked server-side before saving to avoid false positives.
-    // We default to safe to prevent blocking legitimate users, but log the failure for review.
+    // CRITICAL: Fail closed for safety - require retry rather than assuming safe
+    // This prevents potentially harmful content from bypassing moderation
     return new Response(
       JSON.stringify({ 
-        safe: true, 
-        category: 'safe', 
-        error: 'Moderation check failed - content will be rechecked',
-        requiresRecheck: true
+        safe: false, 
+        category: 'error', 
+        error: 'Moderation check failed - please try again',
+        requiresRecheck: true,
+        message: "We couldn't check your content right now. Please try again in a moment."
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );

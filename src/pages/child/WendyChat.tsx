@@ -60,8 +60,27 @@ export default function WendyChat() {
     setMessages((prev) => [...prev, { role: 'user', content: userMessage }]);
     setIsLoading(true);
 
-    // Check for crisis keywords
-    const crisisKeywords = ['suicide', 'kill myself', 'want to die', 'hurt myself', 'self harm', 'end my life'];
+    // Check for crisis keywords (Tier C - High Risk triggers)
+    // Synchronized with backend trigger system for consistency
+    const crisisKeywords = [
+      // Self-harm & suicidal ideation
+      'suicide', 'kill myself', 'want to die', 'hurt myself', 'self harm',
+      'self-harm', 'end my life', 'cutting myself', 'burning myself',
+      'hurting myself', 'wish i was dead', 'better off dead',
+      // Passive suicidal ideation
+      'dont want to wake up', "don't want to wake up", 'go to sleep forever',
+      'tired of living', 'no point anymore', 'no point in living',
+      'everyone would be happier without me', 'nobody would care if i was gone',
+      // Coded self-harm
+      'scratching myself', 'picking my skin', 'banging my head',
+      // Abuse
+      'someone hurt me', 'they hit me', 'abuse', 'touched me inappropriately',
+      'unsafe at home', 'scared to go home',
+      // Grooming indicators
+      'secret friend', 'dont tell anyone about us', 'our secret',
+      // Severe threats
+      'want to hurt someone', 'going to hurt them'
+    ];
     const inputLower = userMessage.toLowerCase();
     if (crisisKeywords.some(keyword => inputLower.includes(keyword))) {
       setShowCrisisModal(true);
