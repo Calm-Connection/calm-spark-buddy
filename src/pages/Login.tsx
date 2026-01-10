@@ -58,7 +58,7 @@ export default function Login() {
         <DecorativeIcon icon="star" position="top-right" opacity={0.1} />
         <DecorativeIcon icon="sparkles" position="bottom-left" opacity={0.08} />
         <div className="text-center space-y-2">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+<h1 className="text-3xl title-gradient-underline">
             Welcome Back
           </h1>
           <p className="text-muted-foreground font-medium">Log in to continue</p>

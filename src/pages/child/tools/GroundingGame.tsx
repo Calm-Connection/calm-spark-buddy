@@ -101,7 +101,7 @@ export default function GroundingGame() {
           <div className="space-y-6">
             <Card className="relative p-6 bg-gradient-to-br from-primary/5 via-accent/10 to-secondary/5 border-interactive-accent/20 shadow-soft">
               <DecorativeIcon icon="sparkles" position="top-right" opacity={0.12} />
-              <h2 className="text-xl font-bold mb-3 bg-gradient-to-r from-primary to-interactive-accent bg-clip-text text-transparent">Let's play a calming game!</h2>
+              <h2 className="text-xl font-bold mb-3 title-accessible">Let's play a calming game!</h2>
               <p className="text-muted-foreground mb-4">
                 This game helps you feel calm by noticing the world around you. 
                 We'll use all your senses — seeing, touching, hearing, smelling, and tasting.

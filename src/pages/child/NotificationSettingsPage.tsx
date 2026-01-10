@@ -37,7 +37,7 @@ export default function ChildNotificationSettingsPage() {
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+<h1 className="text-2xl title-gradient-underline">
               Notification Settings 🔔
             </h1>
             <p className="text-sm text-muted-foreground font-medium">Choose when you want reminders</p>

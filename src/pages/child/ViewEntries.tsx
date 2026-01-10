@@ -104,7 +104,7 @@ export default function ViewEntries() {
           <Button variant="ghost" onClick={() => navigate(-1)} className="hover:bg-interactive-accent/10 transition-colors">
             ← Back
           </Button>
-          <h1 className="text-3xl font-bold mt-2 bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+<h1 className="text-3xl mt-2 title-gradient-underline">
             My Journal Entries 📖
           </h1>
           <p className="text-muted-foreground font-medium">

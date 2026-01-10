@@ -597,6 +597,72 @@ footer .text-muted-foreground {
   background: hsl(var(--card) / 0.85);
 }
 
+/* ===== ACCESSIBLE GRADIENT TITLE PATTERNS ===== */
+/* These replace gradient text with solid readable text + gradient accents */
+
+/* Pattern 1: Solid text with gradient underline accent */
+.title-gradient-underline {
+  position: relative;
+  display: inline-block;
+  color: hsl(260 25% 25%);
+  font-weight: 700;
+}
+
+.title-gradient-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(to right, hsl(var(--primary)), hsl(var(--accent)), hsl(var(--secondary)));
+  border-radius: 2px;
+  opacity: 0.7;
+}
+
+.dark .title-gradient-underline {
+  color: hsl(260 15% 92%);
+}
+
+.dark .title-gradient-underline::after {
+  opacity: 0.85;
+}
+
+/* Pattern 2: Gradient pill/badge background behind solid text */
+.title-gradient-pill {
+  display: inline-block;
+  padding: 0.375rem 1.25rem;
+  background: linear-gradient(135deg, 
+    hsl(var(--primary) / 0.25), 
+    hsl(var(--accent) / 0.3), 
+    hsl(var(--secondary) / 0.25)
+  );
+  border-radius: 1.5rem;
+  color: hsl(260 30% 22%);
+  font-weight: 700;
+  border: 1px solid hsl(var(--primary) / 0.15);
+}
+
+.dark .title-gradient-pill {
+  background: linear-gradient(135deg, 
+    hsl(var(--primary) / 0.35), 
+    hsl(var(--accent) / 0.4), 
+    hsl(var(--secondary) / 0.35)
+  );
+  color: hsl(260 10% 95%);
+  border-color: hsl(var(--primary) / 0.25);
+}
+
+/* Pattern 3: Accessible solid text with subtle warm tint (for smaller titles) */
+.title-accessible {
+  color: hsl(260 25% 30%);
+  font-weight: 600;
+}
+
+.dark .title-accessible {
+  color: hsl(260 15% 90%);
+}
+
 /* Text contrast utility - for replacing opacity-based text */
 .text-secondary-readable {
   color: hsl(0 0% 40%);

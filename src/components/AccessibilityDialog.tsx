@@ -23,7 +23,7 @@ export function AccessibilityDialog() {
       </DialogTrigger>
       <DialogContent className="sm:max-w-md border-interactive-accent/20">
         <DialogHeader>
-          <DialogTitle className="bg-gradient-to-r from-interactive-accent to-primary bg-clip-text text-transparent">
+<DialogTitle className="title-accessible text-xl">
             Accessibility Options
           </DialogTitle>
         </DialogHeader>

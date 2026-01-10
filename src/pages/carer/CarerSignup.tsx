@@ -132,7 +132,7 @@ export default function CarerSignup() {
         <Card className="relative max-w-md w-full p-4 sm:p-6 md:p-8 space-y-4 sm:space-y-6 my-8 bg-gradient-to-br from-primary/5 via-accent/10 to-secondary/5 border-interactive-accent/20 shadow-soft-lg">
           <DecorativeIcon icon="sparkles" position="top-right" opacity={0.12} />
           <div className="text-center space-y-2">
-            <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-interactive-accent to-primary bg-clip-text text-transparent">Carer Account</h1>
+            <h1 className="text-2xl sm:text-3xl title-gradient-underline">Carer Account</h1>
           <p className="text-sm sm:text-base text-muted-foreground">Support your child's emotional journey</p>
         </div>
 
