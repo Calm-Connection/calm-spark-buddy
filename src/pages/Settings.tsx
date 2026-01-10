@@ -27,6 +27,7 @@ import { AddCarerCodeModal } from '@/components/AddCarerCodeModal';
 import { DecorativeIcon } from '@/components/DecorativeIcon';
 import { exportUserData, deleteUserAccount, getConsentHistory, withdrawConsent } from '@/lib/consentLogger';
 import { Badge } from '@/components/ui/badge';
+import { WendyExplanationCard } from '@/components/WendyExplanationCard';
 
 export default function Settings() {
   const navigate = useNavigate();
@@ -785,6 +786,11 @@ export default function Settings() {
             Data & Privacy
           </h2>
           <div className="space-y-4">
+            {/* AI Explanation Card - child only */}
+            {userRole === 'child' && (
+              <WendyExplanationCard />
+            )}
+
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
                 <Label>Export My Data</Label>
