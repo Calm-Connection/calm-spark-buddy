@@ -14,6 +14,7 @@ import { DecorativeIcon } from '@/components/DecorativeIcon';
 import { logConsent } from '@/lib/consentLogger';
 import { NicknameExplanation } from '@/components/NicknameExplanation';
 import { DisclaimerCard } from '@/components/disclaimers/DisclaimerCard';
+import { PolicySheet, PolicyType } from '@/components/PolicySheet';
 
 export default function CarerSignup() {
   const [nickname, setNickname] = useState('');
@@ -21,6 +22,7 @@ export default function CarerSignup() {
   const [password, setPassword] = useState('');
   const [acceptedPrivacy, setAcceptedPrivacy] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [openPolicy, setOpenPolicy] = useState<PolicyType | null>(null);
   const { signUp } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -215,7 +217,7 @@ export default function CarerSignup() {
                 className="h-auto p-0 text-sm underline"
                 onClick={(e) => {
                   e.preventDefault();
-                  window.open('/carer/privacy-policy', '_blank');
+                  setOpenPolicy('privacy');
                 }}
               >
                 Privacy Policy
@@ -226,7 +228,7 @@ export default function CarerSignup() {
                 className="h-auto p-0 text-sm underline"
                 onClick={(e) => {
                   e.preventDefault();
-                  window.open('/carer/terms-of-use', '_blank');
+                  setOpenPolicy('terms');
                 }}
               >
                 Terms of Use
@@ -237,7 +239,7 @@ export default function CarerSignup() {
                 className="h-auto p-0 text-sm underline"
                 onClick={(e) => {
                   e.preventDefault();
-                  window.open('/carer/safeguarding-info', '_blank');
+                  setOpenPolicy('safeguarding');
                 }}
               >
                 Safeguarding Policy
@@ -274,6 +276,23 @@ export default function CarerSignup() {
             ← Go back
           </Button>
         </div>
+
+        {/* Policy Sheets */}
+        <PolicySheet 
+          open={openPolicy === 'privacy'} 
+          onOpenChange={(open) => !open && setOpenPolicy(null)} 
+          policyType="privacy" 
+        />
+        <PolicySheet 
+          open={openPolicy === 'terms'} 
+          onOpenChange={(open) => !open && setOpenPolicy(null)} 
+          policyType="terms" 
+        />
+        <PolicySheet 
+          open={openPolicy === 'safeguarding'} 
+          onOpenChange={(open) => !open && setOpenPolicy(null)} 
+          policyType="safeguarding" 
+        />
       </Card>
     </div>
   );
